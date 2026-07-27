@@ -127,10 +127,19 @@ n'offrirait aucune prise. Les correspondances offertes sont donc tirées **parmi
 plus fréquents de la citation**, avec au moins une voyelle garantie. Le palier de difficulté module
 la quantité : trois pour les citations les plus ardues, deux pour les plus abordables.
 
-**La main est une pile LIFO.** Le joueur distribue une carte quand il le souhaite ; elle se pose
-au-dessus des précédentes. **Seule la carte du dessus est jouable** ; celle du dessous réapparaît
-une fois la première posée. Piocher trop tôt revient donc à s'enterrer sous des lettres dont on
-ignore la destination. C'est la contrainte qui porte toute la tension du jeu.
+**La main est une pile LIFO de cinq cartes.** Le joueur distribue une carte quand il le souhaite ;
+elle se pose au-dessus des précédentes. **Seule la carte du dessus est jouable** ; celle du dessous
+réapparaît une fois la première posée. La main ne peut jamais dépasser **cinq cartes** : au-delà, la
+pioche est fermée tant qu'une carte n'a pas été placée.
+
+Cette capacité change la nature du jeu. Sans elle, un joueur bloqué pouvait piocher indéfiniment
+jusqu'à tomber sur une lettre qu'il savait placer ; la pioche n'avait qu'un coût d'encombrement.
+Avec cinq cartes, main pleine et carte du dessus indéterminable, il ne reste qu'une option : parier.
+C'est là que les trois erreurs prennent tout leur poids, et c'est cette tension qui porte le jeu.
+
+La capacité est un paramètre nommé (`handCapacity`, à 5 par défaut) et non une constante disséminée
+dans le code : c'est le premier curseur d'équilibrage, celui qu'on voudra faire varier une fois des
+parties simulées disponibles.
 
 **Interaction : case d'abord, carte ensuite.** Le joueur sélectionne une case vide, puis clique la
 carte du dessus. Sans case sélectionnée, aucune pose n'est possible. Recliquer la case la
@@ -156,8 +165,13 @@ rejouer la grille identique rendrait la reprise triviale.
 > `|pioche| + |main| = nombre de cases vides`, et la carte du dessus a **toujours** au moins une
 > case valide disponible.
 
-La pioche étant l'inventaire exact des cases vides, aucune position de blocage n'existe et aucune
-partie n'est insoluble. Cet invariant est vérifié à chaque transition dans les tests.
+La pioche étant l'inventaire exact des cases vides, aucune partie n'est insoluble : quelle que soit
+la carte du dessus, il existe forcément une case où la poser correctement. La limite de cinq cartes
+ne crée donc jamais de blocage mécanique — une action juste reste toujours possible. Ce qu'elle
+crée, c'est un blocage **informationnel** : le joueur peut ignorer *laquelle* des cases est la
+bonne, et devoir parier. C'est le ressort du jeu, pas un défaut de conception.
+
+Cet invariant est vérifié à chaque transition dans les tests.
 
 ## 5. Modèle d'état
 
@@ -169,10 +183,12 @@ type Cell =
   | { kind: 'letter'; code: number; filled: Sym | null; given: boolean };
 
 interface Puzzle {
-  quoteId:    string;
-  seed:       string;                        // rejouabilité et tests déterministes
-  accentMode: 'distinct' | 'merged';
-  solution:   readonly (Sym | null)[];       // aligné sur board
+  quoteId:       string;
+  seed:          string;                     // rejouabilité et tests déterministes
+  accentMode:    'distinct' | 'merged';
+  handCapacity:  number;                     // 5 par défaut
+  maxErrors:     number;                     // 3 par défaut
+  solution:      readonly (Sym | null)[];    // aligné sur board
 }
 
 interface GameState {
@@ -180,7 +196,7 @@ interface GameState {
   board:        readonly Cell[];             // une entrée par caractère du texte
   known:        ReadonlyMap<number, Sym>;    // table de correspondance révélée
   deck:         readonly Sym[];              // pioche face cachée, ordre fixé par le seed
-  hand:         readonly Sym[];              // pile LIFO, le dernier est jouable
+  hand:         readonly Sym[];              // pile LIFO, 5 max, le dernier est jouable
   selectedCell: number | null;
   errors:       number;                      // 0 à 3
   status:       'playing' | 'won' | 'lost';
@@ -196,7 +212,7 @@ Une même graine reproduit exactement la même partie : les tests sont détermin
 | Action | Effet | Précondition |
 |---|---|---|
 | `SELECT_CELL(i)` | sélectionne ou désélectionne une case | case `letter` non remplie |
-| `DRAW` | dépile la pioche vers la main | pioche non vide |
+| `DRAW` | dépile la pioche vers la main | pioche non vide **et** main non pleine (`< handCapacity`) |
 | `PLAY` | joue la carte du dessus sur la case sélectionnée | case sélectionnée **et** main non vide |
 | `RESTART` | nouvelle partie, même citation, nouvelle graine | — |
 
@@ -302,6 +318,7 @@ Le moteur pur concentre l'effort, puisqu'il concentre les règles.
 
 - **Réducteur** : chaque transition, chaque précondition, chaque condition de victoire et de défaite.
 - **Invariant** : `|pioche| + |main| = cases vides` vérifié après chaque action d'une partie complète.
+- **Capacité de main** : `DRAW` rejeté à cinq cartes, réautorisé dès qu'une carte est posée.
 - **Solvabilité** : une partie jouée parfaitement à partir d'une graine quelconque se gagne toujours,
   sans aucune erreur. Testé sur un large échantillon de graines.
 - **Chiffrement** : bijection nombre ↔ symbole, stabilité par graine, respect d'`accentMode`.
@@ -323,7 +340,8 @@ Décisions arrêtées avec l'utilisateur :
 
 1. Workspace Angular monorepo ; les jeux sont des libraries, le portail la seule application.
 2. Français seul, avec la structure prête au multilingue.
-3. Main en pile LIFO stricte : seule la carte du dessus est jouable.
+3. Main en pile LIFO stricte, plafonnée à cinq cartes : seule celle du dessus est jouable, et la
+   pioche se ferme quand la main est pleine.
 4. Accents traités comme symboles distincts par défaut, `merged` disponible en réglage.
 5. Public grand public / adolescents-adultes ; interface sobre et dense.
 6. Corpus à la charge de l'utilisateur ; le projet fournit schéma, validateur, scoring et témoins.
@@ -342,4 +360,5 @@ Hypothèses posées par défaut, à renverser librement :
 - Après une défaite, on rejoue la même citation avec un nouveau chiffrement.
 - Ponctuation, espaces et apostrophes restent toujours visibles.
 - Une pose fausse laisse la carte en main.
+- La partie commence main vide : c'est au joueur de distribuer sa première carte.
 - L'interface désactive les cases dont le nombre résolu contredit la carte du dessus.
