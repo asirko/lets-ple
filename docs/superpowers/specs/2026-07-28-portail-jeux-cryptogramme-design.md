@@ -117,9 +117,15 @@ nombres différents. L'alphabet monte ainsi à une quarantaine de symboles. Le m
 `accentMode: 'distinct' | 'merged'` ; `distinct` est le mode par défaut, `merged` reste disponible
 comme réglage plus accessible.
 
-**Départ.** Quelques correspondances sont offertes : environ 15 à 20 % des nombres distincts, avec
-au moins une voyelle garantie. Toutes les cases portant un nombre offert sont pré-remplies, et les
-cartes correspondantes ne figurent pas dans la pioche.
+**Départ.** **Deux à trois correspondances** sont offertes, jamais davantage, quelle que soit la
+longueur de la citation. Toutes les cases portant un nombre offert sont pré-remplies, et les cartes
+correspondantes ne figurent pas dans la pioche.
+
+Le cadeau étant aussi maigre, son choix ne peut pas être laissé au hasard : tiré uniformément parmi
+une trentaine de symboles, il tomberait souvent sur un Ê ou un W apparaissant une seule fois, et
+n'offrirait aucune prise. Les correspondances offertes sont donc tirées **parmi les symboles les
+plus fréquents de la citation**, avec au moins une voyelle garantie. Le palier de difficulté module
+la quantité : trois pour les citations les plus ardues, deux pour les plus abordables.
 
 **La main est une pile LIFO.** Le joueur distribue une carte quand il le souhaite ; elle se pose
 au-dessus des précédentes. **Seule la carte du dessus est jouable** ; celle du dessous réapparaît
@@ -331,8 +337,8 @@ Décisions arrêtées avec l'utilisateur :
 
 Hypothèses posées par défaut, à renverser librement :
 
-- Les correspondances offertes au départ représentent 15 à 20 % des nombres distincts, avec au moins
-  une voyelle.
+- Les correspondances offertes au départ sont au nombre de deux ou trois, tirées parmi les symboles
+  les plus fréquents de la citation, avec au moins une voyelle.
 - Après une défaite, on rejoue la même citation avec un nouveau chiffrement.
 - Ponctuation, espaces et apostrophes restent toujours visibles.
 - Une pose fausse laisse la carte en main.
