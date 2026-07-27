@@ -1,0 +1,63 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve",
+    /* Les alias pointent sur les sources et non sur `dist/` : les libraries ne sont jamais
+       publiées sur npm, et viser les sources évite d'avoir à reconstruire une lib à chaque
+       modification pendant le développement. */
+    "paths": {
+      "@lets-ple/ui": ["./projects/libs/ui/src/public-api.ts"],
+      "@lets-ple/game-core": ["./projects/libs/game-core/src/public-api.ts"],
+      "@lets-ple/cryptogramme": ["./projects/games/cryptogramme/src/public-api.ts"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/apps/portal/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/apps/portal/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/apps/storybook/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/apps/storybook/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/libs/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/libs/ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/libs/game-core/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/libs/game-core/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/games/cryptogramme/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/games/cryptogramme/tsconfig.spec.json"
+    }
+  ]
+}
