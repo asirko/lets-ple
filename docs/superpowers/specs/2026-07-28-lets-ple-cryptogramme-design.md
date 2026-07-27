@@ -1,12 +1,17 @@
-# Portail de jeux pédagogiques — Design v1 : le Cryptogramme
+# Let's Plé — Design v1 : le Cryptogramme
 
 *Date : 2026-07-28*
 
 ## 1. Objectif
 
-Construire un portail web hébergeant une famille de jeux de langue française, installable en PWA,
-déployé en statique sur GitHub Pages derrière un sous-domaine personnel. Le premier jeu est un
-**cryptogramme** : une citation dont chaque lettre est remplacée par un nombre, à reconstituer.
+Construire **Let's Plé**, un portail web hébergeant une famille de jeux de langue française,
+installable en PWA, déployé en statique sur GitHub Pages derrière un sous-domaine personnel. Le
+premier jeu est un **cryptogramme** : une citation dont chaque lettre est remplacée par un nombre,
+à reconstituer.
+
+Le nom joue la graphie phonétique française de *let's play* — un clin d'œil à l'orthographe qui est
+précisément le sujet des jeux. L'accent ne descend ni dans le nom de package ni dans le sous-domaine :
+il reste au nom affiché, doublé du slug ASCII `lets-ple`.
 
 La vocation pédagogique passe par le contenu (citations sourcées, orthographe accentuée exacte)
 plutôt que par un dispositif d'accompagnement explicite. Public v1 : grand public, adolescents et
@@ -33,7 +38,7 @@ enfant / FLE, autres langues. Le corpus réel reste à la charge du propriétair
 Un dépôt git unique, un workspace Angular multi-projets, un seul build déployé.
 
 ```
-jeux-portail/
+lets-ple/
 ├─ projects/
 │  ├─ apps/
 │  │  ├─ portal/         (app)  shell + accueil + catalogue + PWA  ← seul build déployé
@@ -304,13 +309,16 @@ succès du déploiement et sont intégrés dès le départ :
 - **`.nojekyll`** — sinon Jekyll écarte silencieusement les fichiers commençant par un underscore.
 - **`CNAME`** contenant le sous-domaine, à republier à chaque déploiement.
 
-Côté DNS, un enregistrement CNAME `<sous-domaine>` → `<utilisateur>.github.io`. Le sous-domaine
-étant une racine, `base-href` vaut `/`.
+Côté DNS, un enregistrement CNAME `letsple` → `<utilisateur>.github.io`. Le sous-domaine étant une
+racine, `base-href` vaut `/`.
 
-**Valeurs à fournir avant le premier déploiement.** Trois éléments ne sont pas encore fixés et ne
-bloquent pas le développement : le nom définitif du projet (`jeux-portail` est un nom de travail,
-renommable), le compte et le dépôt GitHub cibles, et le sous-domaine retenu. Le workflow de
-déploiement les lit depuis des variables, de sorte qu'aucun code applicatif n'en dépend.
+**Valeurs à fournir avant le premier déploiement.** Deux éléments restent à fixer, sans bloquer le
+développement : le compte et le dépôt GitHub cibles, et le domaine sur lequel greffer le
+sous-domaine `letsple`. Le workflow de déploiement les lit depuis des variables, de sorte qu'aucun
+code applicatif n'en dépend.
+
+**Identité.** Nom affiché et titre PWA : **Let's Plé**. Slug ASCII, nom de package npm et nom du
+dépôt : `lets-ple`. Sous-domaine : `letsple`.
 
 ## 11. Tests
 
@@ -352,6 +360,7 @@ Décisions arrêtées avec l'utilisateur :
 11. `projects/` est scindé en trois familles : `apps/`, `libs/` et `games/`.
 12. Une application Storybook dédiée sert d'atelier à tous les composants d'interface, ceux du
     design system comme ceux du jeu.
+13. Le portail s'appelle **Let's Plé**, de slug `lets-ple` et de sous-domaine `letsple`.
 
 Hypothèses posées par défaut, à renverser librement :
 
