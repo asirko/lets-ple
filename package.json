@@ -4,9 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build portal",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "vitest run --config vitest.domain.config.ts",
+    "test:watch": "vitest --config vitest.domain.config.ts",
+    "test:ng": "ng test",
+    "test:all": "npm run test && npm run test:ng"
   },
   "private": true,
   "packageManager": "npm@11.16.0",

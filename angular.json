@@ -29,7 +29,9 @@
                 "input": "projects/apps/portal/public"
               }
             ],
-            "styles": ["projects/apps/portal/src/styles.scss"]
+            "styles": [
+              "projects/apps/portal/src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -95,7 +97,9 @@
                 "input": "projects/apps/storybook/public"
               }
             ],
-            "styles": ["projects/apps/storybook/src/styles.scss"]
+            "styles": [
+              "projects/apps/storybook/src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -211,7 +215,10 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/games/cryptogramme/tsconfig.spec.json"
+            "tsConfig": "projects/games/cryptogramme/tsconfig.spec.json",
+            "exclude": [
+              "**/domain/**"
+            ]
           }
         }
       }

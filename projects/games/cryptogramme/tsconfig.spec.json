@@ -6,5 +6,8 @@
     "outDir": "../../../out-tsc/spec",
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
+  /* Les tests du moteur pur sont exclus d'ici : ils tournent via `npm run test:domain`,
+     en environnement Node, sans compilation Angular. Voir vitest.domain.config.ts. */
+  "include": ["src/**/*.d.ts", "src/**/*.spec.ts"],
+  "exclude": ["src/lib/domain/**"]
 }
