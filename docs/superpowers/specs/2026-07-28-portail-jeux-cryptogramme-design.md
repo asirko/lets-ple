@@ -18,6 +18,7 @@ adultes.
 
 - Le workspace Angular complet, prêt à accueillir d'autres jeux.
 - Le portail : accueil, catalogue des jeux, PWA installable.
+- L'atelier Storybook couvrant les composants du design system et ceux du jeu.
 - Le jeu cryptogramme, jouable de bout en bout.
 - Le schéma de corpus, son validateur et le calcul de difficulté, avec une dizaine de citations témoins.
 - Le déploiement automatisé sur GitHub Pages.
@@ -34,14 +35,26 @@ Un dépôt git unique, un workspace Angular multi-projets, un seul build déploy
 ```
 jeux-portail/
 ├─ projects/
-│  ├─ ui/            (lib)  design system : tokens, cartes, boutons, layout, a11y
-│  ├─ game-core/     (lib)  socle commun à tous les jeux
-│  ├─ cryptogramme/  (lib)  le jeu 1
-│  └─ portal/        (app)  shell + accueil + catalogue + PWA  ← seul build
+│  ├─ apps/
+│  │  ├─ portal/         (app)  shell + accueil + catalogue + PWA  ← seul build déployé
+│  │  └─ storybook/      (app)  hôte de l'atelier de composants
+│  ├─ libs/
+│  │  ├─ ui/             (lib)  design system : tokens, cartes, boutons, layout, a11y
+│  │  └─ game-core/      (lib)  socle commun à tous les jeux
+│  └─ games/
+│     └─ cryptogramme/   (lib)  le jeu 1
 ├─ content/quotes/*.json     corpus source, éditable à la main
 ├─ tools/                    scripts Node : validation de schéma, scoring de difficulté
 └─ docs/superpowers/specs/   ce document
 ```
+
+Les trois familles sont séparées à la racine de `projects/` : les **applications** (ce qui se
+construit et se sert), les **libraries transverses** (ce qui est partagé par tous les jeux), et les
+**jeux** eux-mêmes, qui forment une catégorie à part parce que leur nombre est appelé à croître.
+
+Détail d'implémentation : `newProjectRoot` d'`angular.json` est une valeur unique et ne peut pas
+distinguer ces trois emplacements. Chaque projet est donc généré avec un chemin explicite —
+`ng generate application portal --project-root projects/apps/portal`, et de même pour les autres.
 
 **Pourquoi ce découpage.** Un jeu est une library autonome exposant ses propres routes, chargée en
 lazy par le portail. Un seul build, un seul déploiement, une seule PWA — mais chaque jeu reste un
@@ -70,6 +83,25 @@ Ajouter un jeu revient à créer une library et à l'inscrire dans `GAME_REGISTR
 **Stack.** Node 24 LTS, Angular 22, composants standalone, signals, **zoneless**, builder
 `@angular/build` (esbuild). Tests avec Vitest. Pour un jeu à état local entièrement déterministe,
 signals + réducteur pur est exactement l'outil adapté.
+
+### L'atelier Storybook
+
+`projects/apps/storybook` est une application Angular minimale qui ne sert que de contexte de build
+à Storybook : elle lui fournit un `tsconfig`, les styles globaux et les tokens du design system.
+Aucune logique métier n'y vit. Ce choix évite d'encombrer `portal` d'une configuration d'outillage
+et permet d'y importer librement toutes les libraries.
+
+Les fichiers `*.stories.ts` vivent **à côté des composants** qu'ils documentent, dans `libs/ui` comme
+dans `games/cryptogramme` : une carte, une case, une main, une table de correspondance et une grille
+méritent autant d'être mises au banc d'essai que les boutons du design system. Storybook les
+découvre par glob depuis `.storybook/main.ts`.
+
+Storybook 10.5 couvre Angular jusqu'à la version 22 incluse, et y déclare `zone.js` comme
+dépendance **optionnelle** : le choix zoneless est donc sans conséquence pour l'atelier.
+
+L'atelier remplit trois rôles : développer un composant isolément, sans avoir à atteindre l'état de
+jeu correspondant ; documenter les variantes du design system ; et servir de support aux tests
+d'accessibilité et d'interaction via `@storybook/addon-a11y` et les fonctions `play`.
 
 ## 4. Le jeu : règles
 
@@ -270,8 +302,14 @@ Le moteur pur concentre l'effort, puisqu'il concentre les règles.
 - **Scoring** : monotonie sur des cas construits — un texte enrichi en symboles rares score plus haut.
 - **Corpus** : validation du schéma en intégration continue.
 
-Les composants ne font l'objet que de tests de rendu et d'accessibilité ; toute la logique testable
-vit dans `domain/`.
+Côté interface, l'effort passe par Storybook plutôt que par des tests de composants classiques :
+chaque composant de `libs/ui` et chaque composant présentationnel du jeu expose ses états sous forme
+de stories, et l'addon d'accessibilité est exécuté sur l'ensemble. Toute la logique testable vivant
+dans `domain/`, les composants n'ont plus grand-chose à vérifier au-delà de leur rendu.
+
+Le build de Storybook est lancé en intégration continue : une story cassée fait échouer la CI, ce
+qui suffit à garder l'atelier honnête. Sa publication en ligne n'est pas retenue en v1 — elle
+supposerait un second artefact de déploiement pour un bénéfice nul sur un projet solo.
 
 ## 12. Décisions et hypothèses
 
@@ -287,6 +325,9 @@ Décisions arrêtées avec l'utilisateur :
 8. Une carte égale une case : la pioche est l'inventaire des cases restantes.
 9. La table de correspondance est révélée, mais chaque case attend sa propre carte.
 10. Interaction en deux temps : sélection de la case, puis clic sur la carte.
+11. `projects/` est scindé en trois familles : `apps/`, `libs/` et `games/`.
+12. Une application Storybook dédiée sert d'atelier à tous les composants d'interface, ceux du
+    design system comme ceux du jeu.
 
 Hypothèses posées par défaut, à renverser librement :
 
