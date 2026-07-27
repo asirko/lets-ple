@@ -41,22 +41,25 @@ describe('pickGivens', () => {
     }
   });
 
-  it('gère un texte à très peu de symboles distincts', () => {
+  it('laisse toujours au moins un symbole à deviner', () => {
+    // Offrir les deux symboles d'un texte qui n'en compte que deux livrerait une grille
+    // déjà résolue : la règle « au moins un à deviner » prime sur le minimum de deux cadeaux.
     const petit = new Map([
       ['A', 3],
       ['B', 2],
     ]);
-    expect(pickGivens(petit, 3, createRng('s')).size).toBe(2);
-  });
+    expect(pickGivens(petit, 3, createRng('s')).size).toBe(1);
 
-  it("se rabat sur les hapax quand le texte n'a que des occurrences uniques", () => {
     const hapax = new Map([
       ['A', 1],
       ['B', 1],
       ['C', 1],
     ]);
-    const givens = pickGivens(hapax, 3, createRng('s'));
-    expect(givens.size).toBe(3);
+    expect(pickGivens(hapax, 3, createRng('s')).size).toBe(2);
+  });
+
+  it("n'offre rien sur un texte à symbole unique", () => {
+    expect(pickGivens(new Map([['A', 4]]), 3, createRng('s')).size).toBe(0);
   });
 
   it('est déterministe pour une même graine', () => {

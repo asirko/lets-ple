@@ -11,13 +11,17 @@ import { shuffle } from './rng';
  *
  * Deux garde-fous en découlent : les symboles à occurrence unique sont écartés, et le tirage
  * se limite au tiers supérieur par fréquence. Une voyelle est toujours garantie.
+ *
+ * Un troisième garde-fou prime sur le minimum de deux cadeaux : **il doit toujours rester au
+ * moins un symbole à deviner**. Sur une citation ne comptant que deux symboles distincts,
+ * offrir les deux livrerait une grille déjà résolue.
  */
 export function pickGivens(
   counts: ReadonlyMap<Sym, number>,
   count: number,
   rng: () => number,
 ): Set<Sym> {
-  const target = Math.min(Math.max(count, 2), 3, counts.size);
+  const target = Math.min(Math.max(count, 2), 3, Math.max(counts.size - 1, 0));
 
   const ranked = [...counts.entries()]
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
@@ -31,6 +35,7 @@ export function pickGivens(
   const pool = base.slice(0, poolSize);
 
   const chosen = new Set<Sym>();
+  if (target === 0) return chosen;
 
   // Garantir une voyelle : dans le vivier si possible, sinon la plus fréquente du texte.
   const vowelsInPool = pool.filter(isVowel);
