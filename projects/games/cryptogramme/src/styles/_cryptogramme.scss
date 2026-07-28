@@ -1,0 +1,221 @@
+/**
+ * Module dédié au cryptogramme — voir docs/conventions/css.md. Tout le style visuel des six
+ * composants du jeu vit ici, préfixé `crypto-` ; les composants n'appliquent que ces classes.
+ */
+
+// --- Grille -----------------------------------------------------------------------------------
+
+.crypto-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-3) var(--lp-space-1);
+}
+
+.crypto-word {
+  display: inline-flex;
+  gap: 2px;
+}
+
+// --- Case ---------------------------------------------------------------------------------------
+
+// Toutes les classes de cette section restent à plat (une seule classe, jamais d'élément
+// combiné comme `button.crypto-cell`) : la spécificité doit rester égale partout pour que
+// les classes d'état, déclarées plus bas dans ce fichier, gagnent le litige de cascade sur
+// une case bouton qui porte à la fois `.crypto-cell-button` et un modificateur d'état.
+
+.crypto-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-family: var(--lp-font-family);
+  border-radius: var(--lp-radius-sm);
+}
+
+.crypto-cell-fixed {
+  width: 0.75rem;
+  color: var(--lp-color-text-muted);
+}
+
+.crypto-cell-button {
+  background: var(--lp-color-surface);
+  border: 1px solid var(--lp-color-border);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--lp-color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.crypto-cell-code {
+  font-size: var(--lp-font-size-xs);
+  color: var(--lp-color-text-muted);
+  line-height: 1;
+}
+
+.crypto-cell-letter {
+  font-size: var(--lp-font-size-base);
+  font-weight: var(--lp-font-weight-bold);
+  line-height: 1;
+}
+
+.crypto-cell-filled {
+  background: var(--lp-color-surface-raised);
+  border-style: solid;
+}
+
+.crypto-cell-playable {
+  border-color: var(--lp-color-primary);
+  border-style: dashed;
+}
+
+.crypto-cell-selected {
+  border-color: var(--lp-color-primary);
+  border-width: 2px;
+  background: var(--lp-color-surface-raised);
+}
+
+// --- Main (pile LIFO) ---------------------------------------------------------------------------
+
+.crypto-hand {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 3.5rem;
+}
+
+.crypto-hand-empty {
+  margin: 0;
+  color: var(--lp-color-text-muted);
+  font-size: var(--lp-font-size-sm);
+}
+
+.crypto-hand-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 3.5rem;
+  margin-left: calc(-1 * var(--lp-space-4));
+  font-size: var(--lp-font-size-lg);
+  font-weight: var(--lp-font-weight-bold);
+  background: var(--lp-color-surface);
+  border: 1px solid var(--lp-color-border);
+  border-radius: var(--lp-radius-md);
+  color: var(--lp-color-text-muted);
+  cursor: default;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.crypto-hand-card-top {
+  background: var(--lp-color-primary);
+  color: var(--lp-color-primary-contrast);
+  border-color: var(--lp-color-primary);
+  cursor: pointer;
+  z-index: 1;
+
+  &:focus-visible {
+    outline: 2px solid var(--lp-color-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+// --- Pioche -------------------------------------------------------------------------------------
+
+.crypto-deck {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lp-space-1);
+  width: 4rem;
+  height: 5rem;
+  background: var(--lp-color-surface-raised);
+  border: 2px solid var(--lp-color-border);
+  border-radius: var(--lp-radius-md);
+  color: var(--lp-color-text);
+  font-family: var(--lp-font-family);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--lp-color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--lp-color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.crypto-deck-count {
+  font-size: var(--lp-font-size-xl);
+  font-weight: var(--lp-font-weight-bold);
+}
+
+// --- Table de correspondance ---------------------------------------------------------------------
+
+.crypto-cipher-table {
+  border-collapse: separate;
+  border-spacing: var(--lp-space-1);
+}
+
+.crypto-cipher-table-caption {
+  caption-side: top;
+  text-align: left;
+  font-size: var(--lp-font-size-sm);
+  color: var(--lp-color-text-muted);
+  margin-bottom: var(--lp-space-2);
+}
+
+.crypto-cipher-table-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--lp-space-1) var(--lp-space-2);
+  background: var(--lp-color-surface);
+  border: 1px solid var(--lp-color-border);
+  border-radius: var(--lp-radius-sm);
+}
+
+.crypto-cipher-table-code {
+  font-size: var(--lp-font-size-xs);
+  color: var(--lp-color-text-muted);
+}
+
+.crypto-cipher-table-symbol {
+  font-size: var(--lp-font-size-base);
+  font-weight: var(--lp-font-weight-bold);
+}
+
+// --- Compteur d'erreurs --------------------------------------------------------------------------
+
+.crypto-error-counter {
+  display: flex;
+  gap: var(--lp-space-2);
+  font-size: var(--lp-font-size-lg);
+  line-height: 1;
+}
+
+.crypto-error-dot {
+  color: var(--lp-color-text-muted);
+}
+
+.crypto-error-dot-active {
+  color: var(--lp-color-danger);
+}
