@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler"
+  },
+  "exclude": ["../src/test.ts", "../src/**/*.spec.ts", "../../../**/*.spec.ts"],
+  "include": [
+    "../src/**/*.ts",
+    "../src/**/*.stories.*",
+    "../../../libs/**/*.ts",
+    "../../../games/**/*.ts",
+    "./preview.ts"
+  ],
+  "files": ["./typings.d.ts"]
+}

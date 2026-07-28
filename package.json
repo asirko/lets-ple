@@ -11,7 +11,9 @@
     "test:ng": "ng test",
     "test:all": "npm run test && npm run test:ng",
     "validate:quotes": "tsx tools/validate-quotes.ts",
-    "score:quotes": "tsx tools/score-quotes.ts"
+    "score:quotes": "tsx tools/score-quotes.ts",
+    "storybook": "ng run storybook:storybook",
+    "build-storybook": "ng run storybook:build-storybook"
   },
   "private": true,
   "packageManager": "npm@11.16.0",
@@ -34,6 +36,23 @@
     "prettier": "^3.8.1",
     "tsx": "^4.23.1",
     "typescript": "~6.0.2",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "storybook": "^10.5.5",
+    "@storybook/angular-vite": "^10.5.5",
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-vitest": "^10.5.5",
+    "@storybook/addon-a11y": "^10.5.5",
+    "@storybook/addon-docs": "^10.5.5",
+    "@types/node": "^20",
+    "@angular-devkit/build-angular": "^22.0.0",
+    "@angular-devkit/architect": "^0.2200.0",
+    "@angular-devkit/core": "^22.0.0",
+    "@angular/animations": "^22.0.0",
+    "@analogjs/vite-plugin-angular": "^2.6.4",
+    "vite": "^8.1.5",
+    "@compodoc/compodoc": "^2.0.0",
+    "@vitest/browser-playwright": "4.1.10",
+    "@vitest/coverage-v8": "4.1.10",
+    "playwright": "^1.62.0"
   }
 }

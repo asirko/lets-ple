@@ -1,0 +1,35 @@
+.lp-card {
+  background: var(--lp-color-surface);
+  border: 1px solid var(--lp-color-border);
+  border-radius: var(--lp-radius-lg);
+  padding: var(--lp-space-5);
+  box-shadow: var(--lp-shadow-sm);
+}
+
+.lp-card--interactive {
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    box-shadow: var(--lp-shadow-md);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--lp-color-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.lp-card__title {
+  margin: 0 0 var(--lp-space-3);
+  font-size: var(--lp-font-size-lg);
+  font-weight: var(--lp-font-weight-bold);
+  color: var(--lp-color-text);
+}
+
+.lp-card__body {
+  color: var(--lp-color-text);
+  font-size: var(--lp-font-size-base);
+  line-height: var(--lp-line-height-base);
+}

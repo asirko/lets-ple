@@ -1,0 +1,48 @@
+.lp-button {
+  font-family: var(--lp-font-family);
+  font-size: var(--lp-font-size-base);
+  font-weight: var(--lp-font-weight-medium);
+  padding: var(--lp-space-2) var(--lp-space-4);
+  border-radius: var(--lp-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--lp-color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.lp-button--primary {
+  background: var(--lp-color-primary);
+  color: var(--lp-color-primary-contrast);
+
+  &:hover:not(:disabled) {
+    background: var(--lp-color-primary-hover);
+  }
+}
+
+.lp-button--secondary {
+  background: transparent;
+  color: var(--lp-color-text);
+  border-color: var(--lp-color-border);
+
+  &:hover:not(:disabled) {
+    background: var(--lp-color-surface-raised);
+  }
+}
+
+.lp-button--danger {
+  background: var(--lp-color-danger);
+  color: var(--lp-color-primary-contrast);
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+}

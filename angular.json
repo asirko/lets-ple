@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "15d4eb02-539d-4bfe-8599-05140f501a96"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -139,6 +140,22 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "storybook": {
+          "builder": "@storybook/angular-vite:start-storybook",
+          "options": {
+            "configDir": "projects/apps/storybook/.storybook",
+            "browserTarget": "storybook:build",
+            "port": 6006
+          }
+        },
+        "build-storybook": {
+          "builder": "@storybook/angular-vite:build-storybook",
+          "options": {
+            "configDir": "projects/apps/storybook/.storybook",
+            "browserTarget": "storybook:build",
+            "outputDir": "dist/storybook/storybook"
+          }
         }
       }
     },
