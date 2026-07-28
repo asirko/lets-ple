@@ -1,0 +1,22 @@
+[
+  {
+    "id": "pop-culture-01",
+    "lang": "fr",
+    "text": "Petit à petit, l'oiseau fait son nid.",
+    "author": "Proverbe français",
+    "source": "Tradition orale",
+    "theme": "pop-culture",
+    "notoriety": 3,
+    "publicDomain": true
+  },
+  {
+    "id": "pop-culture-02",
+    "lang": "fr",
+    "text": "Qui vole un œuf, vole un bœuf.",
+    "author": "Proverbe français",
+    "source": "Tradition orale",
+    "theme": "pop-culture",
+    "notoriety": 2,
+    "publicDomain": true
+  }
+]

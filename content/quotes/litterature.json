@@ -1,0 +1,32 @@
+[
+  {
+    "id": "litterature-01",
+    "lang": "fr",
+    "text": "Le style est l'homme même.",
+    "author": "Georges-Louis Leclerc, comte de Buffon",
+    "source": "Discours sur la réception à l'Académie française, 1753",
+    "theme": "litterature",
+    "notoriety": 3,
+    "publicDomain": true
+  },
+  {
+    "id": "litterature-02",
+    "lang": "fr",
+    "text": "Le cœur a ses raisons que la raison ne connaît point.",
+    "author": "Blaise Pascal",
+    "source": "Pensées, 1670",
+    "theme": "litterature",
+    "notoriety": 4,
+    "publicDomain": true
+  },
+  {
+    "id": "litterature-03",
+    "lang": "fr",
+    "text": "Ceux qui vivent, ce sont ceux qui luttent, ce sont ceux dont un dessein ferme emplit l'âme et le front.",
+    "author": "Victor Hugo",
+    "source": "Les Châtiments, Ultima Verba, 1853",
+    "theme": "litterature",
+    "notoriety": 3,
+    "publicDomain": true
+  }
+]

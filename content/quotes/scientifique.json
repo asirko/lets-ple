@@ -1,0 +1,22 @@
+[
+  {
+    "id": "scientifique-01",
+    "lang": "fr",
+    "text": "L'homme n'est qu'un roseau, le plus faible de la nature, mais c'est un roseau pensant.",
+    "author": "Blaise Pascal",
+    "source": "Pensées, 1670",
+    "theme": "scientifique",
+    "notoriety": 3,
+    "publicDomain": true
+  },
+  {
+    "id": "scientifique-02",
+    "lang": "fr",
+    "text": "Le hasard ne favorise que les esprits préparés.",
+    "author": "attribué à Louis Pasteur",
+    "source": "Conférence à l'université de Lille, 1854",
+    "theme": "scientifique",
+    "notoriety": 3,
+    "publicDomain": true
+  }
+]
