@@ -1,0 +1,11 @@
+/**
+ * Point d'entrée unique du design system partagé. Ordre : tokens (Theme, requis par tout le
+ * reste), Base, Module, State. Layout n'existe pas encore — voir docs/conventions/css.md.
+ */
+
+@use 'tokens';
+@use 'base';
+@use 'module/button';
+@use 'module/card';
+@use 'module/panel';
+@use 'state';

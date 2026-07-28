@@ -1,4 +1,4 @@
-.lp-button {
+.b-button {
   font-family: var(--lp-font-family);
   font-size: var(--lp-font-size-base);
   font-weight: var(--lp-font-weight-medium);
@@ -13,36 +13,36 @@
     outline-offset: 2px;
   }
 
-  &:disabled {
+  &.is-disabled {
     cursor: not-allowed;
     opacity: 0.5;
   }
 }
 
-.lp-button--primary {
+.b-primary {
   background: var(--lp-color-primary);
   color: var(--lp-color-primary-contrast);
 
-  &:hover:not(:disabled) {
+  &:hover:not(.is-disabled) {
     background: var(--lp-color-primary-hover);
   }
 }
 
-.lp-button--secondary {
+.b-secondary {
   background: transparent;
   color: var(--lp-color-text);
   border-color: var(--lp-color-border);
 
-  &:hover:not(:disabled) {
+  &:hover:not(.is-disabled) {
     background: var(--lp-color-surface-raised);
   }
 }
 
-.lp-button--danger {
+.b-danger {
   background: var(--lp-color-danger);
   color: var(--lp-color-primary-contrast);
 
-  &:hover:not(:disabled) {
+  &:hover:not(.is-disabled) {
     filter: brightness(1.1);
   }
 }

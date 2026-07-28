@@ -1,0 +1,10 @@
+/**
+ * State — classes d'état transverses, applicables à n'importe quel module. Voir
+ * docs/conventions/css.md : un module peut cibler `.module.is-x` pour un rendu spécifique, mais
+ * le nom de la classe reste générique et vit ici.
+ */
+
+.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

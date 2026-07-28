@@ -8,17 +8,17 @@ export type LpButtonType = 'button' | 'submit';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button
-      class="lp-button"
-      [class.lp-button--primary]="variant() === 'primary'"
-      [class.lp-button--secondary]="variant() === 'secondary'"
-      [class.lp-button--danger]="variant() === 'danger'"
+      class="b-button"
+      [class.b-primary]="variant() === 'primary'"
+      [class.b-secondary]="variant() === 'secondary'"
+      [class.b-danger]="variant() === 'danger'"
+      [class.is-disabled]="disabled()"
       [type]="type()"
       [disabled]="disabled()"
     >
       <ng-content />
     </button>
   `,
-  styleUrl: './lp-button.scss',
 })
 export class LpButton {
   readonly variant = input<LpButtonVariant>('primary');

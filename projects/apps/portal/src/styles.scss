@@ -1,8 +1,1 @@
-@use '../../../libs/ui/src/lib/tokens/tokens.scss';
-
-body {
-  margin: 0;
-  background: var(--lp-color-background);
-  color: var(--lp-color-text);
-  font-family: var(--lp-font-family);
-}
+@use '../../../libs/ui/src/styles/index.scss';

@@ -1,0 +1,30 @@
+/**
+ * Base — styles par défaut des éléments HTML nus. Aucune classe ici : voir docs/conventions/css.md.
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--lp-color-background);
+  color: var(--lp-color-text);
+  font-family: var(--lp-font-family);
+  font-size: var(--lp-font-size-base);
+  line-height: var(--lp-line-height-base);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: var(--lp-font-weight-bold);
+  line-height: var(--lp-line-height-tight);
+}
+
+a {
+  color: var(--lp-color-primary);
+}
+
+button {
+  font-family: inherit;
+}

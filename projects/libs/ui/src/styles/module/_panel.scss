@@ -1,26 +1,26 @@
-.lp-panel {
+.panel {
   background: var(--lp-color-surface-raised);
   border: 1px solid var(--lp-color-border);
   border-radius: var(--lp-radius-md);
 }
 
-.lp-panel--elevated {
+.panel-elevated {
   box-shadow: var(--lp-shadow-md);
   border-color: transparent;
 }
 
-.lp-panel--padding-none {
+.panel-padding-none {
   padding: 0;
 }
 
-.lp-panel--padding-sm {
+.panel-padding-sm {
   padding: var(--lp-space-3);
 }
 
-.lp-panel--padding-md {
+.panel-padding-md {
   padding: var(--lp-space-5);
 }
 
-.lp-panel--padding-lg {
+.panel-padding-lg {
   padding: var(--lp-space-7);
 }

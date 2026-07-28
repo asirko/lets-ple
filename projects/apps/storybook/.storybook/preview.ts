@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/angular-vite'
-import '../../../libs/ui/src/lib/tokens/tokens.scss';
+import '../../../libs/ui/src/styles/index.scss';
 
 const preview: Preview = {
   parameters: {
