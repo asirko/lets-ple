@@ -7,7 +7,18 @@
     "source": "Correspondance, 1813",
     "theme": "historique",
     "notoriety": 4,
-    "publicDomain": true
+    "publicDomain": true,
+    "difficulty": {
+      "score": 29.622857142857143,
+      "tier": 2,
+      "factors": {
+        "occurrencesPerSymbol": 1.7857142857142858,
+        "rareSymbolRatio": 0,
+        "shortWordRatio": 0.6,
+        "frequencyDivergence": 0.4990000000000001,
+        "distinctSymbols": 14
+      }
+    }
   },
   {
     "id": "historique-02",
@@ -17,7 +28,18 @@
     "source": "Discours à la Convention nationale, 1792",
     "theme": "historique",
     "notoriety": 3,
-    "publicDomain": true
+    "publicDomain": true,
+    "difficulty": {
+      "score": 32.469246119733924,
+      "tier": 2,
+      "factors": {
+        "occurrencesPerSymbol": 3.4166666666666665,
+        "rareSymbolRatio": 0.024390243902439025,
+        "shortWordRatio": 0.5454545454545454,
+        "frequencyDivergence": 0.5750975609756098,
+        "distinctSymbols": 12
+      }
+    }
   },
   {
     "id": "historique-03",
@@ -27,6 +49,17 @@
     "source": "Dictionnaire philosophique, 1764",
     "theme": "historique",
     "notoriety": 4,
-    "publicDomain": true
+    "publicDomain": true,
+    "difficulty": {
+      "score": 27.685036702428008,
+      "tier": 2,
+      "factors": {
+        "occurrencesPerSymbol": 2.090909090909091,
+        "rareSymbolRatio": 0.043478260869565216,
+        "shortWordRatio": 0.5714285714285714,
+        "frequencyDivergence": 0.4860869565217391,
+        "distinctSymbols": 11
+      }
+    }
   }
 ]

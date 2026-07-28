@@ -7,7 +7,18 @@
     "source": "Discours sur la réception à l'Académie française, 1753",
     "theme": "litterature",
     "notoriety": 3,
-    "publicDomain": true
+    "publicDomain": true,
+    "difficulty": {
+      "score": 35.70333333333333,
+      "tier": 2,
+      "factors": {
+        "occurrencesPerSymbol": 2.2222222222222223,
+        "rareSymbolRatio": 0.05,
+        "shortWordRatio": 0.5,
+        "frequencyDivergence": 0.606,
+        "distinctSymbols": 9
+      }
+    }
   },
   {
     "id": "litterature-02",
@@ -17,7 +28,18 @@
     "source": "Pensées, 1670",
     "theme": "litterature",
     "notoriety": 4,
-    "publicDomain": true
+    "publicDomain": true,
+    "difficulty": {
+      "score": 26.297434273044033,
+      "tier": 2,
+      "factors": {
+        "occurrencesPerSymbol": 2.9285714285714284,
+        "rareSymbolRatio": 0.024390243902439025,
+        "shortWordRatio": 0.5454545454545454,
+        "frequencyDivergence": 0.39329268292682923,
+        "distinctSymbols": 14
+      }
+    }
   },
   {
     "id": "litterature-03",
@@ -27,6 +49,17 @@
     "source": "Les Châtiments, Ultima Verba, 1853",
     "theme": "litterature",
     "notoriety": 3,
-    "publicDomain": true
+    "publicDomain": true,
+    "difficulty": {
+      "score": 36.83988095238095,
+      "tier": 2,
+      "factors": {
+        "occurrencesPerSymbol": 4.444444444444445,
+        "rareSymbolRatio": 0.0625,
+        "shortWordRatio": 0.42857142857142855,
+        "frequencyDivergence": 0.4350000000000001,
+        "distinctSymbols": 18
+      }
+    }
   }
 ]

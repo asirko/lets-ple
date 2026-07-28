@@ -1,0 +1,9 @@
+{
+  "base": 50,
+  "occurrencesPerSymbol": -3,
+  "rareSymbolRatio": 35,
+  "shortWordRatio": -25,
+  "frequencyDivergence": 20,
+  "distinctSymbols": 1,
+  "notoriety": -6
+}

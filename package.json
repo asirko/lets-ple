@@ -3,14 +3,15 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve portal",
     "build": "ng build portal",
     "watch": "ng build --watch --configuration development",
     "test": "vitest run --config vitest.domain.config.ts",
     "test:watch": "vitest --config vitest.domain.config.ts",
     "test:ng": "ng test",
     "test:all": "npm run test && npm run test:ng",
-    "validate:quotes": "tsx tools/validate-quotes.ts"
+    "validate:quotes": "tsx tools/validate-quotes.ts",
+    "score:quotes": "tsx tools/score-quotes.ts"
   },
   "private": true,
   "packageManager": "npm@11.16.0",

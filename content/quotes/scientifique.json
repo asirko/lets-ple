@@ -7,7 +7,18 @@
     "source": "Pensées, 1670",
     "theme": "scientifique",
     "notoriety": 3,
-    "publicDomain": true
+    "publicDomain": true,
+    "difficulty": {
+      "score": 31.476059379217276,
+      "tier": 2,
+      "factors": {
+        "occurrencesPerSymbol": 3.611111111111111,
+        "rareSymbolRatio": 0.015384615384615385,
+        "shortWordRatio": 0.5789473684210527,
+        "frequencyDivergence": 0.3122307692307692,
+        "distinctSymbols": 18
+      }
+    }
   },
   {
     "id": "scientifique-02",
@@ -17,6 +28,17 @@
     "source": "Conférence à l'université de Lille, 1854",
     "theme": "scientifique",
     "notoriety": 3,
-    "publicDomain": true
+    "publicDomain": true,
+    "difficulty": {
+      "score": 41.753031674208145,
+      "tier": 3,
+      "factors": {
+        "occurrencesPerSymbol": 2.2941176470588234,
+        "rareSymbolRatio": 0.02564102564102564,
+        "shortWordRatio": 0.5,
+        "frequencyDivergence": 0.5618974358974359,
+        "distinctSymbols": 17
+      }
+    }
   }
 ]
