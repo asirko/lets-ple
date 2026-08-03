@@ -58,6 +58,9 @@
     },
     {
       "path": "./projects/games/cryptogramme/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/games/cryptogramme/tools/tsconfig.json"
     }
   ]
 }

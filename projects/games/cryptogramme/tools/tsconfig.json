@@ -1,0 +1,11 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  /* Ces scripts sont exécutés directement par `tsx` (voir package.json), jamais compilés :
+     ce tsconfig ne sert qu'à donner à l'IDE et à `tsc -b` un projet qui couvre `tools/`,
+     absent de tsconfig.lib.json (qui n'inclut que `src/**`). */
+  "include": ["**/*.ts"]
+}

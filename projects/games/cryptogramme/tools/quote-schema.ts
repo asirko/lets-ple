@@ -1,17 +1,11 @@
-export type Theme = 'litterature' | 'historique' | 'scientifique' | 'pop-culture';
+import type { DifficultyFactors } from './difficulty';
 
-export interface DifficultyFactors {
-  occurrencesPerSymbol: number;
-  rareSymbolRatio: number;
-  shortWordRatio: number;
-  frequencyDivergence: number;
-  distinctSymbols: number;
-}
+export type Theme = 'litterature' | 'historique' | 'scientifique' | 'pop-culture';
 
 export interface Difficulty {
   score: number;
   tier: 1 | 2 | 3 | 4 | 5;
-  factors: Record<string, number>;
+  factors: DifficultyFactors;
 }
 
 export interface Quote {
