@@ -19,6 +19,13 @@ component, one per-game module under that game's own `src/styles/`); a component
 holds only the positioning between its own child elements, never color/typography/borders/shadows.
 Rationale in `docs/superpowers/specs/2026-07-28-architecture-css-smacss-design.md`.
 
+Components follow a UI-first-in-Storybook convention — read `docs/conventions/components.md`
+before designing or building any component. In short: a UI component (`libs/ui/src/lib/*`, or a
+game's own `ui/` folder) is designed and built in Storybook first, and carries most of its own
+visual style. A logic component (a screen, an assembler) only composes UI components together and
+has almost no style of its own — a tiny bit of local positioning is tolerated, nothing else.
+Elements of style shared across components live in the global app style, not in either.
+
 Commits follow `type(scope): sujet` (Conventional Commits, scope = touched area, subject without
 accents) — read `docs/conventions/commits.md` before writing a commit message. The body, when
 present, explains *why*, never restates the diff.
