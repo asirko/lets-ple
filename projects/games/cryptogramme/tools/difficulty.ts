@@ -1,12 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { AccentMode, Sym } from '../projects/games/cryptogramme/src/lib/domain/types';
-import {
-  toSymbols,
-  distinctSymbols,
-  symbolCounts,
-} from '../projects/games/cryptogramme/src/lib/domain/alphabet';
+import type { AccentMode, Sym } from '../src/lib/domain/types';
+import { toSymbols, distinctSymbols, symbolCounts } from '../src/lib/domain/alphabet';
 
 export interface DifficultyFactors {
   occurrencesPerSymbol: number;

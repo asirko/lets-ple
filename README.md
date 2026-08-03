@@ -1,59 +1,88 @@
-# LetsPle
+# Let's Plé
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.8.
+Un portail de jeux de langue française, installable en PWA et déployé en statique sur GitHub
+Pages. Le nom joue la graphie phonétique de *let's play* — un clin d'œil à l'orthographe, qui est
+précisément le sujet des jeux.
 
-## Development server
+Le premier jeu est un **cryptogramme** : une citation dont chaque lettre est remplacée par un
+nombre. Le joueur pioche des cartes-lettres dans une main limitée à cinq, en pose une sur la case
+de son choix, et dispose de trois erreurs avant de perdre.
 
-To start a local development server, run:
+## Principe de conception
 
-```bash
-ng serve
+Toutes les règles du jeu vivent dans un **moteur pur, sans dépendance Angular**
+(`projects/games/cryptogramme/src/lib/domain/`). C'est ce qui permet de le tester en millisecondes,
+de simuler des parties pour l'équilibrage, et de garantir par construction qu'aucune position n'est
+insoluble. L'interface n'est qu'une façade au-dessus de ce moteur.
+
+Le détail des règles, du modèle d'état et des décisions de conception se trouve dans
+[`docs/superpowers/specs/2026-07-28-lets-ple-cryptogramme-design.md`](docs/superpowers/specs/2026-07-28-lets-ple-cryptogramme-design.md).
+
+## Structure du dépôt
+
+```
+lets-ple/
+├─ projects/
+│  ├─ apps/
+│  │  ├─ portal/         app Angular : shell, accueil, catalogue, PWA — le seul build déployé
+│  │  └─ storybook/      app hôte, contexte de build pour Storybook uniquement
+│  ├─ libs/
+│  │  ├─ ui/             design system : tokens, boutons, cartes, panneaux
+│  │  └─ game-core/      socle commun aux jeux : registre, i18n, stockage, progression
+│  └─ games/
+│     └─ cryptogramme/
+│        ├─ src/lib/
+│        │  ├─ domain/   moteur pur du jeu — aucun import Angular
+│        │  ├─ store/    façade signals au-dessus du réducteur
+│        │  └─ ui/       composants et stories
+│        └─ tools/       validation du corpus, calcul de difficulté, extraction/filtrage QuoteKG
+├─ content/quotes/            corpus de citations, par thème, édité à la main
+└─ content/quote-candidates/  citations candidates filtrées, pas encore curées (theme/notoriety/publicDomain)
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Stack
 
-## Code scaffolding
+Node 24 LTS, Angular 22 (composants standalone, signals, zoneless, builder `@angular/build`),
+Vitest pour le moteur et les outils, Storybook pour l'atelier de composants.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Démarrage
 
 ```bash
-ng generate --help
+npm install
+npm start                # ng serve portal — http://localhost:4200
 ```
 
-## Building
+Le workspace contient plusieurs projets (`portal`, `storybook`) ; `npm start` cible `portal` par
+défaut.
 
-To build the project run:
+## Tests
 
 ```bash
-ng build
+npm test                 # moteur du jeu et outils (Vitest, sans Angular ni DOM)
+npm run test:ng          # composants et applications Angular (ng test)
+npm run test:all         # les deux
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Corpus de citations
 
 ```bash
-ng test
+npm run validate:quotes  # valide content/quotes/*.json contre le schéma
+npm run score:quotes     # calcule et écrit le score de difficulté de chaque citation
+npm run extract:quotes   # tire des citations candidates depuis QuoteKG (brut, gitignored)
+npm run filter:quotes    # filtre par score de qualité -> content/quote-candidates/quotekg.json (versionné)
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+## Build
 
 ```bash
-ng e2e
+npm run build             # build de production de portal, dans dist/
+npm run build-storybook   # build de l'atelier Storybook
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Statut
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Le moteur du cryptogramme (chiffrement, plateau, pioche, réducteur, invariants de solvabilité) est
+implémenté et testé. Le corpus de citations témoins, sa validation et son score de difficulté sont
+en place. L'interface, le portail et le déploiement restent à construire — voir
+[`docs/superpowers/plans/2026-07-28-lets-ple-v1.md`](docs/superpowers/plans/2026-07-28-lets-ple-v1.md)
+pour le détail des étapes.

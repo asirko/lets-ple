@@ -3,9 +3,9 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { THEMES, type Quote } from './quote-schema';
 
-const MIN_ALPHA_LENGTH = 15;
+export const MIN_ALPHA_LENGTH = 15;
 
-function countAlpha(text: string): number {
+export function countAlpha(text: string): number {
   return [...text].filter((c) => /\p{L}/u.test(c)).length;
 }
 

@@ -43,3 +43,6 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 storybook-static/
+
+# Sortie brute du script d'extraction QuoteKG : à curer à la main avant intégration au corpus
+/quotekg-citations.json

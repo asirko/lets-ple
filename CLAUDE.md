@@ -33,6 +33,8 @@ npm run test:ng                # ng test — Angular component/app tests (separa
 npm run test:all               # both of the above
 npm run validate:quotes        # validates content/quotes/*.json against the cryptogramme tools' quote-schema.ts
 npm run score:quotes           # recomputes and writes the `difficulty` block into content/quotes/*.json
+npm run extract:quotes         # pulls raw candidate quotes from QuoteKG into quotekg-citations.json (gitignored)
+npm run filter:quotes          # applies the quality threshold, writes content/quote-candidates/quotekg.json
 ```
 
 There is no root-level `ng serve`/`ng build` without a project name — `angular.json` intentionally
@@ -135,10 +137,40 @@ build/edit time, never recalculated at runtime. Tests for this module assert mon
 properties (e.g. "more rare symbols ⇒ higher score"), not fixed values, since the weights are
 expected to shift during balancing.
 
-`projects/games/cryptogramme/tools/extract-wikiquote-citations.ts` is a standalone scraping aid,
-not part of the validated pipeline, and not wired to an npm script — its output is low-signal (see
-below) and needs heavy manual curation before quotes are added to `content/quotes/`. Run it
-directly with `npx tsx` if needed.
+`projects/games/cryptogramme/tools/extract-quotekg-citations.ts` (`npm run extract:quotes`) pulls
+candidate French quotes from [QuoteKG](https://quotekg.l3s.uni-hannover.de)'s public SPARQL
+endpoint — a research knowledge graph derived from Wikiquote, already structured (quote text
+separated from context, language tagged, source page traceable). It replaced an earlier
+wikitext-scraping version: parsing raw Wikiquote pages directly produced far noisier output
+(commentary and markup residue mixed into quote text). QuoteKG isn't noise-free either: the
+strongest remaining signal was language-tag reliability correlating with hosting Wikiquote —
+mentions tagged `fr` but hosted on a non-fr/en Wikiquote (bg, it, nl, ja, la...) were measurably
+more often mislabeled, so the script only keeps mentions sourced from `fr.wikiquote.org` or
+`en.wikiquote.org` (`isAllowedSource`). Length is deliberately **not** filtered — very long quotes
+make harder, more interesting cryptogrammes, so they're kept; only a minimum alphabetic-content
+floor applies (`isAcceptableQuote`, reusing `MIN_ALPHA_LENGTH` from `validate-quotes.ts`) to drop
+fragments. `theme`/`notoriety`/`publicDomain` still don't exist in any automated source — its
+output (`quotekg-citations.json`, gitignored) is still not part of the validated pipeline, heavy
+manual curation is required before anything moves into `content/quotes/`.
+
+Each raw mention also carries a `quality` score (0-1), added by a one-off Workflow run (135
+batches of ~100 quotes, scored by Haiku agents against a 1.0/0.5/0.0 rubric: perfect quote /
+still has stray symbols or markup / incomprehensible or wrong-language). Manually sampling the
+score bands confirmed it separates real signal from noise well: below ~0.3 is almost entirely
+Latin mistagged as French, work titles, or truncated fragments; 0.3–0.7 is mostly genuine but
+archaic Old/Middle French (Rabelais, Deschamps) that reads as "correct but risky for the game";
+above 0.7 is reliably a complete, coherent quote. Quote **length turned out not to correlate with
+noise** — quotes under 100 characters score worse on average (mean 0.88, 10% below 0.5) than any
+longer band (all ≥300 characters average 0.96+), so the earlier decision to drop the length cap
+was right on quality grounds too, not just difficulty grounds.
+
+`projects/games/cryptogramme/tools/filter-quotekg-candidates.ts` (`npm run filter:quotes`) applies
+a `quality` threshold (default 0.7, `filterCandidates`) to the raw dump and writes the result to
+`content/quote-candidates/quotekg.json` — unlike the raw dump, this file **is** versioned: it's a
+reviewed-down shortlist worth keeping around, even though it's still not a validated `Quote[]`
+(same missing `theme`/`notoriety`/`publicDomain` gap). Don't confuse `content/quote-candidates/`
+with `content/quotes/` — the former is pre-curation shortlists, the latter is what
+`validate-quotes.ts` and the game actually consume.
 
 ### i18n and storage conventions
 

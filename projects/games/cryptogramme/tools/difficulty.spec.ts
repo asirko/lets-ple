@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { computeFactors, computeScore, toTier } from './difficulty';
 
-const CORPUS_DIR = join(__dirname, '..', 'content', 'quotes');
+const CORPUS_DIR = join(__dirname, '..', '..', '..', '..', 'content', 'quotes');
 
 function loadCorpus(): Array<{ text: string; notoriety: number }> {
   return readdirSync(CORPUS_DIR)

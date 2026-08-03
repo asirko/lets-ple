@@ -14,7 +14,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     name: 'domain',
-    include: ['projects/games/**/domain/**/*.spec.ts', 'tools/**/*.spec.ts'],
+    include: ['projects/games/**/domain/**/*.spec.ts', 'projects/games/**/tools/**/*.spec.ts'],
     environment: 'node',
   },
 });
