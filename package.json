@@ -15,7 +15,9 @@
     "extract:quotes": "tsx projects/games/cryptogramme/tools/extract-quotekg-citations.ts",
     "filter:quotes": "tsx projects/games/cryptogramme/tools/filter-quotekg-candidates.ts",
     "storybook": "ng run storybook:storybook",
-    "build-storybook": "ng run storybook:build-storybook"
+    "build-storybook": "ng run storybook:build-storybook",
+    "build:ui": "ng build ui",
+    "build:cryptogramme": "npm run build:ui && ng build cryptogramme"
   },
   "private": true,
   "packageManager": "npm@11.16.0",

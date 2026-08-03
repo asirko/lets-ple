@@ -35,10 +35,20 @@ npm run validate:quotes        # validates content/quotes/*.json against the cry
 npm run score:quotes           # recomputes and writes the `difficulty` block into content/quotes/*.json
 npm run extract:quotes         # pulls raw candidate quotes from QuoteKG into quotekg-citations.json (gitignored)
 npm run filter:quotes          # applies the quality threshold, writes content/quote-candidates/quotekg.json
+npm run build:cryptogramme     # builds libs/ui first, then the cryptogramme library in isolation — see below
 ```
 
 There is no root-level `ng serve`/`ng build` without a project name — `angular.json` intentionally
 has no `defaultProject`; always pass `portal` (or `storybook`) explicitly, or use the npm scripts.
+
+Building a game library **in isolation** (`ng build cryptogramme`, e.g. to sanity-check it outside
+the portal) needs `npm run build:cryptogramme`, not the raw `ng build cryptogramme` command: the
+root `tsconfig.json` maps `@lets-ple/ui` to `libs/ui`'s **sources**, which ng-packagr refuses to
+compile into a different package's isolated build (`TS6059`, sources outside that package's
+`rootDir`). `projects/games/cryptogramme/tsconfig.lib.json` overrides that one path to point at
+`dist/ui`'s compiled `.d.ts` instead, so `dist/ui` must be built and current first — that's what
+`npm run build:cryptogramme` does. The portal build (`npm run build`) is unaffected: it always
+resolves `@lets-ple/ui` to sources, exactly as before.
 
 ### Two separate test runners — don't mix them up
 

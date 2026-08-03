@@ -36,43 +36,45 @@ import { LpErrorCounter } from '../error-counter/lp-error-counter';
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['../../../styles/_cryptogramme.scss'],
   template: `
-    <lp-panel class="crypto-page" padding="md">
-      <div class="crypto-page-header">
-        <lp-error-counter
-          [errors]="store.state().errors"
-          [maxErrors]="store.state().puzzle.maxErrors"
+    <lp-panel padding="md">
+      <div class="crypto-page">
+        <div class="crypto-page-header">
+          <lp-error-counter
+            [errors]="store.state().errors"
+            [maxErrors]="store.state().puzzle.maxErrors"
+          />
+          <lp-cryptogram-deck
+            [remaining]="store.state().deck.length"
+            [handFull]="!store.canDraw()"
+            (draw)="store.draw()"
+          />
+        </div>
+
+        <lp-cryptogram-hand [hand]="store.state().hand" (playTop)="store.play()" />
+
+        <lp-cryptogram-grid
+          [board]="store.state().board"
+          [selectedCell]="store.state().selectedCell"
+          [playableCells]="store.playableCells()"
+          (cellSelect)="store.selectCell($event)"
         />
-        <lp-cryptogram-deck
-          [remaining]="store.state().deck.length"
-          [handFull]="store.state().hand.length >= store.state().puzzle.handCapacity"
-          (draw)="store.draw()"
-        />
+
+        <lp-cipher-table [known]="store.state().known" />
+
+        @if (store.state().status === 'won') {
+          <div class="crypto-page-result crypto-page-result-won" role="alert">
+            <p class="crypto-page-result-title">Bravo, citation reconstituée !</p>
+            <p class="crypto-page-result-attribution">{{ author() }} — {{ source() }}</p>
+            <lp-button variant="primary" (click)="onRestart()">Rejouer</lp-button>
+          </div>
+        } @else if (store.state().status === 'lost') {
+          <div class="crypto-page-result crypto-page-result-lost" role="alert">
+            <p class="crypto-page-result-title">Perdu — trop d'erreurs.</p>
+            <p class="crypto-page-result-attribution">{{ author() }} — {{ source() }}</p>
+            <lp-button variant="primary" (click)="onRestart()">Rejouer</lp-button>
+          </div>
+        }
       </div>
-
-      <lp-cryptogram-hand [hand]="store.state().hand" (playTop)="store.play()" />
-
-      <lp-cryptogram-grid
-        [board]="store.state().board"
-        [selectedCell]="store.state().selectedCell"
-        [playableCells]="store.playableCells()"
-        (cellSelect)="store.selectCell($event)"
-      />
-
-      <lp-cipher-table [known]="store.state().known" />
-
-      @if (store.state().status === 'won') {
-        <div class="crypto-page-result crypto-page-result-won" role="alert">
-          <p class="crypto-page-result-title">Bravo, citation reconstituée !</p>
-          <p class="crypto-page-result-attribution">{{ author() }} — {{ source() }}</p>
-          <lp-button variant="primary" (click)="onRestart()">Rejouer</lp-button>
-        </div>
-      } @else if (store.state().status === 'lost') {
-        <div class="crypto-page-result crypto-page-result-lost" role="alert">
-          <p class="crypto-page-result-title">Perdu — trop d'erreurs.</p>
-          <p class="crypto-page-result-attribution">{{ author() }} — {{ source() }}</p>
-          <lp-button variant="primary" (click)="onRestart()">Rejouer</lp-button>
-        </div>
-      }
     </lp-panel>
   `,
 })
