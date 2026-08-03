@@ -134,7 +134,9 @@ types.ts     shared Sym/AccentMode/Cell types — no logic
 always has at least one valid, correct cell to land on. Because the deck is exactly the multiset of
 remaining answers, no game state is ever unsolvable — a stuck player is an *information* problem
 (which cell is correct?), never a mechanical dead end. Any change to `game.ts`, `deck.ts`, or
-`givens.ts` should be re-verified against this test, not just its own unit tests.
+`givens.ts` should be re-verified against this test, not just its own unit tests — invoke the
+`engine-invariant-guardian` agent (`.claude/agents/engine-invariant-guardian.md`) right after such
+a change, before moving on.
 
 Game rules with exact values (do not casually change without checking the spec's rationale):
 hand capacity 5 (LIFO — only the top card is playable), max errors 3, 2-3 givens, `accentMode`
