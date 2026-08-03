@@ -19,6 +19,10 @@ component, one per-game module under that game's own `src/styles/`); a component
 holds only the positioning between its own child elements, never color/typography/borders/shadows.
 Rationale in `docs/superpowers/specs/2026-07-28-architecture-css-smacss-design.md`.
 
+Commits follow `type(scope): sujet` (Conventional Commits, scope = touched area, subject without
+accents) — read `docs/conventions/commits.md` before writing a commit message. The body, when
+present, explains *why*, never restates the diff.
+
 ## Commands
 
 Node ≥ 24.15.0 is required (Angular 22 refuses to install below it).
