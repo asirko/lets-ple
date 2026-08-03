@@ -83,10 +83,14 @@ jamais de doublement `--`/`__` :
   plus — en dev seulement — le module de chaque jeu dont des stories existent, pour que ces stories
   s'affichent correctement même si rien d'autre ne charge ce module.
 - **Un jeu** : son module SCSS n'est jamais importé par le portail. Il part dans le même chunk lazy
-  que le code du jeu, importé par le point d'entrée routé de ce jeu (le composant/route de la
-  tâche 15, pas encore écrit). **Point en suspens** : tant que ce point d'entrée n'existe pas, seul
-  Storybook charge `_cryptogramme.scss` ; le mécanisme définitif de chargement lazy sera posé à la
-  tâche 15 et n'est pas figé par ce document.
+  que le code du jeu, importé par le point d'entrée routé de ce jeu — pour le cryptogramme, c'est
+  `LpGamePage` (`projects/games/cryptogramme/src/lib/ui/game-page/lp-game-page.ts`), le composant
+  chargé via `loadComponent` dans `CRYPTOGRAMME_ROUTES` (`src/lib/routes.ts`). Mécanisme retenu
+  (posé à la tâche 15) : `LpGamePage`, et lui seul parmi les composants du jeu, porte
+  `styleUrls: ['../../../styles/_cryptogramme.scss']` et `encapsulation: ViewEncapsulation.None`
+  (nécessaire puisque ce fichier définit des classes globales `crypto-*`, pas du style scopé). Avec
+  le builder esbuild d'Angular, ce `styleUrls` part dans le même chunk que le composant chargé par
+  `loadComponent`, jamais dans le bundle initial du portail.
 
 ## Frontière composant / global
 
@@ -118,7 +122,6 @@ est relancée après le rétrofit pour confirmer zéro régression.
 
 ## Hors périmètre
 
-- Le mécanisme exact de lazy-loading du CSS d'un jeu avec son chunk de route (posé à la tâche 15).
 - Les primitives `_layout.scss` : créées seulement quand un besoin concret apparaît, pas par
   anticipation.
 - Un linter ou test automatisé imposant la convention de nommage : envisageable plus tard si des

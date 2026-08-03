@@ -219,3 +219,50 @@
 .crypto-error-dot-active {
   color: var(--lp-color-danger);
 }
+
+// --- Écran de jeu ---------------------------------------------------------------------------------
+
+.crypto-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-4);
+}
+
+.crypto-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lp-space-3);
+}
+
+.crypto-page-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--lp-space-3);
+  padding: var(--lp-space-4);
+  text-align: center;
+  background: var(--lp-color-surface-raised);
+  border: 1px solid var(--lp-color-border);
+  border-radius: var(--lp-radius-md);
+}
+
+.crypto-page-result-won {
+  border-color: var(--lp-color-primary);
+}
+
+.crypto-page-result-lost {
+  border-color: var(--lp-color-danger);
+}
+
+.crypto-page-result-title {
+  margin: 0;
+  font-size: var(--lp-font-size-lg);
+  font-weight: var(--lp-font-weight-bold);
+}
+
+.crypto-page-result-attribution {
+  margin: 0;
+  color: var(--lp-color-text-muted);
+  font-style: italic;
+}
