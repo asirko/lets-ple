@@ -14,6 +14,7 @@
     "score:quotes": "tsx projects/games/cryptogramme/tools/score-quotes.ts",
     "extract:quotes": "tsx projects/games/cryptogramme/tools/extract-quotekg-citations.ts",
     "filter:quotes": "tsx projects/games/cryptogramme/tools/filter-quotekg-candidates.ts",
+    "import:quotes": "tsx projects/games/cryptogramme/tools/import-quotekg-candidates.ts",
     "storybook": "ng run storybook:storybook",
     "build-storybook": "ng run storybook:build-storybook",
     "build:ui": "ng build ui",
