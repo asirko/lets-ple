@@ -13,6 +13,8 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     /* Les alias pointent sur les sources et non sur `dist/` : les libraries ne sont jamais
        publiées sur npm, et viser les sources évite d'avoir à reconstruire une lib à chaque
        modification pendant le développement. */
