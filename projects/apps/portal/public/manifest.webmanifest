@@ -1,0 +1,19 @@
+{
+  "name": "Let's Plé",
+  "short_name": "Let's Plé",
+  "description": "Portail de jeux de mots en français.",
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "lang": "fr",
+  "theme_color": "#b5482f",
+  "background_color": "#faf7f2",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

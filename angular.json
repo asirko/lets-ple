@@ -28,6 +28,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/apps/portal/public"
+              },
+              {
+                "glob": "**/*",
+                "input": "content/quotes",
+                "output": "content/quotes"
               }
             ],
             "styles": [
@@ -48,7 +53,8 @@
                   "maximumError": "20kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "projects/apps/portal/ngsw-config.json"
             },
             "development": {
               "optimization": false,

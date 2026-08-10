@@ -10,13 +10,14 @@ import { LpErrorCounter } from '../error-counter/lp-error-counter';
 /**
  * Écran de jeu : assemble les six composants de présentation autour d'un `GameStore` construit à
  * partir des inputs (citation, auteur, source, graine). Agnostique de la provenance de ces
- * données — aucun chargement de corpus ici, ce sera le rôle de l'appelant (tâches 16-17).
+ * données — la résolution d'une citation au hasard dans le corpus est à la charge de l'appelant
+ * (`LpGameRoute`, voir `routes.ts`), ce qui garde ce composant pilotable par inputs explicites en
+ * Storybook.
  *
- * C'est aussi le point d'entrée routé du jeu (voir `routes.ts`, `loadComponent`) : c'est donc lui,
- * et lui seul parmi les composants du jeu, qui référence le module SCSS `_cryptogramme.scss`. Avec
- * le builder esbuild d'Angular, un `styleUrls` porté par un composant chargé via `loadComponent`
- * part dans le même chunk lazy que ce composant — c'est ce qui garantit que `_cryptogramme.scss`
- * ne finit jamais dans le bundle du portail (voir
+ * C'est lui, et lui seul parmi les composants du jeu, qui référence le module SCSS
+ * `_cryptogramme.scss`. Avec le builder esbuild d'Angular, un `styleUrls` porté par un composant
+ * chargé (directement ou transitivement) via `loadComponent` part dans le même chunk lazy — c'est
+ * ce qui garantit que `_cryptogramme.scss` ne finit jamais dans le bundle du portail (voir
  * docs/superpowers/specs/2026-07-28-architecture-css-smacss-design.md, section « Chargement »).
  * `ViewEncapsulation.None` est nécessaire en complément : ce fichier définit des classes globales
  * `crypto-*` consommées par tous les composants du jeu, pas du style scopé à ce seul composant.
