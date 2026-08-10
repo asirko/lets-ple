@@ -2,6 +2,26 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## AVERTISSEMENT — ne pas rendre le jeu public tant que ce point n'est pas réglé
+
+`content/quotes/*.json` contient ~12 515 citations (voir
+`projects/games/cryptogramme/tools/import-quotekg-candidates.ts`), dont seules ~1 710 portent
+`publicDomain: true` vérifié à la main (auteurs morts depuis plus de 70 ans en France, prorogations
+de guerre comprises). Les ~10 795 restantes ont `publicDomain: false` par défaut **prudent** — leur
+statut réel n'est pas tranché, pas confirmé « non couvert ».
+
+Le droit de citation français (art. L122-5 CPI, « exception de courte citation ») ne couvre **pas**
+cet usage : il exige une citation courte *relativement à l'œuvre citée* et son incorporation dans un
+propos critique, polémique, pédagogique, scientifique ou d'information — ce qu'un jeu de
+reconstruction de citation n'est pas. `publicDomain` reste donc le seul filtre légitime pour ce qui
+peut être exposé publiquement, mais **le code ne l'exploite pas encore** : usage strictement
+personnel/local pour l'instant, aucun filtrage à l'exécution.
+
+**Ne pas déployer publiquement (GitHub Pages, push vers un remote public, lien partagé) et ne pas
+pousser de commit touchant `content/quotes/` vers `origin` tant que l'un des deux n'est pas fait** :
+soit filtrer le contenu réellement servi sur `publicDomain: true`, soit compléter la revue manuelle
+de `AUTHOR_OVERRIDES` (`import-quotekg-candidates.ts`) pour le reste du corpus.
+
 ## Project
 
 **Let's Plé** — a French-language word-game portal (PWA, static, deployed to GitHub Pages). The
