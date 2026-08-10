@@ -1,0 +1,16 @@
+/* Tsconfig dédié à Compodoc pour Storybook (npm run storybook / build-storybook).
+   Le tsconfig.json racine est un fichier "solution style" (`files: []` + `references`), que
+   Compodoc ne sait pas résoudre — il lui faut un tsconfig listant directement les sources via
+   `include`. On documente ici toutes les libs/jeux qui alimentent des stories Storybook. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": []
+  },
+  "include": [
+    "projects/libs/ui/src/**/*.ts",
+    "projects/libs/game-core/src/**/*.ts",
+    "projects/games/cryptogramme/src/**/*.ts"
+  ],
+  "exclude": ["**/*.spec.ts"]
+}

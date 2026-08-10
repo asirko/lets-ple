@@ -46,3 +46,6 @@ storybook-static/
 
 # Sortie brute du script d'extraction QuoteKG : à curer à la main avant intégration au corpus
 /quotekg-citations.json
+
+# Généré par Compodoc à chaque lancement de Storybook (voir tsconfig.doc.json)
+/documentation.json

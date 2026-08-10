@@ -18,7 +18,11 @@ const config: StorybookConfig = {
   "framework": {
     "name": "@storybook/angular-vite",
     "options": {
-      "compodoc": false
+      // `documentation.json` est régénéré à chaque lancement (chemin de sortie imposé par
+      // @storybook/angular-vite : toujours <workspaceRoot>/documentation.json, non
+      // configurable — voir tsconfig.doc.json pour la portée des sources documentées).
+      "compodoc": true,
+      "tsconfig": "tsconfig.doc.json"
     }
   },
   // Le Vite de Storybook ne lit pas les `paths` du tsconfig racine par lui-même : sans ce
