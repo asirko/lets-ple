@@ -115,26 +115,28 @@ les clics et saisies côté consoles web.
    seront exécutées ensemble au moment de l'implémentation.
 2. Une fois Hosting activé, dans l'onglet Hosting → « Ajouter un domaine personnalisé ».
 3. Saisir **`lets-ple.lets-code.fr`** → Continuer.
-4. Firebase affiche un enregistrement **TXT** (nom + valeur) à créer pour prouver que tu contrôles
-   le domaine. Note-les, direction OVH (étape E).
-5. Reviens sur cet écran Firebase après avoir ajouté le TXT chez OVH (étape E) et clique
+4. Pour un sous-domaine, Firebase propose désormais le **flux CNAME simplifié** : un seul
+   enregistrement **CNAME** (nom + valeur, ex. `<project-id>.web.app`) fait à la fois la preuve de
+   propriété et le routage — pas de TXT ni de A/AAAA séparés. Note la valeur affichée, direction
+   OVH (étape E). **Attention au type exact affiché à l'écran** (une colonne « Type » à côté de
+   l'enregistrement) — vérifié une fois avec le mauvais type (TXT au lieu de CNAME) saisi dans OVH
+   par erreur, ce qui bloque la détection indéfiniment sans jamais se résoudre tout seul, même après
+   le délai de 24h annoncé par Firebase.
+5. Reviens sur cet écran Firebase après avoir ajouté le CNAME chez OVH (étape E) et clique
    « Vérifier ». Ça peut échouer les premières minutes le temps que le DNS se propage — réessaie.
-6. Une fois vérifié, Firebase affiche un ou deux enregistrements **A** (parfois **AAAA**) à créer
-   côté OVH pour le sous-domaine — direction OVH à nouveau (étape E).
-7. Après propagation, Firebase provisionne automatiquement le certificat TLS (généralement quelques
+6. Une fois vérifié, Firebase provisionne automatiquement le certificat TLS (généralement quelques
    minutes à quelques heures, rarement jusqu'à 24h). Le statut passe à « Connecté » dans la console.
+   Aucune étape A/AAAA supplémentaire n'est nécessaire avec le flux CNAME.
 
 ### E. Configurer la zone DNS chez OVH
 
 1. Aller sur https://www.ovh.com/manager/ → **Web Cloud → Domaines → `lets-code.fr` → Zone DNS**.
-2. « Ajouter une entrée » → type **TXT** → sous-domaine **`lets-ple`** → coller la valeur donnée par
-   Firebase à l'étape D.4 → valider.
-3. Attendre la vérification côté Firebase (étape D.5).
-4. Revenir dans la zone DNS OVH → « Ajouter une entrée » → type **A** → sous-domaine **`lets-ple`**
-   → coller l'adresse IP donnée par Firebase à l'étape D.6 → valider. Répéter pour un éventuel
-   second enregistrement A ou AAAA si Firebase en fournit plusieurs.
-5. Ne pas créer de `CNAME` — Firebase Hosting fonctionne ici par enregistrements A/AAAA sur le
-   sous-domaine, pas par CNAME.
+2. « Ajouter une entrée » → type **CNAME** (pas TXT — vérifier le type exact affiché par Firebase à
+   l'étape D.4) → sous-domaine **`lets-ple`** → coller la valeur donnée par Firebase → valider.
+3. Attendre la vérification côté Firebase (étape D.5). Propagation généralement rapide chez OVH (TTL
+   par défaut observé : 5 min).
+4. Rien d'autre à ajouter : le flux CNAME couvre à la fois la vérification et le routage, pas de A
+   ni de AAAA séparés à créer.
 
 ### F. Créer un compte de service pour le déploiement automatique
 
