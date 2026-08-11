@@ -63,13 +63,13 @@ machine); no MCP/plugin needed.
   https://github.com/users/asirko/projects/5 — private, unlike issues): three columns, Backlog /
   En cours / Terminé. Also holds draft cards for plan-v1 tasks already done (Tâche 1-17), kept as
   history — no real issues were opened for those.
-- **Milestone `v1`**: what's left of the original build plan
-  (`docs/superpowers/plans/2026-07-28-lets-ple-v1.md`) — currently just issue #2, Task 18
-  rewritten to deploy via **Firebase Hosting** instead of GitHub Pages (see
-  `docs/superpowers/specs/2026-08-11-hebergement-firebase-design.md` and
-  `docs/superpowers/plans/2026-08-11-firebase-hosting-deploy.md`). That deployment is not public
-  (no shared link, no announcement) — it doesn't lift the AVERTISSEMENT above, which still applies
-  to any future public dissemination of the link.
+- **Milestones**: `scaffolding` (initial build — engine, corpus, portal, PWA, deployment; what's
+  left is issue #2, Task 18 rewritten to deploy via **Firebase Hosting** instead of GitHub Pages,
+  see `docs/superpowers/specs/2026-08-11-hebergement-firebase-design.md` and
+  `docs/superpowers/plans/2026-08-11-firebase-hosting-deploy.md` — that deployment is not public,
+  no shared link or announcement, so it doesn't lift the AVERTISSEMENT above, which still applies
+  to any future public dissemination of the link) and `affinage cryptogramme` (ongoing balancing/
+  corpus/UI work on the cryptogramme once scaffolding is done, empty for now).
 
 This is the source of truth for *what's next* and *what's in progress*. The spec/plan docs under
 `docs/superpowers/` remain the source of truth for *how* a given item should be designed once it's
