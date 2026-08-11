@@ -50,6 +50,31 @@ Commits follow `type(scope): sujet` (Conventional Commits, scope = touched area,
 accents) — read `docs/conventions/commits.md` before writing a commit message. The body, when
 present, explains *why*, never restates the diff.
 
+## Project tracking
+
+Backlog and status live on GitHub, not in this file — check them at the start of planning/work,
+they change faster than docs get updated. Use the `gh` CLI directly (already authenticated on this
+machine); no MCP/plugin needed.
+
+- **Issues** (`gh issue list --repo asirko/lets-ple`): one per epic/feature/chore. Label
+  `future-game` marks candidate games not yet designed (see issue #1); standard GitHub labels
+  otherwise (`bug`, `enhancement`, ...).
+- **Project board** (`gh project item-list 5 --owner asirko`, or
+  https://github.com/users/asirko/projects/5 — private, unlike issues): three columns, Backlog /
+  En cours / Terminé. Also holds draft cards for plan-v1 tasks already done (Tâche 1-17), kept as
+  history — no real issues were opened for those.
+- **Milestone `v1`**: what's left of the original build plan
+  (`docs/superpowers/plans/2026-07-28-lets-ple-v1.md`) — currently just issue #2, Task 18
+  rewritten to deploy via **Firebase Hosting** instead of GitHub Pages (see
+  `docs/superpowers/specs/2026-08-11-hebergement-firebase-design.md` and
+  `docs/superpowers/plans/2026-08-11-firebase-hosting-deploy.md`). That deployment is not public
+  (no shared link, no announcement) — it doesn't lift the AVERTISSEMENT above, which still applies
+  to any future public dissemination of the link.
+
+This is the source of truth for *what's next* and *what's in progress*. The spec/plan docs under
+`docs/superpowers/` remain the source of truth for *how* a given item should be designed once it's
+picked up off the backlog.
+
 ## Commands
 
 Node ≥ 24.15.0 is required (Angular 22 refuses to install below it).
