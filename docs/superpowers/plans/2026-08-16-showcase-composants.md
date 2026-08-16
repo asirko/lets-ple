@@ -37,7 +37,6 @@ partagés) et une page par composant.
 
 ```
 projects/apps/portal/src/app/dev/
-├─ showcase.types.ts                    ComponentShowcase<T>, ControlSpec, resolveProps()
 ├─ contrast-ratio.ts (+ .spec.ts)        utilitaire WCAG pur, sans dépendance Angular
 ├─ showcase-renderer/
 │  ├─ showcase-renderer.ts (+ .spec.ts)  monte dynamiquement le composant cible + formulaire de contrôles
@@ -52,6 +51,9 @@ projects/apps/portal/src/app/dev/
 projects/apps/portal/src/styles/
 └─ _dev-showcase.scss                    classes du showcase (formulaire de contrôles, mise en page du guide de style)
 
+projects/libs/ui/src/lib/showcase.types.ts                          ComponentShowcase<T>, ControlSpec, resolveProps()
+  (créé par la Tâche 1 dans apps/portal, déplacé ici par la Tâche 5 pour rester atteignable en
+  build isolé ng-packagr — voir la note en tête de la Tâche 5)
 projects/libs/ui/src/lib/<composant>/<composant>.showcase.ts        (button, card, panel)
 projects/games/cryptogramme/src/lib/ui/<composant>/<composant>.showcase.ts
   (cryptogram-cell, cipher-table, cryptogram-deck, cryptogram-hand, error-counter, cryptogram-grid, game-page)
@@ -820,7 +822,25 @@ git commit -m "feat(portal): guide de style avec ratios de contraste calcules"
 
 ### Task 5: Migrer `LpButton`
 
+> **Correction découverte à l'exécution (ruling du contrôleur SDD) :** la Tâche 1 a créé
+> `showcase.types.ts` dans `projects/apps/portal/`. Un import de ce fichier depuis une lib
+> (`projects/libs/ui`), même type-only, échoue en build isolé ng-packagr (`npm run
+> build:cryptogramme`, qui construit `ui` seule d'abord) avec `TS6059` : ng-packagr refuse toute
+> source résolue hors du `rootDir` du projet compilé, quel que soit le type d'import. Ajouter un
+> alias `tsconfig.json` pointant vers un fichier d'app (comme envisagé plus bas dans une version
+> antérieure de cette tâche) ne contourne pas cette contrainte — seul déplacer le fichier
+> **dans** une lib déjà construite avant ses consommateurs la résout, en réutilisant le mécanisme
+> déjà en place pour `@lets-ple/ui` dans `projects/games/cryptogramme/tsconfig.lib.json` (voir
+> CLAUDE.md, section build isolé). D'où : `showcase.types.ts` déménage dans `projects/libs/ui/`
+> (Step 0 ci-dessous) au lieu de rester dans le portail avec un alias dédié — plus simple, et ça
+> protège aussi par avance toutes les tâches de migration du jeu (8-14), qui dépendent déjà de
+> `@lets-ple/ui`.
+
 **Files:**
+- Move: `projects/apps/portal/src/app/dev/showcase.types.ts` → `projects/libs/ui/src/lib/showcase.types.ts`
+- Modify: `projects/apps/portal/src/app/dev/component-page/component-page.ts`
+- Modify: `projects/apps/portal/src/app/dev/showcase-renderer/showcase-renderer.ts`
+- Modify: `projects/apps/portal/src/app/dev/showcase-renderer/showcase-renderer.spec.ts`
 - Create: `projects/libs/ui/src/lib/button/lp-button.showcase.ts`
 - Modify: `projects/libs/ui/src/public-api.ts`
 - Modify: `projects/apps/portal/src/app/dev/dev.routes.ts`
@@ -828,64 +848,38 @@ git commit -m "feat(portal): guide de style avec ratios de contraste calcules"
 - Delete: `projects/libs/ui/src/lib/button/lp-button.stories.ts`
 
 **Interfaces:**
-- Consumes: `ComponentShowcase` (Task 1), `LpButton` (existant).
+- Consumes: `ComponentShowcase` (Task 1, relocated by this task), `LpButton` (existant).
+- Produces: `ComponentShowcase`/`ControlSpec`/`FormValue`/`resolveProps`/`defaultFormValues` now
+  live at `@lets-ple/ui` (public API) instead of a portal-relative path — every subsequent task
+  (6-14) imports from `@lets-ple/ui`, not from a `showcase-types` alias.
 
-- [ ] **Step 1: Créer la spec showcase**
+- [ ] **Step 0: Déplacer `showcase.types.ts` dans `libs/ui` et corriger ses 3 importeurs existants**
+
+```bash
+git mv projects/apps/portal/src/app/dev/showcase.types.ts projects/libs/ui/src/lib/showcase.types.ts
+```
+
+Le contenu du fichier ne change pas (aucune dépendance vers Angular Router ni vers rien de propre
+au portail). Corriger les 3 fichiers qui l'importaient par chemin relatif (Tâches 2 et 3, déjà
+mergées) pour utiliser l'alias `@lets-ple/ui` existant à la place :
 
 ```ts
-// projects/libs/ui/src/lib/button/lp-button.showcase.ts
-import type { ComponentShowcase } from '../../../../../apps/portal/src/app/dev/showcase.types';
-import { LpButton } from './lp-button';
-
-export const LP_BUTTON_SHOWCASE: ComponentShowcase<LpButton> = {
-  component: LpButton,
-  content: 'Valider',
-  controls: {
-    variant: { kind: 'enum', options: ['primary', 'secondary', 'danger'], default: 'primary' },
-    type: { kind: 'enum', options: ['button', 'submit'], default: 'button' },
-    disabled: { kind: 'boolean', default: false },
-  },
-};
+// projects/apps/portal/src/app/dev/component-page/component-page.ts — remplacer la ligne d'import
+import type { ComponentShowcase } from '@lets-ple/ui';
 ```
-
-**Attention au chemin d'import relatif** : `projects/libs/ui` n'a pas d'alias vers
-`projects/apps/portal`. Pour éviter ce chemin relatif fragile (5 niveaux de `../`), l'étape 1bis
-ci-dessous le remplace par l'alias `@lets-ple/portal-dev` avant de continuer — voir la note après
-ce step.
-
-- [ ] **Step 1bis : ajouter un alias TypeScript pour `showcase.types.ts`**
-
-`showcase.types.ts` n'a aucune dépendance vers le reste du portail (pas d'Angular Router, pas de
-composants) : c'est un fichier de types pur, candidat naturel à devenir un point d'échange partagé
-plutôt qu'un import traversant vers une app depuis une lib. Ajouter l'alias dans `tsconfig.json` :
-
-```json
-// tsconfig.json — dans "compilerOptions.paths", à côté des alias existants
-"@lets-ple/showcase-types": ["./projects/apps/portal/src/app/dev/showcase.types.ts"]
-```
-
-Puis corriger l'import dans `lp-button.showcase.ts` :
 
 ```ts
-// projects/libs/ui/src/lib/button/lp-button.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
-import { LpButton } from './lp-button';
-
-export const LP_BUTTON_SHOWCASE: ComponentShowcase<LpButton> = {
-  component: LpButton,
-  content: 'Valider',
-  controls: {
-    variant: { kind: 'enum', options: ['primary', 'secondary', 'danger'], default: 'primary' },
-    type: { kind: 'enum', options: ['button', 'submit'], default: 'button' },
-    disabled: { kind: 'boolean', default: false },
-  },
-};
+// projects/apps/portal/src/app/dev/showcase-renderer/showcase-renderer.ts — remplacer les deux lignes d'import
+import type { ComponentShowcase, ControlSpec, FormValue } from '@lets-ple/ui';
+import { defaultFormValues, resolveProps } from '@lets-ple/ui';
 ```
 
-Cet alias sera réutilisé tel quel par toutes les tâches de migration suivantes (6 à 14) — il n'est
-documenté qu'une fois ici.
+```ts
+// projects/apps/portal/src/app/dev/showcase-renderer/showcase-renderer.spec.ts — remplacer la ligne d'import
+import type { ComponentShowcase } from '@lets-ple/ui';
+```
 
-- [ ] **Step 2: Exporter depuis `public-api.ts`**
+- [ ] **Step 1: Exporter `showcase.types.ts` depuis `public-api.ts`**
 
 ```ts
 // projects/libs/ui/src/public-api.ts
@@ -894,9 +888,45 @@ documenté qu'une fois ici.
  */
 
 export * from './lib/button/lp-button';
+export * from './lib/card/lp-card';
+export * from './lib/panel/lp-panel';
+export * from './lib/showcase.types';
+```
+
+- [ ] **Step 2: Créer la spec showcase de `LpButton`**
+
+```ts
+// projects/libs/ui/src/lib/button/lp-button.showcase.ts
+import type { ComponentShowcase } from '@lets-ple/ui';
+import { LpButton } from './lp-button';
+
+export const LP_BUTTON_SHOWCASE: ComponentShowcase<LpButton> = {
+  component: LpButton,
+  content: 'Valider',
+  controls: {
+    variant: { kind: 'enum', options: ['primary', 'secondary', 'danger'], default: 'primary' },
+    type: { kind: 'enum', options: ['button', 'submit'], default: 'button' },
+    disabled: { kind: 'boolean', default: false },
+  },
+};
+```
+
+**Import circulaire ?** `lp-button.showcase.ts` importe `ComponentShowcase` depuis `@lets-ple/ui`
+(le barrel de sa propre lib) plutôt que depuis `./showcase.types` en relatif : c'est volontaire et
+sûr — TypeScript/ng-packagr résolvent cet auto-import du barrel sans cycle d'exécution réel
+puisque `showcase.types.ts` n'importe rien en retour de `lp-button.showcase.ts`. Utiliser l'alias
+public partout, y compris à l'intérieur de la lib qui le définit, garde une seule convention
+d'import pour cette tâche et toutes celles qui suivent (6-14).
+
+- [ ] **Step 2bis: Exporter la spec showcase depuis `public-api.ts`**
+
+```ts
+// projects/libs/ui/src/public-api.ts
+export * from './lib/button/lp-button';
 export * from './lib/button/lp-button.showcase';
 export * from './lib/card/lp-card';
 export * from './lib/panel/lp-panel';
+export * from './lib/showcase.types';
 ```
 
 - [ ] **Step 3: Ajouter la route et le lien**
@@ -953,9 +983,13 @@ git rm projects/libs/ui/src/lib/button/lp-button.stories.ts
 - [ ] **Step 6: Commit**
 
 ```bash
-git add tsconfig.json projects/libs/ui/src/lib/button/lp-button.showcase.ts projects/libs/ui/src/public-api.ts projects/apps/portal/src/app/dev/dev.routes.ts projects/apps/portal/src/app/dev/dev-home/dev-home-page.ts
-git commit -m "feat(ui): migre LpButton de storybook vers le showcase"
+git add projects/libs/ui/src/lib/showcase.types.ts projects/apps/portal/src/app/dev/component-page/component-page.ts projects/apps/portal/src/app/dev/showcase-renderer/showcase-renderer.ts projects/apps/portal/src/app/dev/showcase-renderer/showcase-renderer.spec.ts projects/libs/ui/src/lib/button/lp-button.showcase.ts projects/libs/ui/src/public-api.ts projects/apps/portal/src/app/dev/dev.routes.ts projects/apps/portal/src/app/dev/dev-home/dev-home-page.ts
+git commit -m "feat(ui): migre LpButton de storybook vers le showcase, deplace showcase.types dans ui"
 ```
+
+Vérifier aussi que le fichier `showcase.types.ts` a bien disparu de son ancien emplacement dans
+l'index git (`git mv` s'en charge automatiquement — `git status` ne doit montrer ni suppression ni
+ajout séparés à cet endroit, seulement un renommage détecté).
 
 ---
 
@@ -972,7 +1006,7 @@ git commit -m "feat(ui): migre LpButton de storybook vers le showcase"
 
 ```ts
 // projects/libs/ui/src/lib/card/lp-card.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import { LpCard } from './lp-card';
 
 export const LP_CARD_SHOWCASE: ComponentShowcase<LpCard> = {
@@ -1041,7 +1075,7 @@ git commit -m "feat(ui): migre LpCard de storybook vers le showcase"
 
 ```ts
 // projects/libs/ui/src/lib/panel/lp-panel.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import { LpPanel } from './lp-panel';
 
 export const LP_PANEL_SHOWCASE: ComponentShowcase<LpPanel> = {
@@ -1118,7 +1152,7 @@ protège explicitement. Trois presets couvrent, combinés aux contrôles `select
 
 ```ts
 // projects/games/cryptogramme/src/lib/ui/cryptogram-cell/lp-cryptogram-cell.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import type { Cell } from '../../domain/types';
 import { LpCryptogramCell } from './lp-cryptogram-cell';
 
@@ -1205,7 +1239,7 @@ git commit -m "feat(cryptogramme): migre LpCryptogramCell de storybook vers le s
 
 ```ts
 // projects/games/cryptogramme/src/lib/ui/cipher-table/lp-cipher-table.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import type { Sym } from '../../domain/types';
 import { LpCipherTable } from './lp-cipher-table';
 
@@ -1285,7 +1319,7 @@ git commit -m "feat(cryptogramme): migre LpCipherTable de storybook vers le show
 
 ```ts
 // projects/games/cryptogramme/src/lib/ui/cryptogram-deck/lp-cryptogram-deck.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import { LpCryptogramDeck } from './lp-cryptogram-deck';
 
 export const LP_CRYPTOGRAM_DECK_SHOWCASE: ComponentShowcase<LpCryptogramDeck> = {
@@ -1352,7 +1386,7 @@ git commit -m "feat(cryptogramme): migre LpCryptogramDeck de storybook vers le s
 
 ```ts
 // projects/games/cryptogramme/src/lib/ui/cryptogram-hand/lp-cryptogram-hand.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import type { Sym } from '../../domain/types';
 import { LpCryptogramHand } from './lp-cryptogram-hand';
 
@@ -1428,7 +1462,7 @@ git commit -m "feat(cryptogramme): migre LpCryptogramHand de storybook vers le s
 
 ```ts
 // projects/games/cryptogramme/src/lib/ui/error-counter/lp-error-counter.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import { LpErrorCounter } from './lp-error-counter';
 
 export const LP_ERROR_COUNTER_SHOWCASE: ComponentShowcase<LpErrorCounter> = {
@@ -1502,7 +1536,7 @@ case n'est jamais remplie par un `DRAW`) — un seul preset `board` suffit ; seu
 
 ```ts
 // projects/games/cryptogramme/src/lib/ui/cryptogram-grid/lp-cryptogram-grid.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import { createGame, isPlayable, reduce } from '../../domain/game';
 import type { Cell } from '../../domain/types';
 import { LpCryptogramGrid } from './lp-cryptogram-grid';
@@ -1612,7 +1646,7 @@ via `styleUrls` (voir l'en-tête de `lp-game-page.ts`).
 
 ```ts
 // projects/games/cryptogramme/src/lib/ui/game-page/lp-game-page.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/showcase-types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 import { LpGamePage } from './lp-game-page';
 
 export const LP_GAME_PAGE_SHOWCASE: ComponentShowcase<LpGamePage> = {
@@ -1883,6 +1917,10 @@ correspondante.
 (`() => Promise<ComponentShowcase<unknown>>`) dans `ComponentPage` (Task 3) et dans chaque entrée
 de route ajoutée (Tâches 5-14).
 
-**Alias `@lets-ple/showcase-types`** introduit à la Tâche 5 (avant, seul `lp-button.showcase.ts`
-existe et n'a pas encore besoin de l'alias — il est donc introduit au bon endroit, à la première
-utilisation réelle depuis une lib).
+**Correction post-exécution (Tâche 5)** : `showcase.types.ts`, créé par la Tâche 1 dans
+`apps/portal`, a été déplacé vers `libs/ui` dès qu'une lib (`lp-button.showcase.ts`) a eu besoin de
+l'importer — un import cross-projet lib→app, même type-only, casse le build isolé ng-packagr
+(`TS6059`). Toutes les occurrences de l'alias `@lets-ple/showcase-types` envisagé initialement ont
+été remplacées par `@lets-ple/ui` (le barrel de la lib qui héberge désormais le fichier), y compris
+rétroactivement dans le code déjà mergé des Tâches 2 et 3 (`ShowcaseRenderer`, `ComponentPage`).
+Voir la note en tête de la Tâche 5 pour le détail du raisonnement.
