@@ -39,10 +39,10 @@ component, one per-game module under that game's own `src/styles/`); a component
 holds only the positioning between its own child elements, never color/typography/borders/shadows.
 Rationale in `docs/superpowers/specs/2026-07-28-architecture-css-smacss-design.md`.
 
-Components follow a UI-first-in-Storybook convention — read `docs/conventions/components.md`
+Components follow a UI-first-in-the-showcase convention — read `docs/conventions/components.md`
 before designing or building any component. In short: a UI component (`libs/ui/src/lib/*`, or a
-game's own `ui/` folder) is designed and built in Storybook first, and carries most of its own
-visual style. A logic component (a screen, an assembler) only composes UI components together and
+game's own `ui/` folder) is designed and built in the component showcase (`/dev/components`)
+first, and carries most of its own visual style. A logic component (a screen, an assembler) only composes UI components together and
 has almost no style of its own — a tiny bit of local positioning is tolerated, nothing else.
 Elements of style shared across components live in the global app style, not in either.
 
@@ -92,10 +92,11 @@ npm run score:quotes           # recomputes and writes the `difficulty` block in
 npm run extract:quotes         # pulls raw candidate quotes from QuoteKG into quotekg-citations.json (gitignored)
 npm run filter:quotes          # applies the quality threshold, writes content/quote-candidates/quotekg.json
 npm run build:cryptogramme     # builds libs/ui first, then the cryptogramme library in isolation — see below
+npm run docs                   # publie la doc Compodoc en site statique autonome (./documentation, gitignored)
 ```
 
 There is no root-level `ng serve`/`ng build` without a project name — `angular.json` intentionally
-has no `defaultProject`; always pass `portal` (or `storybook`) explicitly, or use the npm scripts.
+has no `defaultProject`; always pass `portal` (or `ui`) explicitly, or use the npm scripts.
 
 Building a game library **in isolation** (`ng build cryptogramme`, e.g. to sanity-check it outside
 the portal) needs `npm run build:cryptogramme`, not the raw `ng build cryptogramme` command: the
@@ -126,8 +127,7 @@ with an explicit `--project-root` because `newProjectRoot` can only point at one
 ```
 projects/
 ├─ apps/
-│  ├─ portal/          the only deployed app: shell, home, game catalogue, PWA
-│  └─ storybook/        build-context-only app for the Storybook workshop — no business logic
+│  └─ portal/          the only deployed app: shell, home, game catalogue, PWA, and /dev/components (component showcase)
 ├─ libs/
 │  ├─ ui/                design system: tokens, LpButton/LpCard/LpPanel, a11y
 │  └─ game-core/         cross-game plumbing: GameDescriptor, GAME_REGISTRY, I18nService, StorageService, ProgressService

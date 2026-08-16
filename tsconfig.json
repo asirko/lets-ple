@@ -38,12 +38,6 @@
       "path": "./projects/apps/portal/tsconfig.spec.json"
     },
     {
-      "path": "./projects/apps/storybook/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/apps/storybook/tsconfig.spec.json"
-    },
-    {
       "path": "./projects/libs/ui/tsconfig.lib.json"
     },
     {

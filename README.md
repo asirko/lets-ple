@@ -24,8 +24,7 @@ Le détail des règles, du modèle d'état et des décisions de conception se tr
 lets-ple/
 ├─ projects/
 │  ├─ apps/
-│  │  ├─ portal/         app Angular : shell, accueil, catalogue, PWA — le seul build déployé
-│  │  └─ storybook/      app hôte, contexte de build pour Storybook uniquement
+│  │  └─ portal/         app Angular : shell, accueil, catalogue, PWA, /dev/components — le seul build déployé
 │  ├─ libs/
 │  │  ├─ ui/             design system : tokens, boutons, cartes, panneaux
 │  │  └─ game-core/      socle commun aux jeux : registre, i18n, stockage, progression
@@ -34,7 +33,7 @@ lets-ple/
 │        ├─ src/lib/
 │        │  ├─ domain/   moteur pur du jeu — aucun import Angular
 │        │  ├─ store/    façade signals au-dessus du réducteur
-│        │  └─ ui/       composants et stories
+│        │  └─ ui/       composants et showcases
 │        └─ tools/       validation du corpus, calcul de difficulté, extraction/filtrage QuoteKG
 ├─ content/quotes/            corpus de citations, par thème, édité à la main
 └─ content/quote-candidates/  citations candidates filtrées, pas encore curées (theme/notoriety/publicDomain)
@@ -43,7 +42,8 @@ lets-ple/
 ## Stack
 
 Node 24 LTS, Angular 22 (composants standalone, signals, zoneless, builder `@angular/build`),
-Vitest pour le moteur et les outils, Storybook pour l'atelier de composants.
+Vitest pour le moteur et les outils, un showcase de composants maison (`/dev/components`, dans le
+portail) pour l'atelier de composants.
 
 ## Démarrage
 
@@ -52,8 +52,8 @@ npm install
 npm start                # ng serve portal — http://localhost:4200
 ```
 
-Le workspace contient plusieurs projets (`portal`, `storybook`) ; `npm start` cible `portal` par
-défaut.
+Le workspace contient plusieurs projets (`portal`, `ui`, `game-core`, `cryptogramme`) ; `npm start`
+cible `portal` par défaut.
 
 ## Tests
 
@@ -76,7 +76,7 @@ npm run filter:quotes    # filtre par score de qualité -> content/quote-candida
 
 ```bash
 npm run build             # build de production de portal, dans dist/
-npm run build-storybook   # build de l'atelier Storybook
+npm run docs              # publie la doc Compodoc en site statique autonome (./documentation, gitignored)
 ```
 
 ## Statut

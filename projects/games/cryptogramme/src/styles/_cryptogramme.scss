@@ -8,12 +8,15 @@
 .crypto-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--lp-space-3) var(--lp-space-1);
+  // Écart de ligne resserré (rangée) mais écart inter-mots plus marqué que l'écart intra-mot
+  // (voir .crypto-word) : les lettres d'un même mot doivent lire comme un bloc compact, les mots
+  // entre eux doivent rester clairement séparés — la même logique qu'une espace en typographie.
+  gap: var(--lp-space-2) var(--lp-space-2);
 }
 
 .crypto-word {
   display: inline-flex;
-  gap: 2px;
+  gap: 1px;
 }
 
 // --- Case ---------------------------------------------------------------------------------------
@@ -28,8 +31,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 1.875rem;
+  height: 1.875rem;
   font-family: var(--lp-font-family);
   border-radius: var(--lp-radius-sm);
 }
@@ -52,6 +55,10 @@
 
   &:disabled {
     cursor: default;
+    // Sans ce reset, le style natif du navigateur applique opacity: 0.3 à tout bouton
+    // disabled — exactement la case remplie (voir isFilled() ci-dessous), rendant la lettre
+    // décodée à peine lisible malgré un contraste de couleur par ailleurs correct.
+    opacity: 1;
   }
 }
 
@@ -68,8 +75,20 @@
 }
 
 .crypto-cell-filled {
-  background: var(--lp-color-surface-raised);
+  // Fond fortement teinté + texte en couleur de contraste (même paire que .crypto-hand-card-top)
+  // plutôt qu'un texte sombre discret sur fond clair : la lettre décodée doit sauter aux yeux,
+  // pas se fondre dans le plateau.
+  background: var(--lp-color-primary);
+  color: var(--lp-color-primary-contrast);
+  border-color: var(--lp-color-primary);
   border-style: solid;
+
+  // .crypto-cell-code fixe sa propre couleur (texte atténué, pensée pour un fond neutre) — sans
+  // cette surcharge elle resterait illisible une fois le fond de la case teinté ci-dessus.
+  .crypto-cell-code {
+    color: var(--lp-color-primary-contrast);
+    opacity: 0.75;
+  }
 }
 
 .crypto-cell-playable {
