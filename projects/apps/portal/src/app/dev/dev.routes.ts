@@ -25,4 +25,11 @@ export const DEV_ROUTES: Routes = [
       loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_CRYPTOGRAM_CELL_SHOWCASE),
     },
   },
+  {
+    path: 'lp-cipher-table',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_CIPHER_TABLE_SHOWCASE),
+    },
+  },
 ];

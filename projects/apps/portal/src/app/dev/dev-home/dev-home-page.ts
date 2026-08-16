@@ -13,6 +13,7 @@ import { RouterLink } from '@angular/router';
       <li><a routerLink="lp-card">LpCard</a></li>
       <li><a routerLink="lp-panel">LpPanel</a></li>
       <li><a routerLink="lp-cryptogram-cell">LpCryptogramCell</a></li>
+      <li><a routerLink="lp-cipher-table">LpCipherTable</a></li>
     </ul>
   `,
 })
