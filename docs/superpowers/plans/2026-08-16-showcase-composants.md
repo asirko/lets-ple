@@ -897,7 +897,7 @@ export * from './lib/showcase.types';
 
 ```ts
 // projects/libs/ui/src/lib/button/lp-button.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/ui';
+import type { ComponentShowcase } from '../showcase.types';
 import { LpButton } from './lp-button';
 
 export const LP_BUTTON_SHOWCASE: ComponentShowcase<LpButton> = {
@@ -911,12 +911,15 @@ export const LP_BUTTON_SHOWCASE: ComponentShowcase<LpButton> = {
 };
 ```
 
-**Import circulaire ?** `lp-button.showcase.ts` importe `ComponentShowcase` depuis `@lets-ple/ui`
-(le barrel de sa propre lib) plutôt que depuis `./showcase.types` en relatif : c'est volontaire et
-sûr — TypeScript/ng-packagr résolvent cet auto-import du barrel sans cycle d'exécution réel
-puisque `showcase.types.ts` n'importe rien en retour de `lp-button.showcase.ts`. Utiliser l'alias
-public partout, y compris à l'intérieur de la lib qui le définit, garde une seule convention
-d'import pour cette tâche et toutes celles qui suivent (6-14).
+**Import relatif, pas `@lets-ple/ui`** : `lp-button.showcase.ts` importe `ComponentShowcase` en
+relatif (`../showcase.types`), pas depuis le barrel de sa propre lib. Vérifié à l'exécution de
+cette tâche : `public-api.ts` réexporte `lp-button.showcase.ts`, qui importerait alors
+`@lets-ple/ui` — un cycle d'import à travers le barrel, qui a effectivement posé problème en
+pratique (contrairement à ce qu'une version antérieure de cette note affirmait sans l'avoir
+vérifié). Un fichier `.showcase.ts` **à l'intérieur de `libs/ui`** importe donc toujours
+`ComponentShowcase` en relatif (voir Tâches 6 et 7, même lib). Un fichier `.showcase.ts`
+**hors de `libs/ui`** (les Tâches 8-14, dans `projects/games/cryptogramme`) n'a pas ce problème —
+il importe normalement `@lets-ple/ui`, une dépendance externe légitime sans cycle possible.
 
 - [ ] **Step 2bis: Exporter la spec showcase depuis `public-api.ts`**
 
@@ -1006,7 +1009,9 @@ ajout séparés à cet endroit, seulement un renommage détecté).
 
 ```ts
 // projects/libs/ui/src/lib/card/lp-card.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/ui';
+// Import relatif, pas `@lets-ple/ui` : ce fichier est réexporté par le public-api.ts de sa
+// propre lib, un import du barrel créerait un cycle (voir la note équivalente à la Tâche 5).
+import type { ComponentShowcase } from '../showcase.types';
 import { LpCard } from './lp-card';
 
 export const LP_CARD_SHOWCASE: ComponentShowcase<LpCard> = {
@@ -1075,7 +1080,8 @@ git commit -m "feat(ui): migre LpCard de storybook vers le showcase"
 
 ```ts
 // projects/libs/ui/src/lib/panel/lp-panel.showcase.ts
-import type { ComponentShowcase } from '@lets-ple/ui';
+// Import relatif, pas `@lets-ple/ui` : même raison qu'aux Tâches 5 et 6 (cycle via le barrel).
+import type { ComponentShowcase } from '../showcase.types';
 import { LpPanel } from './lp-panel';
 
 export const LP_PANEL_SHOWCASE: ComponentShowcase<LpPanel> = {
