@@ -131,6 +131,74 @@
   }
 }
 
+// --- Piles (main à 5 piles) ----------------------------------------------------------------------
+
+.crypto-piles {
+  position: sticky;
+  top: var(--lp-space-2);
+  z-index: 2;
+  display: flex;
+  gap: var(--lp-space-2);
+  padding: var(--lp-space-2);
+  background: var(--lp-color-surface-raised);
+  border-radius: var(--lp-radius-md);
+}
+
+.crypto-pile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 3.5rem;
+  font-size: var(--lp-font-size-lg);
+  font-weight: var(--lp-font-weight-bold);
+  background: var(--lp-color-surface);
+  border: 1px solid var(--lp-color-border);
+  border-radius: var(--lp-radius-md);
+  color: var(--lp-color-text);
+  cursor: pointer;
+
+  &:disabled {
+    color: var(--lp-color-text-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--lp-color-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.crypto-pile-selected {
+  background: var(--lp-color-primary);
+  color: var(--lp-color-primary-contrast);
+  border-color: var(--lp-color-primary);
+}
+
+.crypto-pile-depth {
+  position: absolute;
+  bottom: -0.4rem;
+  right: -0.4rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 var(--lp-space-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--lp-font-size-xs);
+  font-weight: var(--lp-font-weight-bold);
+  background: var(--lp-color-surface-raised);
+  border: 1px solid var(--lp-color-border);
+  border-radius: var(--lp-radius-full);
+  color: var(--lp-color-text);
+}
+
+.crypto-pile-empty {
+  color: var(--lp-color-text-muted);
+}
+
 // --- Pioche -------------------------------------------------------------------------------------
 
 .crypto-deck {
