@@ -18,6 +18,7 @@ import { RouterLink } from '@angular/router';
       <li><a routerLink="lp-cryptogram-hand">LpCryptogramHand</a></li>
       <li><a routerLink="lp-error-counter">LpErrorCounter</a></li>
       <li><a routerLink="lp-cryptogram-grid">LpCryptogramGrid</a></li>
+      <li><a routerLink="lp-game-page">LpGamePage</a></li>
     </ul>
   `,
 })

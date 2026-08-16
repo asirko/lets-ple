@@ -60,4 +60,11 @@ export const DEV_ROUTES: Routes = [
       loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_CRYPTOGRAM_GRID_SHOWCASE),
     },
   },
+  {
+    path: 'lp-game-page',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_GAME_PAGE_SHOWCASE),
+    },
+  },
 ];

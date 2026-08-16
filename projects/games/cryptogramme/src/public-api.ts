@@ -16,4 +16,5 @@ export * from './lib/ui/cipher-table/lp-cipher-table.showcase';
 export * from './lib/ui/error-counter/lp-error-counter';
 export * from './lib/ui/error-counter/lp-error-counter.showcase';
 export * from './lib/ui/game-page/lp-game-page';
+export * from './lib/ui/game-page/lp-game-page.showcase';
 export * from './lib/routes';
