@@ -1,0 +1,5 @@
+import { Routes } from '@angular/router';
+
+export const DEV_ROUTES: Routes = [
+  { path: '', loadComponent: () => import('./dev-home/dev-home-page').then((m) => m.DevHomePage) },
+];

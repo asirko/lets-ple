@@ -6,4 +6,8 @@ export const routes: Routes = [
     path: 'cryptogramme',
     loadChildren: () => import('@lets-ple/cryptogramme').then((m) => m.CRYPTOGRAMME_ROUTES),
   },
+  {
+    path: 'dev/components',
+    loadChildren: () => import('./dev/dev.routes').then((m) => m.DEV_ROUTES),
+  },
 ];
