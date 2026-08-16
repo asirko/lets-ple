@@ -133,6 +133,10 @@
 
 // --- Piles (main à 5 piles) ----------------------------------------------------------------------
 
+lp-cryptogram-piles {
+  display: contents;
+}
+
 .crypto-piles {
   position: sticky;
   top: var(--lp-space-2);
