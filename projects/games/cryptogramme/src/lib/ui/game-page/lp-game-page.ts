@@ -4,7 +4,7 @@ import { GameStore } from '../../store/game.store';
 import { LpCipherTable } from '../cipher-table/lp-cipher-table';
 import { LpCryptogramDeck } from '../cryptogram-deck/lp-cryptogram-deck';
 import { LpCryptogramGrid } from '../cryptogram-grid/lp-cryptogram-grid';
-import { LpCryptogramHand } from '../cryptogram-hand/lp-cryptogram-hand';
+import { LpCryptogramPiles } from '../cryptogram-piles/lp-cryptogram-piles';
 import { LpErrorCounter } from '../error-counter/lp-error-counter';
 
 /**
@@ -28,7 +28,7 @@ import { LpErrorCounter } from '../error-counter/lp-error-counter';
     LpCipherTable,
     LpCryptogramDeck,
     LpCryptogramGrid,
-    LpCryptogramHand,
+    LpCryptogramPiles,
     LpErrorCounter,
     LpButton,
     LpPanel,
@@ -46,18 +46,20 @@ import { LpErrorCounter } from '../error-counter/lp-error-counter';
           />
           <lp-cryptogram-deck
             [remaining]="store.state().deck.length"
-            [handFull]="!store.canDraw()"
             (draw)="store.draw()"
           />
         </div>
 
-        <lp-cryptogram-hand [hand]="store.state().hand" (playTop)="store.play()" />
+        <lp-cryptogram-piles
+          [piles]="store.state().piles"
+          [selectedPile]="store.state().selectedPile"
+          (pileSelect)="store.selectPile($event)"
+        />
 
         <lp-cryptogram-grid
           [board]="store.state().board"
-          [selectedCell]="store.state().selectedCell"
           [playableCells]="store.playableCells()"
-          (cellSelect)="store.selectCell($event)"
+          (cellSelect)="store.play($event)"
         />
 
         <lp-cipher-table [known]="store.state().known" />
