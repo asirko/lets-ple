@@ -6,6 +6,7 @@ export * from './lib/store/game.store';
 export * from './lib/ui/cryptogram-cell/lp-cryptogram-cell';
 export * from './lib/ui/cryptogram-cell/lp-cryptogram-cell.showcase';
 export * from './lib/ui/cryptogram-grid/lp-cryptogram-grid';
+export * from './lib/ui/cryptogram-grid/lp-cryptogram-grid.showcase';
 export * from './lib/ui/cryptogram-hand/lp-cryptogram-hand';
 export * from './lib/ui/cryptogram-hand/lp-cryptogram-hand.showcase';
 export * from './lib/ui/cryptogram-deck/lp-cryptogram-deck';

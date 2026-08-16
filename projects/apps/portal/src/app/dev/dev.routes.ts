@@ -53,4 +53,11 @@ export const DEV_ROUTES: Routes = [
       loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_ERROR_COUNTER_SHOWCASE),
     },
   },
+  {
+    path: 'lp-cryptogram-grid',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_CRYPTOGRAM_GRID_SHOWCASE),
+    },
+  },
 ];
