@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
     <ul class="dev-home-list">
       <li><a routerLink="style">Guide de style</a></li>
       <li><a routerLink="lp-button">LpButton</a></li>
+      <li><a routerLink="lp-card">LpCard</a></li>
     </ul>
   `,
 })
