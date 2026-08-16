@@ -7,4 +7,5 @@ export * from './lib/button/lp-button.showcase';
 export * from './lib/card/lp-card';
 export * from './lib/card/lp-card.showcase';
 export * from './lib/panel/lp-panel';
+export * from './lib/panel/lp-panel.showcase';
 export * from './lib/showcase.types';
