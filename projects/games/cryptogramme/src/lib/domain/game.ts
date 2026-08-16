@@ -20,7 +20,7 @@ export interface Puzzle {
   readonly text: string;
   readonly seed: string;
   readonly accentMode: AccentMode;
-  readonly handCapacity: number;
+  readonly pileCount: number;
   readonly maxErrors: number;
   /** Symbole attendu pour chaque case, aligné sur `board`. `null` = case fixe. */
   readonly solution: readonly (Sym | null)[];
@@ -32,37 +32,37 @@ export interface GameState {
   /** Table de correspondance révélée : nombre → symbole. */
   readonly known: ReadonlyMap<number, Sym>;
   readonly deck: readonly Sym[];
-  /** Pile LIFO plafonnée à `handCapacity` ; seul le dernier élément est jouable. */
-  readonly hand: readonly Sym[];
-  readonly selectedCell: number | null;
+  /** `pileCount` piles LIFO indépendantes ; seul le sommet de chacune est jouable. */
+  readonly piles: readonly (readonly Sym[])[];
+  readonly selectedPile: number | null;
   readonly errors: number;
   readonly status: 'playing' | 'won' | 'lost';
 }
 
 export type Action =
-  | { readonly type: 'SELECT_CELL'; readonly index: number }
+  | { readonly type: 'SELECT_PILE'; readonly index: number }
   | { readonly type: 'DRAW' }
-  | { readonly type: 'PLAY' }
+  | { readonly type: 'PLAY'; readonly index: number }
   | { readonly type: 'RESTART'; readonly seed: string };
 
 export interface GameOptions {
   readonly seed: string;
   readonly accentMode?: AccentMode;
-  readonly handCapacity?: number;
+  readonly pileCount?: number;
   readonly maxErrors?: number;
   readonly givenCount?: number;
 }
 
 const DEFAULTS = {
   accentMode: 'distinct' as AccentMode,
-  handCapacity: 5,
+  pileCount: 5,
   maxErrors: 3,
   givenCount: 3,
 };
 
 export function createGame(quoteId: string, text: string, options: GameOptions): GameState {
   const accentMode = options.accentMode ?? DEFAULTS.accentMode;
-  const handCapacity = options.handCapacity ?? DEFAULTS.handCapacity;
+  const pileCount = options.pileCount ?? DEFAULTS.pileCount;
   const maxErrors = options.maxErrors ?? DEFAULTS.maxErrors;
   const givenCount = options.givenCount ?? DEFAULTS.givenCount;
 
@@ -80,12 +80,12 @@ export function createGame(quoteId: string, text: string, options: GameOptions):
   for (const sym of givens) known.set(cipher.get(sym)!, sym);
 
   return {
-    puzzle: { quoteId, text, seed: options.seed, accentMode, handCapacity, maxErrors, solution },
+    puzzle: { quoteId, text, seed: options.seed, accentMode, pileCount, maxErrors, solution },
     board,
     known,
     deck,
-    hand: [],
-    selectedCell: null,
+    piles: Array.from({ length: pileCount }, () => []),
+    selectedPile: null,
     errors: 0,
     // Calculé plutôt que supposé : un texte sans aucune lettre, ou dont tous les symboles
     // seraient offerts, produirait une grille déjà complète.
@@ -93,13 +93,16 @@ export function createGame(quoteId: string, text: string, options: GameOptions):
   };
 }
 
-/** Carte jouable, c'est-à-dire le sommet de la pile. `null` si la main est vide. */
-export function topCard(state: GameState): Sym | null {
-  return state.hand.length > 0 ? state.hand[state.hand.length - 1] : null;
+/** Carte jouable d'une pile, son sommet. `null` si la pile est vide ou l'index nul. */
+export function pileTopCard(state: GameState, pileIndex: number | null): Sym | null {
+  if (pileIndex === null) return null;
+  const pile = state.piles[pileIndex];
+  return pile && pile.length > 0 ? pile[pile.length - 1] : null;
 }
 
 /**
- * Une case est jouable si elle est vide et si rien de connu ne contredit la carte du dessus.
+ * Une case est jouable si elle est vide, qu'une pile est sélectionnée, et si rien de connu ne
+ * contredit le sommet de cette pile.
  *
  * Ce garde-fou est purement informationnel : il empêche le joueur de perdre une erreur sur un
  * clic malheureux, alors qu'il savait déjà que ce nombre valait autre chose. Une erreur ne
@@ -109,7 +112,7 @@ export function isPlayable(state: GameState, index: number): boolean {
   const cell = state.board[index];
   if (!cell || cell.kind !== 'letter' || cell.filled !== null) return false;
 
-  const card = topCard(state);
+  const card = pileTopCard(state, state.selectedPile);
   if (card === null) return false;
 
   const resolved = state.known.get(cell.code);
@@ -125,7 +128,7 @@ export function reduce(state: GameState, action: Action): GameState {
     return createGame(state.puzzle.quoteId, state.puzzle.text, {
       seed: action.seed,
       accentMode: state.puzzle.accentMode,
-      handCapacity: state.puzzle.handCapacity,
+      pileCount: state.puzzle.pileCount,
       maxErrors: state.puzzle.maxErrors,
     });
   }
@@ -133,54 +136,61 @@ export function reduce(state: GameState, action: Action): GameState {
   if (state.status !== 'playing') return state;
 
   switch (action.type) {
-    case 'SELECT_CELL': {
-      const cell = state.board[action.index];
-      if (!cell || cell.kind !== 'letter' || cell.filled !== null) return state;
-      const next = state.selectedCell === action.index ? null : action.index;
-      return { ...state, selectedCell: next };
+    case 'SELECT_PILE': {
+      const pile = state.piles[action.index];
+      if (!pile || pile.length === 0) return state;
+      const next = state.selectedPile === action.index ? null : action.index;
+      return { ...state, selectedPile: next };
     }
 
     case 'DRAW': {
       if (state.deck.length === 0) return state;
-      if (state.hand.length >= state.puzzle.handCapacity) return state;
-      return {
-        ...state,
-        deck: state.deck.slice(0, -1),
-        hand: [...state.hand, state.deck[state.deck.length - 1]],
-      };
+
+      const drawCount = Math.min(state.puzzle.pileCount, state.deck.length);
+      const deck = state.deck.slice(0, state.deck.length - drawCount);
+      // Cartes piochées, dans l'ordre où elles sortent de la pioche (le sommet en premier).
+      const drawnInOrder = state.deck.slice(state.deck.length - drawCount).reverse();
+
+      const piles = state.piles.map((pile, i) =>
+        i < drawCount ? [...pile, drawnInOrder[i]] : pile,
+      );
+
+      return { ...state, deck, piles };
     }
 
     case 'PLAY': {
-      const index = state.selectedCell;
-      const card = topCard(state);
-      if (index === null || card === null) return state;
+      const pileIndex = state.selectedPile;
+      const card = pileTopCard(state, pileIndex);
+      if (pileIndex === null || card === null) return state;
 
-      const cell = state.board[index];
-      if (cell.kind !== 'letter' || cell.filled !== null) return state;
+      const cell = state.board[action.index];
+      if (!cell || cell.kind !== 'letter' || cell.filled !== null) return state;
 
-      // Pose fausse : une erreur, la carte reste en main.
-      if (state.puzzle.solution[index] !== card) {
+      // Pose fausse : une erreur, la carte reste sur sa pile.
+      if (state.puzzle.solution[action.index] !== card) {
         const errors = state.errors + 1;
         return {
           ...state,
           errors,
-          selectedCell: null,
+          selectedPile: null,
           status: errors >= state.puzzle.maxErrors ? 'lost' : 'playing',
         };
       }
 
       const board = [...state.board];
-      board[index] = { ...cell, filled: card };
+      board[action.index] = { ...cell, filled: card };
 
       const known = new Map(state.known);
       known.set(cell.code, card);
+
+      const piles = state.piles.map((pile, i) => (i === pileIndex ? pile.slice(0, -1) : pile));
 
       return {
         ...state,
         board,
         known,
-        hand: state.hand.slice(0, -1),
-        selectedCell: null,
+        piles,
+        selectedPile: null,
         status: emptyLetterCells(board) === 0 ? 'won' : 'playing',
       };
     }
