@@ -1,5 +1,5 @@
 import { computed, signal, type Signal, type WritableSignal } from '@angular/core';
-import { createGame, isPlayable, reduce, topCard } from '../domain/game';
+import { createGame, isPlayable, pileTopCard, reduce } from '../domain/game';
 import type { Action, GameOptions, GameState } from '../domain/game';
 import type { Sym } from '../domain/types';
 
@@ -14,24 +14,23 @@ export class GameStore {
   private readonly stateSignal: WritableSignal<GameState>;
 
   readonly state: Signal<GameState>;
-  readonly topCard: Signal<Sym | null>;
+  readonly selectedPileTopCard: Signal<Sym | null>;
   readonly canDraw: Signal<boolean>;
-  /** Un booléen par case du plateau : vrai si la carte du dessus peut y être posée sans risque connu. */
+  /** Un booléen par case du plateau : vrai si le sommet de la pile sélectionnée peut y être posé sans risque connu. */
   readonly playableCells: Signal<readonly boolean[]>;
 
   constructor(quoteId: string, text: string, options: GameOptions) {
     this.stateSignal = signal(createGame(quoteId, text, options));
     this.state = this.stateSignal.asReadonly();
 
-    this.topCard = computed(() => topCard(this.stateSignal()));
+    this.selectedPileTopCard = computed(() => {
+      const state = this.stateSignal();
+      return pileTopCard(state, state.selectedPile);
+    });
 
     this.canDraw = computed(() => {
       const state = this.stateSignal();
-      return (
-        state.status === 'playing' &&
-        state.deck.length > 0 &&
-        state.hand.length < state.puzzle.handCapacity
-      );
+      return state.status === 'playing' && state.deck.length > 0;
     });
 
     this.playableCells = computed(() => {
@@ -40,16 +39,16 @@ export class GameStore {
     });
   }
 
-  selectCell(index: number): void {
-    this.dispatch({ type: 'SELECT_CELL', index });
+  selectPile(index: number): void {
+    this.dispatch({ type: 'SELECT_PILE', index });
   }
 
   draw(): void {
     this.dispatch({ type: 'DRAW' });
   }
 
-  play(): void {
-    this.dispatch({ type: 'PLAY' });
+  play(index: number): void {
+    this.dispatch({ type: 'PLAY', index });
   }
 
   restart(seed: string): void {
