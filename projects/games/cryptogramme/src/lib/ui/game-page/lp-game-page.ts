@@ -46,6 +46,7 @@ import { LpErrorCounter } from '../error-counter/lp-error-counter';
           />
           <lp-cryptogram-deck
             [remaining]="store.state().deck.length"
+            [handFull]="!store.canDraw()"
             (draw)="store.draw()"
           />
         </div>

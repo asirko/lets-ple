@@ -26,7 +26,7 @@ de `AUTHOR_OVERRIDES` (`import-quotekg-candidates.ts`) pour le reste du corpus.
 
 **Let's Plé** — a French-language word-game portal (PWA, static, deployed to GitHub Pages). The
 first game is a **cryptogramme**: a quote where every letter is replaced by a number, to be
-reconstructed by drawing letter-cards from a capped hand.
+reconstructed by drawing letter-cards from a shared draw pile into 5 independent piles.
 
 Design and rationale live in `docs/superpowers/specs/2026-07-28-lets-ple-cryptogramme-design.md`.
 The step-by-step build plan (mostly executed already — check `git log` for current progress) is in
@@ -172,20 +172,21 @@ types.ts     shared Sym/AccentMode/Cell types — no logic
 ```
 
 `game.ts` orchestrates the others; it does not reimplement them. State is immutable — every
-`reduce()` call returns a new object, never mutates `board` or `hand` in place.
+`reduce()` call returns a new object, never mutates `board` or `piles` in place.
 
 **Core invariant** (checked continuously in `invariants.spec.ts` across ~50 seeds ×
-4 quote shapes): `|deck| + |hand| = number of empty letter cells`, and the top card of the hand
-always has at least one valid, correct cell to land on. Because the deck is exactly the multiset of
-remaining answers, no game state is ever unsolvable — a stuck player is an *information* problem
-(which cell is correct?), never a mechanical dead end. Any change to `game.ts`, `deck.ts`, or
-`givens.ts` should be re-verified against this test, not just its own unit tests — invoke the
-`engine-invariant-guardian` agent (`.claude/agents/engine-invariant-guardian.md`) right after such
-a change, before moving on.
+4 quote shapes): `|deck| + total cards across all piles = number of empty letter cells`, and every
+non-empty pile's top card always has at least one valid, correct cell to land on. Because the deck
+plus piles are exactly the multiset of remaining answers, no game state is ever unsolvable — a
+stuck player is an *information* problem (which cell is correct?), never a mechanical dead end. Any
+change to `game.ts`, `deck.ts`, or `givens.ts` should be re-verified against this test, not just
+its own unit tests — invoke the `engine-invariant-guardian` agent
+(`.claude/agents/engine-invariant-guardian.md`) right after such a change, before moving on.
 
 Game rules with exact values (do not casually change without checking the spec's rationale):
-hand capacity 5 (LIFO — only the top card is playable), max errors 3, 2-3 givens, `accentMode`
-defaults to `'distinct'` (accented letters are distinct symbols from their base letter).
+5 independent piles (LIFO each — every pile's top card is playable simultaneously), max errors 3,
+2-3 givens, `accentMode` defaults to `'distinct'` (accented letters are distinct symbols from their
+base letter).
 
 ### Corpus and difficulty scoring
 

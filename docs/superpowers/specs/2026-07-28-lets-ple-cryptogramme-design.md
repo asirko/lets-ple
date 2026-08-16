@@ -110,6 +110,10 @@ d'accessibilité et d'interaction via `@storybook/addon-a11y` et les fonctions `
 
 ## 4. Le jeu : règles
 
+> **Mise à jour du 2026-08-16** : le modèle de main décrit ici (pile LIFO unique) a été remplacé
+> par un modèle à 5 piles simultanément jouables. Voir
+> `docs/superpowers/specs/2026-08-16-piles-multiples-cryptogramme-design.md` pour le design actuel.
+
 Une citation est chiffrée : chaque symbole de l'alphabet reçoit un nombre distinct, tiré au sort.
 Les espaces, la ponctuation et les apostrophes restent toujours visibles.
 

@@ -133,6 +133,9 @@
 
 // --- Piles (main à 5 piles) ----------------------------------------------------------------------
 
+// Le host doit disparaître de l'arbre de boîtes : sinon `.crypto-piles` a pour bloc conteneur
+// son propre host, ajusté à sa hauteur (~72px), et n'a aucune marge pour coller au scroll.
+// En `contents`, `.crypto-piles` devient enfant flex direct de `.crypto-page` et le sticky prend.
 lp-cryptogram-piles {
   display: contents;
 }

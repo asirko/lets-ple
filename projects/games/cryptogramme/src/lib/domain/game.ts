@@ -104,9 +104,9 @@ export function pileTopCard(state: GameState, pileIndex: number | null): Sym | n
  * Une case est jouable si elle est vide, qu'une pile est sélectionnée, et si rien de connu ne
  * contredit le sommet de cette pile.
  *
- * Ce garde-fou est purement informationnel : il empêche le joueur de perdre une erreur sur un
- * clic malheureux, alors qu'il savait déjà que ce nombre valait autre chose. Une erreur ne
- * peut donc naître que d'un vrai pari sur un nombre encore inconnu.
+ * Ce n'est qu'un indice visuel (bordure en pointillés côté UI) : rien n'empêche mécaniquement
+ * de cliquer une case déjà connue comme fausse et d'y perdre une erreur. Le but est seulement
+ * d'aider le joueur à repérer les cases sans risque connu, pas de l'empêcher de parier.
  */
 export function isPlayable(state: GameState, index: number): boolean {
   const cell = state.board[index];
