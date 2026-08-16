@@ -46,4 +46,11 @@ export const DEV_ROUTES: Routes = [
       loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_CRYPTOGRAM_HAND_SHOWCASE),
     },
   },
+  {
+    path: 'lp-error-counter',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_ERROR_COUNTER_SHOWCASE),
+    },
+  },
 ];
