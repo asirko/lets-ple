@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ShowcaseRenderer } from './showcase-renderer';
-import type { ComponentShowcase } from '../showcase.types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 
 @Component({
   selector: 'app-required-input-fixture',

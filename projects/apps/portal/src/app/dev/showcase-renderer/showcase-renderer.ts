@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewContainerRef, effect, input, signal, viewChild } from '@angular/core';
-import type { ComponentShowcase, ControlSpec, FormValue } from '../showcase.types';
-import { defaultFormValues, resolveProps } from '../showcase.types';
+import type { ComponentShowcase, ControlSpec, FormValue } from '@lets-ple/ui';
+import { defaultFormValues, resolveProps } from '@lets-ple/ui';
 
 function projectableNodesFromHtml(html: string): Node[][] {
   const template = document.createElement('template');

@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
     <h1>Showcase de composants</h1>
     <ul class="dev-home-list">
       <li><a routerLink="style">Guide de style</a></li>
+      <li><a routerLink="lp-button">LpButton</a></li>
     </ul>
   `,
 })

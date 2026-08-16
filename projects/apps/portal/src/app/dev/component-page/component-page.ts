@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ShowcaseRenderer } from '../showcase-renderer/showcase-renderer';
-import type { ComponentShowcase } from '../showcase.types';
+import type { ComponentShowcase } from '@lets-ple/ui';
 
 @Component({
   selector: 'app-component-page',
