@@ -15,8 +15,7 @@
     "extract:quotes": "tsx projects/games/cryptogramme/tools/extract-quotekg-citations.ts",
     "filter:quotes": "tsx projects/games/cryptogramme/tools/filter-quotekg-candidates.ts",
     "import:quotes": "tsx projects/games/cryptogramme/tools/import-quotekg-candidates.ts",
-    "storybook": "ng run storybook:storybook",
-    "build-storybook": "ng run storybook:build-storybook",
+    "docs": "compodoc -p tsconfig.doc.json -s",
     "build:ui": "ng build ui",
     "build:cryptogramme": "npm run build:ui && ng build cryptogramme"
   },
@@ -34,7 +33,6 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^2.6.4",
     "@angular-devkit/architect": "^0.2200.0",
     "@angular-devkit/build-angular": "^22.0.0",
     "@angular-devkit/core": "^22.0.0",
@@ -42,12 +40,7 @@
     "@angular/build": "^22.0.8",
     "@angular/cli": "^22.0.8",
     "@angular/compiler-cli": "^22.0.0",
-    "@chromatic-com/storybook": "^5.2.1",
     "@compodoc/compodoc": "^2.0.0",
-    "@storybook/addon-a11y": "^10.5.5",
-    "@storybook/addon-docs": "^10.5.5",
-    "@storybook/addon-vitest": "^10.5.5",
-    "@storybook/angular-vite": "^10.5.5",
     "@types/node": "^20.19.43",
     "@vitest/browser-playwright": "4.1.10",
     "@vitest/coverage-v8": "4.1.10",
@@ -56,7 +49,6 @@
     "ng-packagr": "^22.0.0",
     "playwright": "^1.62.0",
     "prettier": "^3.8.1",
-    "storybook": "^10.5.5",
     "tsx": "^4.23.1",
     "typescript": "~6.0.2",
     "vite": "^8.1.5",

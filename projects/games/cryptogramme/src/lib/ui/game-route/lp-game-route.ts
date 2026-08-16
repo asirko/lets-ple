@@ -7,7 +7,8 @@ import type { Quote } from '../../quotes/quote';
 /**
  * Point d'entrée routé du jeu (voir `routes.ts`) : résout une citation au hasard dans le corpus,
  * puis délègue tout le reste — plateau, main, règles — à `LpGamePage`, agnostique de cette
- * résolution. `LpGamePage` reste donc pilotable par inputs explicites en Storybook.
+ * résolution. `LpGamePage` reste donc pilotable par inputs explicites dans le showcase de
+ * composants.
  */
 @Component({
   selector: 'lp-game-route',

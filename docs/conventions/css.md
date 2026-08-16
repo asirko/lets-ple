@@ -68,7 +68,9 @@ cet état est spécifique, mais le nom de la classe d'état reste générique et
 ## Chargement
 
 - **Portail** (`projects/apps/portal/src/styles.scss`) : `@use` le `index.scss` de `libs/ui`.
-- **Storybook** (`.storybook/preview.ts`) : importe le même `index.scss`, plus — en dev seulement —
-  le module de chaque jeu dont des stories existent.
+- **Showcase de composants** (`/dev/components`, dans le portail) : le portail importe déjà
+  `index.scss` globalement ; le module SCSS d'un jeu (`_cryptogramme.scss`) n'est chargé que
+  lorsque la page showcase d'un composant de ce jeu (ex. `LpGamePage`) est visitée, via le même
+  mécanisme de chunk lazy que la route `/cryptogramme` elle-même.
 - **Un jeu** : son module SCSS part dans le même chunk lazy que son code, importé par le point
   d'entrée routé du jeu — jamais par le portail.

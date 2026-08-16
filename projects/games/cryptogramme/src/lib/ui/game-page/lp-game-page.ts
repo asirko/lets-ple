@@ -11,8 +11,8 @@ import { LpErrorCounter } from '../error-counter/lp-error-counter';
  * Écran de jeu : assemble les six composants de présentation autour d'un `GameStore` construit à
  * partir des inputs (citation, auteur, source, graine). Agnostique de la provenance de ces
  * données — la résolution d'une citation au hasard dans le corpus est à la charge de l'appelant
- * (`LpGameRoute`, voir `routes.ts`), ce qui garde ce composant pilotable par inputs explicites en
- * Storybook.
+ * (`LpGameRoute`, voir `routes.ts`), ce qui garde ce composant pilotable par inputs explicites dans
+ * le showcase de composants.
  *
  * C'est lui, et lui seul parmi les composants du jeu, qui référence le module SCSS
  * `_cryptogramme.scss`. Avec le builder esbuild d'Angular, un `styleUrls` porté par un composant

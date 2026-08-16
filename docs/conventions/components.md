@@ -7,11 +7,11 @@ a le droit d'en porter.
 
 Un composant **UI** (`libs/ui/src/lib/*` ou le dossier `ui/` d'un jeu, ex.
 `projects/games/cryptogramme/src/lib/ui/cryptogram-cell/`) se conçoit et se construit **d'abord
-dans Storybook**, isolé de tout store ou service métier. Il reçoit ses données par `input()`,
-émet par `output()`, et c'est lui qui porte la quasi-totalité du style visuel du produit fini —
-via les classes globales SMACSS (voir `css.md`), jamais du CSS inventé localement. Une story par
-composant (et par état visuel notable : vide, rempli, sélectionné, désactivé…) avant, ou en même
-temps que, l'implémentation — jamais après.
+dans le showcase de composants (`/dev/components`)**, isolé de tout store ou service métier. Il
+reçoit ses données par `input()`, émet par `output()`, et c'est lui qui porte la quasi-totalité du
+style visuel du produit fini — via les classes globales SMACSS (voir `css.md`), jamais du CSS
+inventé localement. Un fichier `*.showcase.ts` par composant (et par état visuel notable : vide,
+rempli, sélectionné, désactivé…) avant, ou en même temps que, l'implémentation — jamais après.
 
 Un composant **logique** (un écran, un assembleur — ex. `LpGamePage`) ne fait qu'orchestrer des
 composants UI et un store/service : il pose la disposition entre eux, transmet des `input`/
@@ -29,7 +29,7 @@ les composants UI que — rarement, seulement pour la disposition — par les co
 
 ## Pourquoi cet ordre
 
-Concevoir en Storybook d'abord force le composant UI à être autonome : pas d'accès direct à un
+Concevoir dans le showcase d'abord force le composant UI à être autonome : pas d'accès direct à un
 store, pas de logique métier cachée dans son template. Ça garantit que la logique (règles du jeu,
 état, orchestration) reste concentrée dans les composants logiques et le domaine
 (`domain/`, `store/`), jamais dispersée dans un composant de présentation — et que chaque
@@ -40,7 +40,7 @@ composant UI reste testable et visualisable isolément, à tout moment du projet
 `LpGamePage` (`projects/games/cryptogramme/src/lib/ui/game-page/lp-game-page.ts`) est le composant
 logique de l'écran de jeu : il construit un `GameStore` à partir de ses inputs et assemble
 `LpCipherTable`, `LpCryptogramDeck`, `LpCryptogramGrid`, `LpCryptogramHand`, `LpErrorCounter`,
-`LpButton`, `LpPanel` — chacun conçu et documenté dans Storybook avant son intégration ici. Son
+`LpButton`, `LpPanel` — chacun conçu et documenté dans le showcase avant son intégration ici. Son
 propre `styleUrls` est une exception documentée : en tant que point d'entrée routé du jeu, il porte
 la référence vers le module SCSS partagé du jeu pour que ce module parte dans le bon chunk lazy
 (voir le commentaire en tête du fichier et `css.md#Chargement`) — ce n'est pas du style local, et
@@ -54,5 +54,5 @@ projects/games/<jeu>/src/lib/ui/<composant>/  composants UI propres à un jeu (c
 projects/games/<jeu>/src/lib/ui/<écran>/      composants logiques du jeu (assembleurs, écrans routés)
 ```
 
-Chaque composant UI — partagé ou propre à un jeu — a son fichier `*.stories.ts` à côté de son
+Chaque composant UI — partagé ou propre à un jeu — a son fichier `*.showcase.ts` à côté de son
 implémentation.
