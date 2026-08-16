@@ -62,7 +62,10 @@ export class ShowcaseRenderer<T> {
 
   constructor() {
     this.controlEntries = () =>
-      Object.entries(this.showcase().controls).map(([name, control]) => ({ name, control }));
+      (Object.entries(this.showcase().controls) as [string, ControlSpec][]).map(([name, control]) => ({
+        name,
+        control,
+      }));
 
     // Réinitialise le formulaire à ses valeurs par défaut à chaque nouvelle spec (changement de
     // composant affiché). Angular 22 autorise nativement l'écriture de signals dans un effect

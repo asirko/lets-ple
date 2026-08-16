@@ -21,6 +21,8 @@ jobs:
 
       - run: npm test
 
+      - run: npm run test:ng
+
       - run: npm run validate:quotes
 
       - run: npm run build
