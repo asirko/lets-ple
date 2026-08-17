@@ -1,7 +1,7 @@
 # Let's Plé
 
-Un portail de jeux de langue française, installable en PWA et déployé en statique sur GitHub
-Pages. Le nom joue la graphie phonétique de *let's play* — un clin d'œil à l'orthographe, qui est
+Un portail de jeux de langue française, installable en PWA et déployé en statique sur Firebase
+Hosting. Le nom joue la graphie phonétique de *let's play* — un clin d'œil à l'orthographe, qui est
 précisément le sujet des jeux.
 
 Le premier jeu est un **cryptogramme** : une citation dont chaque lettre est remplacée par un
@@ -15,8 +15,8 @@ Toutes les règles du jeu vivent dans un **moteur pur, sans dépendance Angular*
 de simuler des parties pour l'équilibrage, et de garantir par construction qu'aucune position n'est
 insoluble. L'interface n'est qu'une façade au-dessus de ce moteur.
 
-Le détail des règles, du modèle d'état et des décisions de conception se trouve dans
-[`docs/superpowers/specs/2026-07-28-lets-ple-cryptogramme-design.md`](docs/superpowers/specs/2026-07-28-lets-ple-cryptogramme-design.md).
+Le détail des règles, du modèle d'état et de leur rationale se trouve dans
+[`docs/reference/domain-cryptogramme.md`](docs/reference/domain-cryptogramme.md).
 
 ## Structure du dépôt
 
@@ -81,8 +81,6 @@ npm run docs              # publie la doc Compodoc en site statique autonome (./
 
 ## Statut
 
-Le moteur du cryptogramme (chiffrement, plateau, pioche, réducteur, invariants de solvabilité) est
-implémenté et testé. Le corpus de citations témoins, sa validation et son score de difficulté sont
-en place. L'interface, le portail et le déploiement restent à construire — voir
-[`docs/superpowers/plans/2026-07-28-lets-ple-v1.md`](docs/superpowers/plans/2026-07-28-lets-ple-v1.md)
-pour le détail des étapes.
+Le scaffolding initial est terminé : moteur, corpus, portail, PWA et déploiement (Firebase
+Hosting) sont en place et testés. Le développement se poursuit sur l'affinage — voir les issues
+GitHub du dépôt (`gh issue list --repo asirko/lets-ple`) pour l'état détaillé du travail en cours.

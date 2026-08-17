@@ -18,7 +18,7 @@ import { LpErrorCounter } from '../error-counter/lp-error-counter';
  * `_cryptogramme.scss`. Avec le builder esbuild d'Angular, un `styleUrls` porté par un composant
  * chargé (directement ou transitivement) via `loadComponent` part dans le même chunk lazy — c'est
  * ce qui garantit que `_cryptogramme.scss` ne finit jamais dans le bundle du portail (voir
- * docs/superpowers/specs/2026-07-28-architecture-css-smacss-design.md, section « Chargement »).
+ * docs/conventions/css.md, section « Chargement »).
  * `ViewEncapsulation.None` est nécessaire en complément : ce fichier définit des classes globales
  * `crypto-*` consommées par tous les composants du jeu, pas du style scopé à ce seul composant.
  */

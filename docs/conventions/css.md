@@ -1,8 +1,16 @@
 # Convention CSS — SMACSS
 
-Rationale et contexte : `docs/superpowers/specs/2026-07-28-architecture-css-smacss-design.md`. Ce
-document est la référence rapide à suivre à chaque fois qu'on touche du style ; il ne réexplique
-pas le pourquoi.
+Ce document est la référence à suivre à chaque fois qu'on touche du style.
+
+## Pourquoi SMACSS
+
+Avant cette convention, chaque composant (`LpButton`, `LpCard`, `LpPanel`) portait tout son style —
+couleurs, fond, bordures, ombres, transitions — dans son propre `.scss`, sur des variables CSS déjà
+globales. SMACSS déplace l'immense majorité du style dans des feuilles globales par catégorie, pour
+un style prévisible et facile à faire évoluer sans toucher au code TypeScript des composants, avec
+une frontière nette entre design system partagé et habillage propre à un jeu. Pas de linter ou de
+test automatisé imposant la convention de nommage pour l'instant — envisageable plus tard si des
+écarts apparaissent, pas nécessaire pour démarrer.
 
 ## Règle d'or
 
