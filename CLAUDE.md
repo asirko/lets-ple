@@ -73,12 +73,32 @@ source of truth for *how* the system works once a feature is built — see `## D
 `docs/superpowers/` holds only specs/plans for work still in progress; see
 `docs/conventions/documentation.md` for how they get folded into `docs/reference/` once done.
 
+## Starting a ticket
+
+**Every subject — a GitHub issue or a free-form chore — starts with `npm run ticket`, before
+reading any code.** It creates the dedicated worktree, joins its `node_modules` to the root one,
+reserves a dev port and prints the issue's context in one block, so opening a subject costs a
+single command instead of a dozen exploratory ones.
+
+```bash
+npm run ticket 42              # GitHub issue: branch 42-<titre>, issue context printed
+npm run ticket refacto-css     # free-form subject, no issue
+```
+
+Then `npm start` inside the worktree serves on that subject's own port, no argument needed.
+**Never run `npm install` in a worktree** — its `node_modules` is a junction to the root one, so
+the install would write into the main repo; use `npm run ticket:deps` instead. Full rules,
+rationale and the end-of-subject cleanup: `docs/conventions/worktrees.md`.
+
 ## Commands
 
 Node ≥ 24.15.0 is required (Angular 22 refuses to install below it).
 
 ```bash
-npm start                      # ng serve portal — this is a multi-project workspace, always name the project
+npm run ticket <n|nom>         # ouvre un sujet : worktree dédié + deps + port + contexte de l'issue
+npm run ticket:deps            # depuis un worktree : détache la jonction node_modules, installe pour de bon
+npm run ticket:clean <branche> # fin de sujet : retire la jonction puis le worktree (la branche survit)
+npm start                      # ng serve portal, sur le port du worktree courant (4200 à la racine)
 npm run build                  # ng build portal
 npm test                       # vitest run — domain engine + tools, NOT the Angular apps
 npm run test:watch             # vitest --watch, same scope
@@ -129,7 +149,8 @@ see `docs/reference/architecture.md` before running or writing tests.
 - **i18n and storage** — `docs/reference/i18n-storage.md`, read before touching `I18nService` or
   `StorageService`.
 
-`docs/conventions/` holds how-to-write-code rules: `commits.md`, `components.md`, `css.md`, and
+`docs/conventions/` holds how-to-write-code rules: `commits.md`, `components.md`, `css.md`,
+`worktrees.md` (how a subject gets its isolated workspace — see `## Starting a ticket` above), and
 `documentation.md` (the lifecycle that keeps `docs/reference/` and `docs/superpowers/` from
 drifting apart — read it before closing any task that produced a spec or plan under
 `docs/superpowers/`).

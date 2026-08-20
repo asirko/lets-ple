@@ -37,6 +37,9 @@ firebase-debug.log
 /.worktrees
 /.claude/worktrees
 
+# Port de dev réservé au worktree, écrit par `npm run ticket` (voir scripts/ticket.ts)
+/.worktree-port
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/

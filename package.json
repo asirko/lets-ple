@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve portal",
+    "start": "tsx scripts/serve.ts portal",
+    "ticket": "tsx scripts/ticket.ts",
+    "ticket:deps": "tsx scripts/ticket.ts --detach-deps",
+    "ticket:clean": "tsx scripts/ticket.ts --clean",
     "build": "ng build portal",
     "watch": "ng build --watch --configuration development",
     "test": "vitest run --config vitest.domain.config.ts",
