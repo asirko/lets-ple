@@ -33,8 +33,9 @@ firebase-debug.log
 !.vscode/mcp.json
 .history/*
 
-# Worktrees git isolés (superpowers:using-git-worktrees)
+# Worktrees git isolés (superpowers:using-git-worktrees, EnterWorktree)
 /.worktrees
+/.claude/worktrees
 
 # Miscellaneous
 /.angular/cache
