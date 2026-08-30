@@ -27,6 +27,12 @@ describe('HomePage', () => {
     expect(compiled.textContent).toContain(GAME_REGISTRY[0].title);
   });
 
+  it('affiche les thèmes des jeux', () => {
+    const compiled = render();
+    expect(compiled.textContent).toContain('#multi');
+    expect(compiled.textContent).toContain('#compétitif');
+  });
+
   it("lie chaque carte à la route du jeu", () => {
     const compiled = render();
     const link = compiled.querySelector('a');

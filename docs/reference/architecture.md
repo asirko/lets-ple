@@ -14,7 +14,8 @@ projects/
 │  ├─ ui/                design system : tokens, LpButton/LpCard/LpPanel, a11y
 │  └─ game-core/         socle commun à tous les jeux
 └─ games/
-   └─ cryptogramme/      le premier jeu, lui-même scindé en domain/, store/ et ui/
+   ├─ cryptogramme/      jeu de reconstruction de citations
+   └─ dernier-mot/       jeu multijoueur de préfixes, dictionnaire local et tools de corpus
 ```
 
 **Pourquoi ce découpage.** Un jeu est une library autonome exposant ses propres routes, chargée en
@@ -26,13 +27,13 @@ module isolé. Ajouter un jeu revient à créer une library sous `projects/games
 
 Ce que tout futur jeu partagera :
 
-| Élément | Rôle |
-|---|---|
-| `GameDescriptor` | métadonnées d'un jeu pour le catalogue : id, titre, résumé, route, illustration, thèmes |
-| `GAME_REGISTRY` | table des jeux et de leurs routes lazy |
-| `I18nService` | chargement des dictionnaires JSON, résolution de clé avec interpolation — détail dans `docs/reference/i18n-storage.md` |
-| `StorageService` | accès `localStorage` typé et versionné — détail dans `docs/reference/i18n-storage.md` |
-| `ProgressService` | parties terminées, statistiques, préférences |
+| Élément           | Rôle                                                                                                                   |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `GameDescriptor`  | métadonnées d'un jeu pour le catalogue : id, titre, résumé, route, illustration, thèmes                                |
+| `GAME_REGISTRY`   | table des jeux et de leurs routes lazy                                                                                 |
+| `I18nService`     | chargement des dictionnaires JSON, résolution de clé avec interpolation — détail dans `docs/reference/i18n-storage.md` |
+| `StorageService`  | accès `localStorage` typé et versionné — détail dans `docs/reference/i18n-storage.md`                                  |
+| `ProgressService` | parties terminées, statistiques, préférences                                                                           |
 
 ## Le showcase de composants
 
@@ -57,9 +58,9 @@ automatiquement exclu de ce que `ng-packagr` empaquette dans la library publiée
 pur (`node:fs`, `process`, `tsx`) n'a rien à faire dans la surface d'une library Angular. Ne pas
 ajouter de script spécifique à un jeu dans le `tools/` racine, ni dans `src/lib/` d'un jeu.
 
-## Le moteur pur — `domain/`
+## Les moteurs purs — `domain/`
 
-`projects/games/cryptogramme/src/lib/domain/` n'a **aucune dépendance Angular ni RxJS** — c'est
+Les dossiers `projects/games/*/src/lib/domain/` n'ont **aucune dépendance Angular ni RxJS** — c'est
 l'invariant le plus important du projet. Il est vérifié par `domain/purity.spec.ts`, qui grep
 chaque fichier du dossier à la recherche de `from '@angular/'` ou `from 'rxjs'` et fait échouer le
 build s'il en trouve un. Ne jamais importer de type Angular dans `domain/`, même pour le typage :
@@ -86,6 +87,11 @@ Les règles du jeu (valeurs exactes) et l'invariant de solvabilité sont documen
 `docs/reference/domain-cryptogramme.md`, avec leur rationale — ce document-ci ne couvre que la
 structure du code, pas le pourquoi des règles.
 
+Dernier Mot suit la même frontière. Son `domain/game.ts` réduit trois actions immuables, son
+`domain/dictionary.ts` définit le port de recherche de préfixes et `normalize-word.ts` unifie casse,
+accents et ligatures. Les règles et leurs raisons vivent dans
+`docs/reference/domain-dernier-mot.md`.
+
 ## La façade signals — `store/`
 
 `projects/games/cryptogramme/src/lib/store/` (`GameStore`) est une façade signals au-dessus du
@@ -93,6 +99,22 @@ réducteur pur de `domain/game.ts` : elle ne contient aucune règle de jeu, chaq
 une `Action` et la passe à `reduce()`, puis expose l'état qui en résulte (`state`, `topCard`,
 `canDraw`, `playableCells`) sous forme de signals pour les composants Angular. C'est la seule
 couche du jeu qui a le droit de dépendre d'Angular au-dessus de `domain/`.
+
+`projects/games/dernier-mot/src/lib/store/` applique la même règle : `DernierMotGameStore` expose
+les joueurs courant/actifs, la suite de tour et les gagnants, puis délègue chaque transition au
+réducteur avant de persister l'état.
+
+## Dictionnaire de Dernier Mot
+
+`projects/games/dernier-mot/src/lib/dictionary/` adapte les fichiers générés au port pur du domaine.
+`DictionaryService.load()` charge l'index de préfixes avant le setup ; `manifest()` récupère la
+petite attribution affichée dans les crédits ; `definitions(word)` charge et mémorise uniquement le
+chunk `definitions/<initiale>.json` nécessaire. Les lectures `lookup` et `completions` restent
+synchrones une fois l'index chargé.
+
+Le pipeline spécifique reste dans `projects/games/dernier-mot/tools/` et ses dérivés sous
+`content/dictionaries/dernier-mot/`. Le détail des sources, filtres et commandes est dans le
+`README` de la bibliothèque.
 
 ## Tests — deux runners, ne pas les confondre
 
@@ -105,6 +127,10 @@ couche du jeu qui a le droit de dépendre d'Angular au-dessus de `domain/`.
   qui paie ~15s de boot DOM/compilateur à chaque run. La cible `test` du projet `cryptogramme`
   exclut explicitement `**/domain/**` pour ne pas rejouer les mêmes specs sous le runner lent.
 
+Le build isolé de Dernier Mot doit passer par `npm run build:dernier-mot` : comme pour
+Cryptogramme, son `tsconfig.lib.json` résout les bibliothèques partagées depuis `dist/`, et le script
+construit donc d'abord `ui`, puis `game-core`, avant `dernier-mot`.
+
 ## PWA et service worker
 
 Le portail est une PWA via `@angular/service-worker` (`^22.0.8` dans `package.json`), configuré par
@@ -115,6 +141,9 @@ Le portail est une PWA via `@angular/service-worker` (`^22.0.8` dans `package.js
 - `assets` (`/icons/**`) : `installMode: lazy`, `updateMode: prefetch`.
 - `quotes` (`content/quotes/*.json`) : `installMode: lazy`, `updateMode: lazy` — le corpus n'est mis
   en cache qu'à la demande, jamais préchargé, et les mises à jour ne sont pas non plus anticipées.
+- `dernier-mot-dictionary` (`content/dictionaries/dernier-mot/**`) : `installMode: lazy`,
+  `updateMode: lazy` — index, manifeste et chunks de définitions sont mis en cache au fil des
+  usages.
 
 **Piège non évident** : `npx ng add @angular/pwa --project portal` échoue sur Angular 22 — le
 schematic résout une vieille version du package `@angular/pwa`, incompatible avec le builder
@@ -127,3 +156,7 @@ d'entrée routé du jeu : il injecte `QuoteService`, appelle `loadTheme('littera
 `pickRandomQuote(quotes)` pour résoudre une citation au hasard — c'est seulement une fois cette
 citation résolue (signal `quote()` non nul) que `LpGamePage` est rendu, avec `quoteId`/`text`/
 `author`/`source`/`seed` en inputs explicites.
+
+`LpDernierMotGameRoute` joue le même rôle pour le second jeu : il charge l'index, reprend une partie
+valide ou affiche le setup, puis assemble store, dictionnaire et écrans. La route reste lazy sous
+`/dernier-mot` ; le module SCSS du jeu part dans le même chunk.

@@ -25,6 +25,8 @@ jobs:
 
       - run: npm run validate:quotes
 
+      - run: npm run validate:dernier-mot-dictionary
+
       - run: npm run build
 
       - name: Deployer sur Firebase Hosting

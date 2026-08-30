@@ -1,0 +1,422 @@
+/**
+ * Module visuel de Dernier Mot. Les composants de présentation n'embarquent aucun style local :
+ * les hôtes lazy de showcase chargent ce fichier aujourd'hui, puis l'écran de jeu le chargera.
+ */
+
+// Saisie des joueurs ---------------------------------------------------------------------------
+
+.dernier-mot-player-setup {
+  display: grid;
+  gap: var(--lp-space-5);
+  width: min(100%, 36rem);
+  margin-inline: auto;
+}
+
+.dernier-mot-section-heading {
+  display: grid;
+  gap: var(--lp-space-2);
+}
+
+.dernier-mot-section-heading > * {
+  margin: 0;
+}
+
+.dernier-mot-eyebrow {
+  color: var(--lp-color-primary);
+  font-size: var(--lp-font-size-sm);
+  font-weight: var(--lp-font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dernier-mot-player-list,
+.dernier-mot-score-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.dernier-mot-player-list {
+  counter-reset: dernier-mot-player;
+  border-block: 1px solid var(--lp-color-text-muted);
+}
+
+.dernier-mot-player-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  min-width: 0;
+  padding-block: var(--lp-space-3);
+  counter-increment: dernier-mot-player;
+}
+
+.dernier-mot-player-list li + li {
+  border-top: 1px solid var(--lp-color-border);
+}
+
+.dernier-mot-player-list li::before {
+  flex: 0 0 auto;
+  color: var(--lp-color-text-muted);
+  font-size: var(--lp-font-size-sm);
+  font-weight: var(--lp-font-weight-bold);
+  content: counter(dernier-mot-player, decimal-leading-zero);
+}
+
+.dernier-mot-player-list span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.dernier-mot-empty {
+  padding-block: var(--lp-space-4);
+  margin: 0;
+  color: var(--lp-color-text-muted);
+  border-block: 1px solid var(--lp-color-text-muted);
+}
+
+.dernier-mot-name-entry {
+  display: grid;
+  gap: var(--lp-space-2);
+}
+
+.dernier-mot-name-entry label {
+  font-weight: var(--lp-font-weight-medium);
+}
+
+.dernier-mot-name-entry input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--lp-space-2) var(--lp-space-3);
+  color: var(--lp-color-text);
+  font: inherit;
+  background: var(--lp-color-surface);
+  border: 1px solid var(--lp-color-text-muted);
+  border-radius: var(--lp-radius-md);
+}
+
+.dernier-mot-name-entry input:focus-visible,
+.dernier-mot-key:focus-visible,
+.dernier-mot-definition-toggle:focus-visible {
+  outline: 2px solid var(--lp-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.dernier-mot-name-entry input[aria-invalid='true'] {
+  border-color: var(--lp-color-danger);
+}
+
+.dernier-mot-form-error {
+  margin: 0;
+  color: var(--lp-color-danger);
+  font-size: var(--lp-font-size-sm);
+}
+
+.dernier-mot-setup-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: var(--lp-space-3);
+}
+
+.dernier-mot-setup-actions .b-button {
+  width: 100%;
+  min-height: 2.75rem;
+}
+
+.dernier-mot-setup-actions .b-button:disabled {
+  color: var(--lp-color-text-muted);
+  background: var(--lp-color-surface-raised);
+  border-color: var(--lp-color-text-muted);
+  opacity: 1;
+}
+
+// Tableau des scores ---------------------------------------------------------------------------
+
+.dernier-mot-score-list {
+  border-block: 1px solid var(--lp-color-text-muted);
+}
+
+.dernier-mot-score-player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--lp-space-3);
+  min-height: 3rem;
+  padding: var(--lp-space-2) var(--lp-space-3);
+}
+
+.dernier-mot-score-player + .dernier-mot-score-player {
+  border-top: 1px solid var(--lp-color-border);
+}
+
+.dernier-mot-score-player.is-current {
+  box-shadow: inset 0.25rem 0 var(--lp-color-primary);
+}
+
+.dernier-mot-score-player.is-eliminated {
+  color: var(--lp-color-text-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.dernier-mot-score-player.is-winner {
+  box-shadow: inset 0.25rem 0 var(--lp-color-success);
+}
+
+.dernier-mot-score-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.dernier-mot-score-state {
+  display: block;
+  color: var(--lp-color-text-muted);
+  font-size: var(--lp-font-size-xs);
+  font-weight: var(--lp-font-weight-medium);
+  text-decoration: none;
+}
+
+.is-current .dernier-mot-score-state {
+  color: var(--lp-color-primary);
+}
+
+.is-winner .dernier-mot-score-state {
+  color: var(--lp-color-success);
+}
+
+.dernier-mot-score-value {
+  font-size: var(--lp-font-size-lg);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dernier-mot-score-unit {
+  font-size: var(--lp-font-size-xs);
+  font-weight: var(--lp-font-weight-regular);
+}
+
+// Mot en construction — signature visuelle du jeu ------------------------------------------------
+
+.dernier-mot-word-progress {
+  display: grid;
+  justify-items: center;
+  gap: var(--lp-space-3);
+  padding-block: var(--lp-space-5);
+  text-align: center;
+}
+
+.dernier-mot-word-sequence {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--lp-space-1) var(--lp-space-2);
+  min-height: 3.4rem;
+  max-width: 100%;
+}
+
+.dernier-mot-word-letter,
+.dernier-mot-word-empty {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.75rem;
+  padding: 0 var(--lp-space-1) var(--lp-space-1);
+  color: var(--lp-color-text);
+  font-size: clamp(var(--lp-font-size-xl), 9vw, var(--lp-font-size-2xl));
+  font-weight: var(--lp-font-weight-bold);
+  line-height: var(--lp-line-height-tight);
+  border-bottom: 3px solid var(--lp-color-border);
+}
+
+.dernier-mot-word-letter.is-newest {
+  color: var(--lp-color-primary);
+  border-bottom-color: var(--lp-color-primary);
+}
+
+.dernier-mot-word-letter.is-attempted {
+  color: var(--lp-color-danger);
+  border-bottom-color: var(--lp-color-danger);
+  border-bottom-style: dashed;
+}
+
+.dernier-mot-word-empty {
+  color: var(--lp-color-text-muted);
+}
+
+.dernier-mot-word-status {
+  margin: 0;
+  color: var(--lp-color-text-muted);
+}
+
+.dernier-mot-word-status strong,
+.dernier-mot-word-status.is-terminal {
+  color: var(--lp-color-success);
+}
+
+// Clavier --------------------------------------------------------------------------------------
+
+.dernier-mot-keyboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(2.75rem, 100%), 1fr));
+  gap: var(--lp-space-2);
+  width: min(100%, 32rem);
+  margin-inline: auto;
+}
+
+.dernier-mot-key {
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: var(--lp-space-2);
+  color: var(--lp-color-text);
+  font: inherit;
+  font-weight: var(--lp-font-weight-bold);
+  background: var(--lp-color-surface);
+  border: 1px solid var(--lp-color-text-muted);
+  border-radius: var(--lp-radius-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.dernier-mot-key:hover:not(:disabled) {
+  border-color: var(--lp-color-primary);
+  background: var(--lp-color-surface-raised);
+}
+
+.dernier-mot-key:active:not(:disabled) {
+  color: var(--lp-color-primary-contrast);
+  background: var(--lp-color-primary);
+}
+
+.dernier-mot-key:disabled {
+  color: var(--lp-color-text-muted);
+  background: var(--lp-color-surface-raised);
+  border-color: var(--lp-color-text-muted);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+// Modale de tour -------------------------------------------------------------------------------
+
+.dernier-mot-turn-dialog {
+  display: grid;
+  gap: var(--lp-space-4);
+}
+
+.dernier-mot-dialog-message,
+.dernier-mot-definitions p {
+  margin: 0;
+}
+
+.dernier-mot-dialog-word {
+  margin: 0;
+  color: var(--lp-color-primary);
+  font-size: var(--lp-font-size-xl);
+  font-weight: var(--lp-font-weight-bold);
+  letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.dernier-mot-definition-toggle {
+  justify-self: start;
+  padding: var(--lp-space-1) 0;
+  color: var(--lp-color-primary);
+  font: inherit;
+  font-weight: var(--lp-font-weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.dernier-mot-definitions {
+  padding-left: var(--lp-space-3);
+  color: var(--lp-color-text-muted);
+  border-left: 3px solid var(--lp-color-primary);
+}
+
+.dernier-mot-definitions p + p {
+  margin-top: var(--lp-space-2);
+}
+
+.dernier-mot-completions {
+  display: grid;
+  gap: var(--lp-space-2);
+}
+
+.dernier-mot-completions h3 {
+  margin: 0;
+  font-size: var(--lp-font-size-base);
+}
+
+.dernier-mot-completions ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-2) var(--lp-space-3);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.dernier-mot-completions li {
+  font-weight: var(--lp-font-weight-bold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dernier-mot-key {
+    transition: none;
+  }
+}
+
+// Attribution du dictionnaire -----------------------------------------------------------------
+
+.dernier-mot-setup-page {
+  display: grid;
+  gap: var(--lp-space-5);
+}
+
+.dernier-mot-credits {
+  width: min(100%, 36rem);
+  margin-inline: auto;
+  color: var(--lp-color-text-muted);
+  font-size: var(--lp-font-size-sm);
+}
+
+.dernier-mot-credits summary {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--lp-color-text);
+  font-weight: var(--lp-font-weight-medium);
+  cursor: pointer;
+}
+
+.dernier-mot-credits-content {
+  display: grid;
+  gap: var(--lp-space-2);
+  padding-block: var(--lp-space-2);
+}
+
+.dernier-mot-credits-content p,
+.dernier-mot-credits-content ul {
+  margin: 0;
+}
+
+.dernier-mot-credit-sources {
+  display: grid;
+  gap: var(--lp-space-4);
+  padding-left: var(--lp-space-5);
+}
+
+.dernier-mot-credit-sources li {
+  display: grid;
+  gap: var(--lp-space-1);
+}
+
+.dernier-mot-adaptation {
+  padding-left: var(--lp-space-3);
+  border-left: 3px solid var(--lp-color-primary);
+}
+
+.dernier-mot-credits-content a {
+  color: var(--lp-color-primary);
+}

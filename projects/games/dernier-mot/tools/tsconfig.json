@@ -1,0 +1,9 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../../out-tsc/dernier-mot-tools",
+    "rootDir": "..",
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["**/*.ts", "../src/lib/domain/normalize-word.ts"]
+}

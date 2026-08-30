@@ -1,0 +1,23 @@
+7_Genre	8_Nombre	1_Mot	12_FreqLemme	5_CGram	4_Lemme
+m	s	chat	42.5	NOM	chat
+m	p	chats	42.5	NOM	chat
+		manger	18.2	VER	manger
+		mange	18.2	VER	manger
+m	s	Paris	9.1	NOM	Paris
+m	s	arc-en-ciel	3.2	NOM	arc-en-ciel
+		très	61.4	ADV	très
+f	s	cote	7.5	NOM	cote
+f	s	côte	6.5	NOM	côte
+m	s	zeste	1.5	NOM	zeste
+f	s	jolie	12.0	ADJ	joli
+m	s	joli	12.0	ADJ	joli
+f	i	souris	8.0	NOM	souris
+e	s	rapide	15.0	ADJ	rapide
+		de	100.0	ADV	de
+m	s	œuf	4.0	NOM	œuf
+m	s	coeur	5.0	NOM	coeur
+m	s	cœur	6.0	NOM	cœur
+f	s	œuvre	7.0	NOM	œuvre
+m	s	cæcum	1.0	NOM	cæcum
+m	s	porte	21.0	NOM	porte
+m	s	bin	0.7	ADJ

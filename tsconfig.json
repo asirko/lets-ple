@@ -21,7 +21,8 @@
     "paths": {
       "@lets-ple/ui": ["./projects/libs/ui/src/public-api.ts"],
       "@lets-ple/game-core": ["./projects/libs/game-core/src/public-api.ts"],
-      "@lets-ple/cryptogramme": ["./projects/games/cryptogramme/src/public-api.ts"]
+      "@lets-ple/cryptogramme": ["./projects/games/cryptogramme/src/public-api.ts"],
+      "@lets-ple/dernier-mot": ["./projects/games/dernier-mot/src/public-api.ts"]
     }
   },
   "angularCompilerOptions": {
@@ -56,7 +57,16 @@
       "path": "./projects/games/cryptogramme/tsconfig.spec.json"
     },
     {
+      "path": "./projects/games/dernier-mot/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/games/dernier-mot/tsconfig.spec.json"
+    },
+    {
       "path": "./projects/games/cryptogramme/tools/tsconfig.json"
+    },
+    {
+      "path": "./projects/games/dernier-mot/tools/tsconfig.json"
     }
   ]
 }

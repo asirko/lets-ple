@@ -33,6 +33,11 @@
                 "glob": "**/*",
                 "input": "content/quotes",
                 "output": "content/quotes"
+              },
+              {
+                "glob": "**/*",
+                "input": "content/dictionaries/dernier-mot",
+                "output": "content/dictionaries/dernier-mot"
               }
             ],
             "styles": [
@@ -158,6 +163,33 @@
             "exclude": [
               "**/domain/**"
             ]
+          }
+        }
+      }
+    },
+    "dernier-mot": {
+      "projectType": "library",
+      "root": "projects/games/dernier-mot",
+      "sourceRoot": "projects/games/dernier-mot/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/games/dernier-mot/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/games/dernier-mot/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/games/dernier-mot/tsconfig.spec.json",
+            "exclude": ["**/domain/**"]
           }
         }
       }

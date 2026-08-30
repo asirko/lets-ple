@@ -1,0 +1,88 @@
+.m-dialog {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--lp-color-text);
+}
+
+.m-dialog[open] {
+  display: grid;
+  place-items: center;
+}
+
+.m-dialog::backdrop {
+  background: transparent;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--lp-color-dialog-backdrop);
+}
+
+.dialog-surface {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(calc(100% - 2 * var(--lp-space-4)), 32rem);
+  max-height: min(calc(100dvh - 2 * var(--lp-space-4)), 42rem);
+  overflow: hidden;
+  background: var(--lp-color-surface-raised);
+  border: 1px solid var(--lp-color-text-muted);
+  border-radius: var(--lp-radius-md);
+  box-shadow: var(--lp-shadow-md);
+  animation: lp-dialog-enter 140ms ease-out;
+}
+
+.dialog-title {
+  padding: var(--lp-space-5) var(--lp-space-5) 0;
+  font-size: var(--lp-font-size-xl);
+}
+
+.dialog-body {
+  max-width: 65ch;
+  padding: var(--lp-space-4) var(--lp-space-5) var(--lp-space-5);
+  overflow: auto;
+}
+
+.dialog-body > :first-child,
+.dialog-body > [lpDialogBody] > :first-child {
+  margin-top: 0;
+}
+
+.dialog-body > :last-child,
+.dialog-body > [lpDialogBody] > :last-child {
+  margin-bottom: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--lp-space-3);
+  padding: var(--lp-space-4) var(--lp-space-5);
+  border-top: 1px solid var(--lp-color-text-muted);
+}
+
+@keyframes lp-dialog-enter {
+  from {
+    opacity: 0.94;
+    transform: translateY(var(--lp-space-2));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-surface {
+    animation: none;
+  }
+}

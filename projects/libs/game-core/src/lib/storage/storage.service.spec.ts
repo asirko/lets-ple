@@ -20,6 +20,15 @@ describe('StorageService', () => {
     expect(storage.read('score', 0)).toBe(42);
   });
 
+  it('supprime une valeur écrite', () => {
+    const storage = create();
+    storage.write('score', 42);
+
+    storage.remove('score');
+
+    expect(storage.read('score', null)).toBeNull();
+  });
+
   it('préfixe les clés dans le backend réel', () => {
     create().write('score', 42);
     expect(localStorage.getItem('letsple:v1:score')).toBe('42');
@@ -31,11 +40,9 @@ describe('StorageService', () => {
   });
 
   it('retombe sur une carte en mémoire quand localStorage est indisponible', () => {
-    const setItem = vi
-      .spyOn(Storage.prototype, 'setItem')
-      .mockImplementation(() => {
-        throw new DOMException('quota dépassée');
-      });
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota dépassée');
+    });
 
     const storage = create();
     storage.write('score', 42);

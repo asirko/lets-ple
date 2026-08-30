@@ -10,7 +10,12 @@ import { LpCard } from '@lets-ple/ui';
   template: `
     @for (game of games; track game.id) {
       <a [routerLink]="game.route">
-        <lp-card [title]="game.title">{{ game.summary }}</lp-card>
+        <lp-card [title]="game.title">
+          {{ game.summary }}
+          @for (theme of game.themes; track theme) {
+            #{{ theme }}
+          }
+        </lp-card>
       </a>
     }
   `,

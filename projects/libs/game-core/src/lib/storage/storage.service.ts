@@ -37,8 +37,19 @@ export class StorageService {
     this.setRaw(PREFIX + key, JSON.stringify(value));
   }
 
+  remove(key: string): void {
+    const fullKey = PREFIX + key;
+    if (this.useLocalStorage) {
+      window.localStorage.removeItem(fullKey);
+    } else {
+      this.memory.delete(fullKey);
+    }
+  }
+
   private getRaw(fullKey: string): string | null {
-    return this.useLocalStorage ? window.localStorage.getItem(fullKey) : (this.memory.get(fullKey) ?? null);
+    return this.useLocalStorage
+      ? window.localStorage.getItem(fullKey)
+      : (this.memory.get(fullKey) ?? null);
   }
 
   private setRaw(fullKey: string, raw: string): void {

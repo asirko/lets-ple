@@ -1,0 +1,21 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../out-tsc/lib",
+    "declaration": true,
+    "declarationMap": true,
+    "types": [],
+    /* Le tsconfig racine fait pointer les bibliothèques partagées vers leurs sources, ce que
+       ng-packagr refuse pour un build de lib isolé (TS6059 : ces sources ne sont pas sous le
+       `rootDir` de ce paquet). Ce build isolé consomme donc les paquets déjà compilés dans `dist`
+       (voir `npm run build:dernier-mot`, qui garantit qu'ils sont à jour avant ce build). */
+    "paths": {
+      "@lets-ple/ui": ["../../../dist/ui/types/lets-ple-ui.d.ts"],
+      "@lets-ple/game-core": ["../../../dist/game-core/types/lets-ple-game-core.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/*.spec.ts"]
+}

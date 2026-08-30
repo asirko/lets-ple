@@ -24,14 +24,15 @@ de `AUTHOR_OVERRIDES` (`import-quotekg-candidates.ts`) pour le reste du corpus.
 
 ## Project
 
-**Let's Plé** — a French-language word-game portal (PWA, static, deployed to Firebase Hosting). The
-first game is a **cryptogramme**: a quote where every letter is replaced by a number, to be
-reconstructed by drawing letter-cards from a capped hand.
+**Let's Plé** — a French-language word-game portal (PWA, static, deployed to Firebase Hosting).
+It currently contains a **cryptogramme**, where a numbered quote is reconstructed from a capped
+hand, and **Dernier Mot**, a competitive pass-the-phone prefix game backed by a local open-data
+dictionary.
 
-Design and rationale for the game rules live in `docs/reference/domain-cryptogramme.md` — read it
-before making game-rule decisions; it documents *why*, not just *what*. The workspace's structure
-(apps/libs/games split, the `domain/` engine pipeline, `game-core`) is documented in
-`docs/reference/architecture.md`.
+Design and rationale for game rules live in `docs/reference/domain-cryptogramme.md` and
+`docs/reference/domain-dernier-mot.md` — read the relevant one before making game-rule decisions;
+they document _why_, not just _what_. The workspace's structure (apps/libs/games split, the
+`domain/` engine pipeline, `game-core`) is documented in `docs/reference/architecture.md`.
 
 CSS follows a SMACSS convention — read `docs/conventions/css.md` before writing or editing any
 style. In short: almost all style is global (`libs/ui/src/styles/`, one module file per shared
@@ -47,7 +48,7 @@ Elements of style shared across components live in the global app style, not in 
 
 Commits follow `type(scope): sujet` (Conventional Commits, scope = touched area, subject without
 accents) — read `docs/conventions/commits.md` before writing a commit message. The body, when
-present, explains *why*, never restates the diff.
+present, explains _why_, never restates the diff.
 
 ## Project tracking
 
@@ -68,8 +69,8 @@ machine); no MCP/plugin needed.
   applies to any future public dissemination of the link) and `affinage cryptogramme` (ongoing
   balancing/corpus/UI work on the cryptogramme once scaffolding is done, empty for now).
 
-This is the source of truth for *what's next* and *what's in progress*. `docs/reference/` is the
-source of truth for *how* the system works once a feature is built — see `## Documentation` below.
+This is the source of truth for _what's next_ and _what's in progress_. `docs/reference/` is the
+source of truth for _how_ the system works once a feature is built — see `## Documentation` below.
 `docs/superpowers/` holds only specs/plans for work still in progress; see
 `docs/conventions/documentation.md` for how they get folded into `docs/reference/` once done.
 
@@ -110,6 +111,9 @@ npm run score:quotes           # recomputes and writes the `difficulty` block in
 npm run extract:quotes         # pulls raw candidate quotes from QuoteKG into quotekg-citations.json (gitignored)
 npm run filter:quotes          # applies the quality threshold, writes content/quote-candidates/quotekg.json
 npm run build:cryptogramme     # builds libs/ui first, then the cryptogramme library in isolation — see below
+npm run build:dernier-mot      # builds ui + game-core, then the Dernier Mot library in isolation
+npm run build:dernier-mot-dictionary -- --lexique <tsv> --wiktionary <jsonl.gz> --sources-manifest <json>
+npm run validate:dernier-mot-dictionary # validates index, definitions and source metadata
 npm run docs                   # publie la doc Compodoc en site statique autonome (./documentation, gitignored)
 ```
 
@@ -141,6 +145,8 @@ see `docs/reference/architecture.md` before running or writing tests.
   `docs/reference/architecture.md`, read before touching `ngsw-config.json` or the game route.
 - **Cryptogramme rules** (exact values, solvability invariant, rationale) —
   `docs/reference/domain-cryptogramme.md`, read before any game-rule decision.
+- **Dernier Mot rules** (scores, rotation, endings, prefix semantics, rationale) —
+  `docs/reference/domain-dernier-mot.md`, read before any rule or game-state decision.
 - **Corpus and citation pipeline** (schema, difficulty scoring, QuoteKG extraction, public-domain
   status) — `docs/reference/corpus-pipeline.md`, read before touching `content/quotes/` or its
   tools.

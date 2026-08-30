@@ -13,6 +13,17 @@ interface ColorTokenRow extends ColorToken {
   readonly contrastVsSurface: number;
 }
 
+interface ColorPair {
+  readonly name: string;
+  readonly foregroundVar: string;
+  readonly backgroundVar: string;
+  readonly minimum: number;
+}
+
+interface ColorPairRow extends ColorPair {
+  readonly contrast: number;
+}
+
 const COLOR_TOKENS: readonly ColorToken[] = [
   { name: 'Fond', cssVar: '--lp-color-background' },
   { name: 'Surface', cssVar: '--lp-color-surface' },
@@ -28,6 +39,27 @@ const COLOR_TOKENS: readonly ColorToken[] = [
   { name: 'Anneau de focus', cssVar: '--lp-color-focus-ring' },
 ];
 
+const DIALOG_COLOR_PAIRS: readonly ColorPair[] = [
+  {
+    name: 'Corps de modale',
+    foregroundVar: '--lp-color-text',
+    backgroundVar: '--lp-color-surface-raised',
+    minimum: 4.5,
+  },
+  {
+    name: 'Bordure de modale',
+    foregroundVar: '--lp-color-text-muted',
+    backgroundVar: '--lp-color-surface-raised',
+    minimum: 3,
+  },
+  {
+    name: 'Action principale',
+    foregroundVar: '--lp-color-primary-contrast',
+    backgroundVar: '--lp-color-primary',
+    minimum: 4.5,
+  },
+];
+
 /** Seuil WCAG AA pour un élément d'UI (bordure, icône) — texte normal exige 4.5:1. */
 const AA_UI_THRESHOLD = 3;
 
@@ -40,19 +72,38 @@ const AA_UI_THRESHOLD = 3;
 
     <section class="dev-style-section">
       <h2>Couleurs</h2>
-      <p>Ratio de contraste WCAG calculé contre le fond et la surface. Un élément d'UI (bordure,
-      icône) doit atteindre 3:1 ; un texte normal, 4.5:1.</p>
+      <p>
+        Ratio de contraste WCAG calculé contre le fond et la surface. Un élément d'UI (bordure,
+        icône) doit atteindre 3:1 ; un texte normal, 4.5:1.
+      </p>
       <div class="dev-style-token-grid">
         @for (token of colorRows(); track token.cssVar) {
           <div class="dev-style-token-card">
             <div class="dev-style-token-swatch" [style.background]="token.resolvedColor"></div>
             <strong>{{ token.name }}</strong>
-            <div><code>{{ token.cssVar }}</code></div>
+            <div>
+              <code>{{ token.cssVar }}</code>
+            </div>
             <div [class.dev-style-contrast-fail]="token.contrastVsBackground < AA_UI_THRESHOLD">
               vs fond : {{ token.contrastVsBackground | number: '1.2-2' }}:1
             </div>
             <div [class.dev-style-contrast-fail]="token.contrastVsSurface < AA_UI_THRESHOLD">
               vs surface : {{ token.contrastVsSurface | number: '1.2-2' }}:1
+            </div>
+          </div>
+        }
+      </div>
+
+      <h3>Couples utilisés par la modale</h3>
+      <div class="dev-style-token-grid">
+        @for (pair of dialogColorPairs(); track pair.name) {
+          <div class="dev-style-token-card">
+            <strong>{{ pair.name }}</strong>
+            <div>
+              <code>{{ pair.foregroundVar }}</code> sur <code>{{ pair.backgroundVar }}</code>
+            </div>
+            <div [class.dev-style-contrast-fail]="pair.contrast < pair.minimum">
+              {{ pair.contrast | number: '1.2-2' }}:1 — minimum {{ pair.minimum }}:1
             </div>
           </div>
         }
@@ -99,6 +150,7 @@ const AA_UI_THRESHOLD = 3;
 export class StyleGuidePage {
   protected readonly AA_UI_THRESHOLD = AA_UI_THRESHOLD;
   protected readonly colorRows = signal<readonly ColorTokenRow[]>([]);
+  protected readonly dialogColorPairs = signal<readonly ColorPairRow[]>([]);
 
   constructor() {
     // getComputedStyle exige que les styles soient appliqués au DOM — afterNextRender()
@@ -128,6 +180,12 @@ export class StyleGuidePage {
             contrastVsSurface: contrastRatio(resolvedColor, surfaceResolved),
           };
         }),
+      );
+      this.dialogColorPairs.set(
+        DIALOG_COLOR_PAIRS.map((pair) => ({
+          ...pair,
+          contrast: contrastRatio(resolve(pair.foregroundVar), resolve(pair.backgroundVar)),
+        })),
       );
       // `background`/`surface` (valeurs brutes de la variable CSS, potentiellement un nom ou un
       // hex non résolu) ne servent qu'à documenter l'intention ci-dessus ; le calcul utilise

@@ -56,6 +56,7 @@
   --lp-color-success: #2f7a4f;
   --lp-color-danger: #b3261e;
   --lp-color-focus-ring: #1c6fb0;
+  --lp-color-dialog-backdrop: rgb(28 25 18 / 62%);
 }
 
 // Thème sombre — via attribut explicite ou préférence système.
@@ -73,6 +74,7 @@
     --lp-color-success: #6fcf97;
     --lp-color-danger: #e6685f;
     --lp-color-focus-ring: #6cb4e8;
+    --lp-color-dialog-backdrop: rgb(0 0 0 / 72%);
   }
 }
 
@@ -89,4 +91,5 @@
   --lp-color-success: #6fcf97;
   --lp-color-danger: #e6685f;
   --lp-color-focus-ring: #6cb4e8;
+  --lp-color-dialog-backdrop: rgb(0 0 0 / 72%);
 }

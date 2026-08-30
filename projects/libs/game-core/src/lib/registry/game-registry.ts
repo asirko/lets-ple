@@ -16,4 +16,12 @@ export const GAME_REGISTRY: readonly GameDescriptor[] = [
     themes: ['mots', 'citations'],
     icon: 'cipher',
   },
+  {
+    id: 'dernier-mot',
+    title: 'Dernier Mot',
+    summary: 'À plusieurs, ajoutez une lettre et remportez le dernier mot.',
+    route: '/dernier-mot',
+    themes: ['multi', 'compétitif'],
+    icon: 'word',
+  },
 ];

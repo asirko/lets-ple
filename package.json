@@ -20,7 +20,11 @@
     "import:quotes": "tsx projects/games/cryptogramme/tools/import-quotekg-candidates.ts",
     "docs": "compodoc -p tsconfig.doc.json -s",
     "build:ui": "ng build ui",
-    "build:cryptogramme": "npm run build:ui && ng build cryptogramme"
+    "build:game-core": "ng build game-core",
+    "build:cryptogramme": "npm run build:ui && ng build cryptogramme",
+    "build:dernier-mot": "npm run build:ui && npm run build:game-core && ng build dernier-mot",
+    "build:dernier-mot-dictionary": "tsx projects/games/dernier-mot/tools/build-dictionary.ts",
+    "validate:dernier-mot-dictionary": "tsx projects/games/dernier-mot/tools/validate-dictionary.ts"
   },
   "private": true,
   "packageManager": "npm@11.16.0",

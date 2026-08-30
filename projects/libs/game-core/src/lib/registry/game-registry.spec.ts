@@ -1,6 +1,14 @@
 import { GAME_REGISTRY } from './game-registry';
 
 describe('GAME_REGISTRY', () => {
+  it('déclare Dernier Mot comme jeu multijoueur compétitif', () => {
+    expect(GAME_REGISTRY).toContainEqual(expect.objectContaining({
+      id: 'dernier-mot',
+      route: '/dernier-mot',
+      themes: ['multi', 'compétitif'],
+    }));
+  });
+
   it('contient une entrée pour le cryptogramme', () => {
     const cryptogramme = GAME_REGISTRY.find((g) => g.id === 'cryptogramme');
     expect(cryptogramme).toMatchObject({

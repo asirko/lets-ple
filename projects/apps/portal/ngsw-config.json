@@ -24,6 +24,14 @@
       "resources": {
         "files": ["/content/quotes/*.json"]
       }
+    },
+    {
+      "name": "dernier-mot-dictionary",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": {
+        "files": ["/content/dictionaries/dernier-mot/**"]
+      }
     }
   ]
 }

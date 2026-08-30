@@ -57,6 +57,9 @@ Thumbs.db
 # Sortie brute du script d'extraction QuoteKG : à curer à la main avant intégration au corpus
 /quotekg-citations.json
 
+# Sources brutes Lexique/Wiktionnaire, téléchargées uniquement pour la génération locale
+/content/dictionary-sources/
+
 # Généré par Compodoc (voir tsconfig.doc.json, npm run docs)
 /documentation.json
 /documentation

@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
     <ul class="dev-home-list">
       <li><a routerLink="style">Guide de style</a></li>
       <li><a routerLink="lp-button">LpButton</a></li>
+      <li><a routerLink="lp-dialog">LpDialog</a></li>
       <li><a routerLink="lp-card">LpCard</a></li>
       <li><a routerLink="lp-panel">LpPanel</a></li>
       <li><a routerLink="lp-cryptogram-cell">LpCryptogramCell</a></li>
@@ -19,6 +20,12 @@ import { RouterLink } from '@angular/router';
       <li><a routerLink="lp-error-counter">LpErrorCounter</a></li>
       <li><a routerLink="lp-cryptogram-grid">LpCryptogramGrid</a></li>
       <li><a routerLink="lp-game-page">LpGamePage</a></li>
+      <li><a routerLink="lp-player-setup">LpPlayerSetup</a></li>
+      <li><a routerLink="lp-scoreboard">LpScoreboard</a></li>
+      <li><a routerLink="lp-word-progress">LpWordProgress</a></li>
+      <li><a routerLink="lp-letter-keyboard">LpLetterKeyboard</a></li>
+      <li><a routerLink="lp-turn-dialog">LpTurnDialog</a></li>
+      <li><a routerLink="lp-dictionary-credits">LpDictionaryCredits</a></li>
     </ul>
   `,
 })
