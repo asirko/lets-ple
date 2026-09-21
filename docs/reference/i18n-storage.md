@@ -28,3 +28,13 @@ inconnue, un JSON illisible ou un état qui ne respecte plus les invariants du d
 phase est ignoré : l'application revient au setup. « Refaire une partie » supprime cette clé. Les
 pseudonymes, scores, préfixe, éliminations et tour courant restent exclusivement sur l'appareil ; le
 fallback mémoire conserve le même contrat lorsque `localStorage` est indisponible.
+
+Cryptogramme persiste l'état après chaque action sous `letsple:v1:cryptogramme:activeGame`.
+La sauvegarde versionnée inclut la citation et son attribution, la graine, le plateau, les
+correspondances, la pioche, la main, les erreurs, la sélection et les limites de longueur.
+Les correspondances sont sérialisées en paires puis reconstruites en `Map`. Au chargement,
+le puzzle est reconstruit depuis la graine et les invariants du plateau et de l'inventaire sont
+vérifiés ; une sauvegarde corrompue est ignorée. Des filtres invalides sont remis à zéro sans
+perdre la partie. La reprise est immédiate même si le chargement du catalogue échoue ; un bouton
+permet de réessayer ce chargement pour accéder aux autres citations. Un quota dépassé ou un
+stockage bloqué n'interrompt pas le jeu.

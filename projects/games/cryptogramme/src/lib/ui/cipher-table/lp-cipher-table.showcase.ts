@@ -16,6 +16,9 @@ export const LP_CIPHER_TABLE_SHOWCASE: ComponentShowcase<LpCipherTable> = {
       options: {
         Vide: () => new Map<number, Sym>(),
         'Quelques correspondances': () => QUELQUES_CORRESPONDANCES,
+        'Alphabet complet': () => new Map(
+          [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((symbol, index) => [index + 1, symbol]),
+        ),
       },
       default: 'Quelques correspondances',
     },

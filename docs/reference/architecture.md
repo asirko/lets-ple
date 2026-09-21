@@ -157,6 +157,21 @@ d'entrée routé du jeu : il injecte `QuoteService`, appelle `loadTheme('littera
 citation résolue (signal `quote()` non nul) que `LpGamePage` est rendu, avec `quoteId`/`text`/
 `author`/`source`/`seed` en inputs explicites.
 
+Le corpus chargé reste en mémoire dans la route. Les limites minimum et maximum portent sur les
+lettres jouables (accents inclus, espaces et ponctuation exclus) et s'appliquent au prochain
+changement de citation. Une nouvelle partie exclut la citation courante ; des limites invalides
+ou sans alternative affichent une erreur sans perdre la partie. Recommencer conserve la citation
+avec une nouvelle graine. `LpGameToolbar` regroupe les commandes dans un bandeau sticky, suivi de
+la table de correspondance compacte et toujours visible. La première ligne porte le retour au
+catalogue, le nom du portail et celui du jeu. Le menu ouvre une modale de paramètres avec deux
+champs numériques synchronisés à un curseur à deux poignées, borné par le corpus disponible.
+`LpGamePage` ouvre les félicitations dès que toutes les
+correspondances sont connues ; fermer la modale déclenche l'action `COMPLETE` du moteur.
+
+La route restaure la partie locale avant le chargement du corpus, puis persiste chaque transition
+émise par la page. Le showcase ne persiste rien. Le build isolé du cryptogramme construit `ui`
+et `game-core` avant le jeu : la persistance utilise `StorageService` de `game-core`.
+
 `LpDernierMotGameRoute` joue le même rôle pour le second jeu : il charge l'index, reprend une partie
 valide ou affiche le setup, puis assemble store, dictionnaire et écrans. La route reste lazy sous
 `/dernier-mot` ; le module SCSS du jeu part dans le même chunk.

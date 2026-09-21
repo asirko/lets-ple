@@ -11,10 +11,10 @@
        ng-packagr refuse pour un build de lib isolé (TS6059 : ces sources ne sont pas sous le
        `rootDir` de ce paquet). Ce build isolé consomme donc le paquet déjà compilé dans `dist/ui`
        (voir `npm run build:cryptogramme`, qui garantit que `dist/ui` est à jour avant ce build) —
-       uniquement `@lets-ple/ui` : rien n'importe encore `@lets-ple/game-core` ni `@lets-ple/cryptogramme`
-       lui-même, donc pas besoin du même traitement pour ces alias. */
+       `@lets-ple/game-core` fournit également le stockage de la partie locale. */
     "paths": {
-      "@lets-ple/ui": ["../../../dist/ui/types/lets-ple-ui.d.ts"]
+      "@lets-ple/ui": ["../../../dist/ui/types/lets-ple-ui.d.ts"],
+      "@lets-ple/game-core": ["../../../dist/game-core/types/lets-ple-game-core.d.ts"]
     }
   },
   "include": ["src/**/*.ts"],

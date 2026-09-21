@@ -73,6 +73,13 @@ export const DEV_ROUTES: Routes = [
     },
   },
   {
+    path: 'lp-game-toolbar',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () => import('@lets-ple/cryptogramme').then((m) => m.LP_GAME_TOOLBAR_SHOWCASE),
+    },
+  },
+  {
     path: 'lp-game-page',
     loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
     data: {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createGame, reduce, topCard, isPlayable } from './game';
+import { createGame, reduce, topCard, isPlayable, allLettersKnown } from './game';
 import type { GameState } from './game';
 
 const CITATION = "L'idee vient en marchant.";
@@ -181,5 +181,51 @@ describe('RESTART', () => {
     expect(apres.errors).toBe(0);
     expect(apres.hand).toHaveLength(0);
     expect(apres.deck).not.toEqual(avant.deck);
+  });
+});
+
+describe('complétion après découverte de toutes les correspondances', () => {
+  const repeatedLetter = () => createGame('repeat', 'BBBB!', { seed: 'completion', givenCount: 0 });
+
+  it('attend la découverte du code avant de proposer la complétion', () => {
+    const initial = repeatedLetter();
+    expect(allLettersKnown(initial)).toBe(false);
+    const discovered = poserJuste(reduce(initial, { type: 'DRAW' }));
+    expect(allLettersKnown(discovered)).toBe(true);
+    expect(discovered.status).toBe('playing');
+    expect(discovered.deck).toHaveLength(3);
+  });
+
+  it('refuse de compléter une partie dont un code reste inconnu', () => {
+    const initial = repeatedLetter();
+    expect(reduce(initial, { type: 'COMPLETE' })).toBe(initial);
+  });
+
+  it('remplit les répétitions et consomme les cartes sans modifier l’état précédent', () => {
+    const discovered = poserJuste(reduce(repeatedLetter(), { type: 'DRAW' }));
+    const drawn = reduce(discovered, { type: 'DRAW' });
+    const selected = reduce(drawn, { type: 'SELECT_CELL', index: 1 });
+    const completed = reduce(selected, { type: 'COMPLETE' });
+    expect(completed.status).toBe('won');
+    expect(
+      completed.board.map((cell) => (cell.kind === 'letter' ? cell.filled : cell.char)),
+    ).toEqual(['B', 'B', 'B', 'B', '!']);
+    expect(completed.deck).toEqual([]);
+    expect(completed.hand).toEqual([]);
+    expect(completed.selectedCell).toBeNull();
+    expect(completed.errors).toBe(selected.errors);
+    expect(selected.board[1]).toMatchObject({ filled: null });
+    expect(selected.hand).toEqual(['B']);
+    expect(reduce(completed, { type: 'COMPLETE' })).toBe(completed);
+  });
+
+  it('ne complète jamais une partie perdue', () => {
+    const discovered = poserJuste(reduce(repeatedLetter(), { type: 'DRAW' }));
+    const lost: GameState = { ...discovered, status: 'lost', errors: 3 };
+    expect(reduce(lost, { type: 'COMPLETE' })).toBe(lost);
+  });
+
+  it('ne considère pas un plateau sans lettres comme des correspondances découvertes', () => {
+    expect(allLettersKnown(createGame('empty', '... !', { seed: 'empty' }))).toBe(false);
   });
 });

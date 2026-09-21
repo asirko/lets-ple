@@ -6,19 +6,14 @@ import type { Sym } from '../../domain/types';
   selector: 'lp-cipher-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <table class="crypto-cipher-table">
-      <caption class="crypto-cipher-table-caption">Table de correspondance</caption>
-      <tbody>
-        <tr>
-          @for (entry of entries(); track entry[0]) {
-            <td class="crypto-cipher-table-cell">
-              <span class="crypto-cipher-table-code">{{ entry[0] }}</span>
-              <span class="crypto-cipher-table-symbol">{{ entry[1] }}</span>
-            </td>
-          }
-        </tr>
-      </tbody>
-    </table>
+    <dl class="crypto-cipher-table" aria-label="Table de correspondance">
+      @for (entry of entries(); track entry[0]) {
+        <div class="crypto-cipher-table-cell">
+          <dt class="crypto-cipher-table-code">{{ entry[0] }}</dt>
+          <dd class="crypto-cipher-table-symbol">{{ entry[1] }}</dd>
+        </div>
+      }
+    </dl>
   `,
 })
 export class LpCipherTable {

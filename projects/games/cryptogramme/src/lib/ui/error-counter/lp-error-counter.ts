@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 /**
- * Les erreurs, sur un total plafonné. L'état ne passe jamais par la seule couleur : une erreur
- * (✕) et une case restante (○) ont des glyphes distincts, pas seulement des teintes différentes.
+ * Chaque cœur représente une vie. Une croix superposée indique une vie perdue, sans dépendre
+ * uniquement de la couleur ; le libellé accessible donne les vies restantes et les erreurs.
  */
 @Component({
   selector: 'lp-error-counter',
@@ -11,10 +11,10 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
     <div class="crypto-error-counter" role="group" [attr.aria-label]="label()">
       @for (i of dots(); track i) {
         <span
-          class="crypto-error-dot"
-          [class.crypto-error-dot-active]="i < errors()"
+          class="crypto-error-heart"
+          [class.is-lost]="i < errors()"
           aria-hidden="true"
-        >{{ i < errors() ? '✕' : '○' }}</span>
+        >♥@if (i < errors()) {<span class="crypto-error-cross">✕</span>}</span>
       }
     </div>
   `,
@@ -27,6 +27,7 @@ export class LpErrorCounter {
 
   protected readonly label = computed(() => {
     const errors = this.errors();
-    return `${errors} erreur${errors > 1 ? 's' : ''} sur ${this.maxErrors()}`;
+    const remaining = Math.max(0, this.maxErrors() - errors);
+    return `${remaining} vie${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}, ${errors} erreur${errors > 1 ? 's' : ''} sur ${this.maxErrors()}`;
   });
 }

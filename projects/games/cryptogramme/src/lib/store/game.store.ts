@@ -1,5 +1,5 @@
 import { computed, signal, type Signal, type WritableSignal } from '@angular/core';
-import { createGame, isPlayable, reduce, topCard } from '../domain/game';
+import { allLettersKnown, createGame, isPlayable, reduce, topCard } from '../domain/game';
 import type { Action, GameOptions, GameState } from '../domain/game';
 import type { Sym } from '../domain/types';
 
@@ -16,14 +16,17 @@ export class GameStore {
   readonly state: Signal<GameState>;
   readonly topCard: Signal<Sym | null>;
   readonly canDraw: Signal<boolean>;
+  readonly allLettersKnown: Signal<boolean>;
   /** Un booléen par case du plateau : vrai si la carte du dessus peut y être posée sans risque connu. */
   readonly playableCells: Signal<readonly boolean[]>;
 
-  constructor(quoteId: string, text: string, options: GameOptions) {
-    this.stateSignal = signal(createGame(quoteId, text, options));
+  /** initialState provient exclusivement d'une sauvegarde validée par le service de persistance. */
+  constructor(quoteId: string, text: string, options: GameOptions, initialState?: GameState) {
+    this.stateSignal = signal(initialState ?? createGame(quoteId, text, options));
     this.state = this.stateSignal.asReadonly();
 
     this.topCard = computed(() => topCard(this.stateSignal()));
+    this.allLettersKnown = computed(() => allLettersKnown(this.stateSignal()));
 
     this.canDraw = computed(() => {
       const state = this.stateSignal();
@@ -50,6 +53,10 @@ export class GameStore {
 
   play(): void {
     this.dispatch({ type: 'PLAY' });
+  }
+
+  complete(): void {
+    this.dispatch({ type: 'COMPLETE' });
   }
 
   restart(seed: string): void {

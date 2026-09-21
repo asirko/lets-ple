@@ -25,6 +25,7 @@ interface IndexedCell {
               [selected]="selectedCell() === item.index"
               [playable]="playableCells()[item.index] ?? false"
               (select)="cellSelect.emit(item.index)"
+              (play)="cellPlay.emit(item.index)"
             />
           }
         </div>
@@ -37,6 +38,7 @@ export class LpCryptogramGrid {
   readonly selectedCell = input<number | null>(null);
   readonly playableCells = input<readonly boolean[]>([]);
   readonly cellSelect = output<number>();
+  readonly cellPlay = output<number>();
 
   protected readonly words = computed<IndexedCell[][]>(() => {
     const words: IndexedCell[][] = [];

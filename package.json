@@ -21,7 +21,7 @@
     "docs": "compodoc -p tsconfig.doc.json -s",
     "build:ui": "ng build ui",
     "build:game-core": "ng build game-core",
-    "build:cryptogramme": "npm run build:ui && ng build cryptogramme",
+    "build:cryptogramme": "npm run build:ui && npm run build:game-core && ng build cryptogramme",
     "build:dernier-mot": "npm run build:ui && npm run build:game-core && ng build dernier-mot",
     "build:dernier-mot-dictionary": "tsx projects/games/dernier-mot/tools/build-dictionary.ts",
     "validate:dernier-mot-dictionary": "tsx projects/games/dernier-mot/tools/validate-dictionary.ts"

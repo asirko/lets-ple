@@ -18,3 +18,5 @@ export * from './lib/ui/error-counter/lp-error-counter.showcase';
 export * from './lib/ui/game-page/lp-game-page';
 export * from './lib/ui/game-page/lp-game-page.showcase';
 export * from './lib/routes';
+export * from './lib/ui/game-toolbar/lp-game-toolbar';
+export * from './lib/ui/game-toolbar/lp-game-toolbar.showcase';

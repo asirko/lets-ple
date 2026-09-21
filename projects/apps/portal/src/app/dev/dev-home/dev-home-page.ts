@@ -20,6 +20,7 @@ import { RouterLink } from '@angular/router';
       <li><a routerLink="lp-error-counter">LpErrorCounter</a></li>
       <li><a routerLink="lp-cryptogram-grid">LpCryptogramGrid</a></li>
       <li><a routerLink="lp-game-page">LpGamePage</a></li>
+      <li><a routerLink="lp-game-toolbar">LpGameToolbar</a></li>
       <li><a routerLink="lp-player-setup">LpPlayerSetup</a></li>
       <li><a routerLink="lp-scoreboard">LpScoreboard</a></li>
       <li><a routerLink="lp-word-progress">LpWordProgress</a></li>

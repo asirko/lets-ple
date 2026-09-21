@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createGame, reduce, topCard } from './game';
+import { createGame, reduce, topCard, allLettersKnown } from './game';
 import type { GameState } from './game';
 
 /**
@@ -35,6 +35,33 @@ function jouerCarteJuste(s: GameState): GameState {
 }
 
 describe('invariants du moteur', () => {
+  it('la complétion consomme exactement l’inventaire restant pour chaque graine', () => {
+    let completions = 0;
+    for (const text of CITATIONS) {
+      for (const seed of GRAINES) {
+        let s = createGame('q', text, { seed });
+        for (let i = 0; i < 500 && s.status === 'playing'; i++) {
+          if (allLettersKnown(s)) {
+            s = reduce(s, { type: 'COMPLETE' });
+            completions++;
+            expect(s.status).toBe('won');
+          } else {
+            s = jouerCarteJuste(s);
+          }
+          expect(s.deck.length + s.hand.length).toBe(casesVides(s));
+          for (const [index, cell] of s.board.entries()) {
+            if (cell.kind === 'letter' && cell.filled !== null) {
+              expect(cell.filled).toBe(s.puzzle.solution[index]);
+            }
+          }
+        }
+        expect(s.status).toBe('won');
+        expect(s.errors).toBe(0);
+      }
+    }
+    expect(completions).toBeGreaterThan(0);
+  });
+
   it('|pioche| + |main| = cases vides, après chaque action', () => {
     for (const text of CITATIONS) {
       for (const seed of GRAINES.slice(0, 10)) {

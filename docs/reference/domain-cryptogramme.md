@@ -46,6 +46,9 @@ qui porte le jeu.
 
 Case d'abord, carte ensuite : le joueur sélectionne une case vide, puis clique la carte du dessus.
 Sans case sélectionnée, aucune pose n'est possible ; recliquer la case la désélectionne.
+Un double-clic sur une case vide sélectionne cette case et y joue directement la carte active.
+Ce raccourci applique les mêmes règles de pose et ne joue qu'une carte, même si la case était
+déjà sélectionnée. Sans carte active, il n'effectue aucune pose.
 
 - **Pose juste** : la case se remplit, la carte quitte la main, la correspondance nombre → symbole
   s'inscrit dans une table de correspondance visible.
@@ -57,6 +60,10 @@ Sans case sélectionnée, aucune pose n'est possible ; recliquer la case la dés
   garde-fou.
 - **Défaite** : on rejoue la même citation avec un nouveau chiffrement et une nouvelle pioche —
   rejouer la grille identique rendrait la reprise triviale.
+- **Toutes les correspondances découvertes** : dès que chaque nombre du plateau est connu, une
+  modale félicite le joueur. Sa fermeture complète les répétitions encore vides et termine la
+  partie. Il n'y a plus de déduction à faire : les cartes restantes sont consommées ensemble,
+  ce qui conserve l'inventaire exact des cases vides. Une partie perdue ne peut pas être complétée.
 
 ## Invariant fondamental
 
@@ -115,6 +122,7 @@ possible, plus tard sans changement de moteur, une « énigme du jour » partage
 | `SELECT_CELL(i)` | sélectionne ou désélectionne une case | case `letter` non remplie |
 | `DRAW` | dépile la pioche vers la main | pioche non vide **et** main non pleine (`< handCapacity`) |
 | `PLAY` | joue la carte du dessus sur la case sélectionnée | case sélectionnée **et** main non vide |
+| `COMPLETE` | remplit les répétitions connues, vide main et pioche, gagne la partie | partie en cours **et** toutes les correspondances découvertes |
 | `RESTART` | nouvelle partie, même citation, nouvelle graine | — |
 
 ## Décisions arrêtées (à ne pas renverser sans re-discussion)
@@ -123,7 +131,9 @@ possible, plus tard sans changement de moteur, une « énigme du jour » partage
    pioche se ferme quand la main est pleine.
 2. Accents traités comme symboles distincts par défaut, `merged` disponible en réglage.
 3. Une carte égale une case : la pioche est l'inventaire des cases restantes.
-4. La table de correspondance est révélée, mais chaque case attend sa propre carte.
+4. La table de correspondance est révélée et chaque case attend sa propre carte tant qu'il reste
+   des correspondances à découvrir. Une fois toutes connues, fermer la modale de félicitations
+   complète les répétitions restantes.
 5. Interaction en deux temps : sélection de la case, puis clic sur la carte.
 
 ## Hypothèses posées par défaut (renversables librement)

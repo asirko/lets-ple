@@ -22,6 +22,7 @@ import type { Cell } from '../../domain/types';
         [attr.aria-pressed]="selected()"
         [attr.aria-label]="ariaLabel()"
         (click)="select.emit()"
+        (dblclick)="play.emit()"
       >
         <span class="crypto-cell-code">{{ code() }}</span>
         @if (isFilled()) {
@@ -37,6 +38,7 @@ export class LpCryptogramCell {
   /** Indice visuel : la carte du dessus de la main correspond à cette case sans risque connu. */
   readonly playable = input(false);
   readonly select = output<void>();
+  readonly play = output<void>();
 
   protected code(): number | null {
     const cell = this.cell();

@@ -43,6 +43,7 @@ export type Action =
   | { readonly type: 'SELECT_CELL'; readonly index: number }
   | { readonly type: 'DRAW' }
   | { readonly type: 'PLAY' }
+  | { readonly type: 'COMPLETE' }
   | { readonly type: 'RESTART'; readonly seed: string };
 
 export interface GameOptions {
@@ -120,6 +121,12 @@ function emptyLetterCells(board: readonly Cell[]): number {
   return board.filter((c) => c.kind === 'letter' && c.filled === null).length;
 }
 
+/** Toutes les correspondances du plateau sont découvertes, même s'il reste des répétitions vides. */
+export function allLettersKnown(state: GameState): boolean {
+  const letters = state.board.filter((cell) => cell.kind === 'letter');
+  return letters.length > 0 && letters.every((cell) => state.known.has(cell.code));
+}
+
 export function reduce(state: GameState, action: Action): GameState {
   if (action.type === 'RESTART') {
     return createGame(state.puzzle.quoteId, state.puzzle.text, {
@@ -133,6 +140,22 @@ export function reduce(state: GameState, action: Action): GameState {
   if (state.status !== 'playing') return state;
 
   switch (action.type) {
+    case 'COMPLETE': {
+      if (!allLettersKnown(state)) return state;
+      return {
+        ...state,
+        board: state.board.map((cell) =>
+          cell.kind === 'letter' && cell.filled === null
+            ? { ...cell, filled: state.known.get(cell.code)! }
+            : cell,
+        ),
+        deck: [],
+        hand: [],
+        selectedCell: null,
+        status: 'won',
+      };
+    }
+
     case 'SELECT_CELL': {
       const cell = state.board[action.index];
       if (!cell || cell.kind !== 'letter' || cell.filled !== null) return state;
