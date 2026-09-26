@@ -9,11 +9,16 @@ import { LpCard } from '@lets-ple/ui';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @for (game of games; track game.id) {
-      <a [routerLink]="game.route">
+      <a [routerLink]="game.route" [attr.aria-label]="game.title">
         <lp-card [title]="game.title">
           {{ game.summary }}
           @for (theme of game.themes; track theme) {
             #{{ theme }}
+          }
+          @if (game.actionLabel) {
+            <p>
+              <strong>{{ game.actionLabel }}</strong>
+            </p>
           }
         </lp-card>
       </a>

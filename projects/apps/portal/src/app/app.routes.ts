@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
+  { path: 'quiz', loadChildren: () => import('@lets-ple/quiz').then((m) => m.QUIZ_ROUTES) },
   { path: '', loadComponent: () => import('./home/home-page').then((m) => m.HomePage) },
   {
     path: 'cryptogramme',

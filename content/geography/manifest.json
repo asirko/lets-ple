@@ -1,0 +1,15 @@
+{
+  "sources": {
+    "countries": "https://raw.githubusercontent.com/mledoze/countries/c8015eebdd94c533358406b0d709f441389e1f2e/countries.json",
+    "geometry": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_110m_admin_0_countries.geojson",
+    "flags": "https://raw.githubusercontent.com/lipis/flag-icons/086f7e97d657358203916dbe84f61c2bccaa81eb"
+  },
+  "count": 195,
+  "scope": "193 UN members + Vatican and Palestine",
+  "geometryScale": "1:110m",
+  "licenses": {
+    "countries": "ODbL-1.0",
+    "geometry": "Public domain",
+    "flags": "MIT"
+  }
+}

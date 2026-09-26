@@ -15,7 +15,8 @@ projects/
 │  └─ game-core/         socle commun à tous les jeux
 └─ games/
    ├─ cryptogramme/      jeu de reconstruction de citations
-   └─ dernier-mot/       jeu multijoueur de préfixes, dictionnaire local et tools de corpus
+   ├─ dernier-mot/       jeu multijoueur de préfixes, dictionnaire local et tools de corpus
+   └─ quiz/              quiz géographie, moteur pur et données locales sous content/geography
 ```
 
 **Pourquoi ce découpage.** Un jeu est une library autonome exposant ses propres routes, chargée en
@@ -175,3 +176,10 @@ et `game-core` avant le jeu : la persistance utilise `StorageService` de `game-c
 `LpDernierMotGameRoute` joue le même rôle pour le second jeu : il charge l'index, reprend une partie
 valide ou affiche le setup, puis assemble store, dictionnaire et écrans. La route reste lazy sous
 `/dernier-mot` ; le module SCSS du jeu part dans le même chunk.
+
+`QuizPage` charge et valide le corpus géographique avant de créer une partie de dix questions.
+La route `/quiz`, le store et les styles du jeu sont lazy. Le groupe service worker
+`quiz-geography` précharge le corpus et les SVG pour permettre de nouvelles parties hors ligne
+après installation. Le build isolé `npm run build:quiz` construit d’abord `ui` et `game-core`.
+Les règles, générateurs, données, licences et limites de couverture sont détaillés dans
+[`domain-quiz-geographie.md`](domain-quiz-geographie.md).

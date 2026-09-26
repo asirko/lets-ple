@@ -38,6 +38,11 @@
                 "glob": "**/*",
                 "input": "content/dictionaries/dernier-mot",
                 "output": "content/dictionaries/dernier-mot"
+              },
+              {
+                "glob": "**/*",
+                "input": "content/geography",
+                "output": "content/geography"
               }
             ],
             "styles": [
@@ -189,7 +194,38 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/games/dernier-mot/tsconfig.spec.json",
-            "exclude": ["**/domain/**"]
+            "exclude": [
+              "**/domain/**"
+            ]
+          }
+        }
+      }
+    },
+    "quiz": {
+      "projectType": "library",
+      "root": "projects/games/quiz",
+      "sourceRoot": "projects/games/quiz/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/games/quiz/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/games/quiz/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/games/quiz/tsconfig.spec.json",
+            "exclude": [
+              "**/domain/**"
+            ]
           }
         }
       }

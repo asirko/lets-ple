@@ -147,6 +147,8 @@ see `docs/reference/architecture.md` before running or writing tests.
   `docs/reference/domain-cryptogramme.md`, read before any game-rule decision.
 - **Dernier Mot rules** (scores, rotation, endings, prefix semantics, rationale) —
   `docs/reference/domain-dernier-mot.md`, read before any rule or game-state decision.
+- **Geography quiz** (rules, question generators, local corpus, licences, autocomplete) —
+  `docs/reference/domain-quiz-geographie.md`, read before changing the quiz or its data.
 - **Corpus and citation pipeline** (schema, difficulty scoring, QuoteKG extraction, public-domain
   status) — `docs/reference/corpus-pipeline.md`, read before touching `content/quotes/` or its
   tools.

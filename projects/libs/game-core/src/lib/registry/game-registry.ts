@@ -5,13 +5,14 @@ export interface GameDescriptor {
   route: string;
   themes: string[];
   icon: string;
+  actionLabel?: string;
 }
 
 export const GAME_REGISTRY: readonly GameDescriptor[] = [
   {
     id: 'cryptogramme',
     title: 'Cryptogramme',
-    summary: "Reconstitue une citation lettre par lettre : chaque symbole cache une lettre.",
+    summary: 'Reconstitue une citation lettre par lettre : chaque symbole cache une lettre.',
     route: '/cryptogramme',
     themes: ['mots', 'citations'],
     icon: 'cipher',
@@ -23,5 +24,15 @@ export const GAME_REGISTRY: readonly GameDescriptor[] = [
     route: '/dernier-mot',
     themes: ['multi', 'compétitif'],
     icon: 'word',
+  },
+  {
+    id: 'quiz',
+    title: 'Quiz géographie',
+    summary:
+      '10 questions pour explorer les pays du monde. Cash, Carré ou Duo : à vous de choisir !',
+    route: '/quiz',
+    themes: ['géographie'],
+    icon: 'globe',
+    actionLabel: 'Jouer →',
   },
 ];

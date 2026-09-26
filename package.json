@@ -1,6 +1,6 @@
 {
   "name": "lets-ple",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "scripts": {
     "ng": "ng",
     "start": "tsx scripts/serve.ts portal",
@@ -24,7 +24,9 @@
     "build:cryptogramme": "npm run build:ui && npm run build:game-core && ng build cryptogramme",
     "build:dernier-mot": "npm run build:ui && npm run build:game-core && ng build dernier-mot",
     "build:dernier-mot-dictionary": "tsx projects/games/dernier-mot/tools/build-dictionary.ts",
-    "validate:dernier-mot-dictionary": "tsx projects/games/dernier-mot/tools/validate-dictionary.ts"
+    "validate:dernier-mot-dictionary": "tsx projects/games/dernier-mot/tools/validate-dictionary.ts",
+    "build:quiz": "npm run build:ui && npm run build:game-core && ng build quiz",
+    "prepare:geography": "tsx projects/games/quiz/tools/prepare-geography.ts"
   },
   "private": true,
   "packageManager": "npm@11.16.0",

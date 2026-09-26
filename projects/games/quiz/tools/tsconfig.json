@@ -1,0 +1,10 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "outDir": "../../../../out-tsc/quiz-tools",
+    "rootDir": "..",
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["**/*.ts", "../src/lib/domain/**/*.ts", "../src/lib/data/geography.ts"]
+}

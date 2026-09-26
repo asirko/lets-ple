@@ -1,6 +1,28 @@
 import { Routes } from '@angular/router';
 
 export const DEV_ROUTES: Routes = [
+  ...[
+    {
+      path: 'quiz-question',
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_QUESTION_SHOWCASE),
+    },
+    {
+      path: 'quiz-cash',
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.CASH_ANSWER_SHOWCASE),
+    },
+    {
+      path: 'quiz-answers',
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_ANSWERS_SHOWCASE),
+    },
+    {
+      path: 'quiz-result',
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_RESULT_SHOWCASE),
+    },
+  ].map(({ path, loadShowcase }) => ({
+    path,
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: { loadShowcase },
+  })),
   { path: '', loadComponent: () => import('./dev-home/dev-home-page').then((m) => m.DevHomePage) },
   {
     path: 'style',

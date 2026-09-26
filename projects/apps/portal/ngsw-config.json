@@ -6,7 +6,13 @@
       "name": "app",
       "installMode": "prefetch",
       "resources": {
-        "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
       }
     },
     {
@@ -14,7 +20,9 @@
       "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/icons/**"]
+        "files": [
+          "/icons/**"
+        ]
       }
     },
     {
@@ -22,7 +30,9 @@
       "installMode": "lazy",
       "updateMode": "lazy",
       "resources": {
-        "files": ["/content/quotes/*.json"]
+        "files": [
+          "/content/quotes/*.json"
+        ]
       }
     },
     {
@@ -30,7 +40,19 @@
       "installMode": "lazy",
       "updateMode": "lazy",
       "resources": {
-        "files": ["/content/dictionaries/dernier-mot/**"]
+        "files": [
+          "/content/dictionaries/dernier-mot/**"
+        ]
+      }
+    },
+    {
+      "name": "quiz-geography",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/content/geography/**"
+        ]
       }
     }
   ]
