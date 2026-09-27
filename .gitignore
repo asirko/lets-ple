@@ -63,3 +63,6 @@ Thumbs.db
 # Généré par Compodoc (voir tsconfig.doc.json, npm run docs)
 /documentation.json
 /documentation
+
+# Local preview captures, logs and verification scripts
+/.angular/

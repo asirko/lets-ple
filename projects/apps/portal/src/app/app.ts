@@ -21,6 +21,6 @@ export class App {
   }
 
   private hasOwnHeader(url: string): boolean {
-    return /^\/(?:cryptogramme|quiz)(?:[/?#;]|$)/.test(url);
+    return url.split('?')[0] === '/' || /^\/(?:cryptogramme|quiz)(?:[/?#;]|$)/.test(url);
   }
 }

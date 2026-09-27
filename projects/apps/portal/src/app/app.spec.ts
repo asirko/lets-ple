@@ -1,8 +1,8 @@
+import { RELEASE_DATA } from './releases/release-data';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { provideRouter, Router } from '@angular/router';
 import { Component } from '@angular/core';
-import { RELEASE_DATA } from './releases/release-data';
 
 @Component({ template: '' })
 class EmptyPage {}
@@ -17,6 +17,7 @@ describe('App', () => {
           { path: '', component: EmptyPage },
           { path: 'cryptogramme', component: EmptyPage },
           { path: 'quiz', component: EmptyPage },
+          { path: 'dev', component: EmptyPage },
         ]),
       ],
     }).compileComponents();
@@ -28,14 +29,15 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('affiche le titre du portail sur les pages sans en-tête propre', async () => {
     const fixture = TestBed.createComponent(App);
+    await TestBed.inject(Router).navigateByUrl('/dev');
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain("Let's Plé");
   });
 
-  it.each(['/cryptogramme', '/quiz'])(
+  it.each(['/?design=atelier', '/?design=focus', '/?design=arcade', '/cryptogramme', '/quiz'])(
     'laisse %s afficher son bandeau puis rétablit le titre au retour',
     async (url) => {
       const fixture = TestBed.createComponent(App);
@@ -43,7 +45,7 @@ describe('App', () => {
       await router.navigateByUrl(url);
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('h1')).toBeNull();
-      await router.navigateByUrl('/');
+      await router.navigateByUrl('/dev');
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain("Let's Plé");
     },

@@ -8,6 +8,7 @@ import { RouterLink } from '@angular/router';
   template: `
     <h1>Showcase de composants</h1>
     <ul class="dev-home-list">
+      <li><a routerLink="lp-home-concept">Accueil Focus — catalogue</a></li>
       <li><a routerLink="style">Guide de style</a></li>
       <li><a routerLink="quiz-question">Quiz — question</a></li>
       <li><a routerLink="quiz-cash">Quiz — Cash</a></li>

@@ -16,3 +16,5 @@ export * from './lib/update-dialog/lp-update-dialog.showcase';
 export * from './lib/release-notes-dialog/release-notes';
 export * from './lib/release-notes-dialog/lp-release-notes-dialog';
 export * from './lib/release-notes-dialog/lp-release-notes-dialog.showcase';
+export * from './lib/home-concept/lp-home-concept';
+export * from './lib/home-concept/lp-home-concept.showcase';
