@@ -23,6 +23,7 @@ export const UPDATE_DIALOG_EXAMPLE_LABELS: UpdateDialogLabels = {
       Afficher la mise à jour
     </button>
     <lp-update-dialog
+      class="theme-focus"
       [open]="open()"
       [recovery]="recovery()"
       [labels]="labels"

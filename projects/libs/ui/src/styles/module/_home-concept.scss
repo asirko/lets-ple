@@ -1,7 +1,7 @@
 .home-concept {
-  --home-paper: #010102;
-  --home-ink: #f7f8f8;
-  --home-muted: #a3a8b4;
+  --home-paper: var(--lp-color-background);
+  --home-ink: var(--lp-color-text);
+  --home-muted: var(--lp-color-text-muted);
   --home-line: #292b34;
   min-height: 100vh;
   background: var(--home-paper);

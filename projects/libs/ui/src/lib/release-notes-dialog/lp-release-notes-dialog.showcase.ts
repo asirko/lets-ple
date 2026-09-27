@@ -31,6 +31,7 @@ const recent: ReleaseNotes = {
       Afficher les nouveautés
     </button>
     <lp-release-notes-dialog
+      class="theme-focus"
       [open]="open()"
       [releases]="releases()"
       [labels]="labels"

@@ -21,12 +21,14 @@ import { ReleaseNotesService } from './release-notes.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <lp-release-notes-dialog
+      class="theme-focus"
       [open]="active() === 'notes'"
       [releases]="notes.pending()"
       [labels]="notesLabels"
       (acknowledged)="acknowledge()"
     />
     <lp-update-dialog
+      class="theme-focus"
       [open]="active() === 'update'"
       [recovery]="updates.recovery()"
       [labels]="updateLabels"
