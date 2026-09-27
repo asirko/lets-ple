@@ -1,9 +1,11 @@
 # Quiz géographie
 
 Le troisième jeu du portail est chargé à la demande sous `/quiz`. Une partie
-contient dix questions, deux de chacun des cinq types disponibles : silhouette,
+contient dix questions, réparties entre les types activés : silhouette,
 drapeau, pays depuis sa capitale, capitale d’un pays et frontières terrestres.
-Les dix pays sont distincts et deux catégories consécutives diffèrent.
+Les dix pays sont distincts. Les catégories sont réparties par lots mélangés
+(deux questions par type lorsque les cinq sont activés) ; deux catégories
+consécutives diffèrent tant qu'au moins deux sont actives.
 
 ## Règles et état
 
@@ -19,7 +21,14 @@ Rejouer génère une nouvelle partie et remet tous les compteurs à zéro.
 `correction` et `finished`. Les soumissions répétées, changements de mode après
 sélection, propositions absentes et avances prématurées ne changent pas l’état.
 `store/quiz.store.ts` adapte ce moteur aux signals sans reproduire les règles.
-L’état reste en mémoire ; aucun compte ni persistance n’est ajouté dans ce MVP.
+L’état de la partie reste en mémoire, sans compte. Les préférences sont conservées
+par `QuizSettingsService` sous `STORAGE_KEYS.quizSettings` (`quiz:settings`).
+Seul le booléen `false` désactive un type ; une propriété absente ou invalide reste
+active. Le menu de l'en-tête ouvre une modale de cinq cases à cocher. Annuler ou
+Échap abandonne les modifications ; « Enregistrer et jouer » persiste et relance
+dix questions. Au moins une catégorie doit être sélectionnée. Une sauvegarde
+excluant tout affiche l'accès aux paramètres sans lancer de partie. Un échec
+d'écriture affiche une erreur et conserve la partie et les préférences courantes.
 
 ## Données locales
 
@@ -33,7 +42,7 @@ Sources et versions sont enregistrées dans `manifest.json` :
 
 - [mledoze/countries](https://github.com/mledoze/countries), commit
   `c8015eebdd94c533358406b0d709f441389e1f2e`, sous ODbL-1.0.
-- [Natural Earth](https://www.naturalearthdata.com/), version 5.1.2, carte 1:110m,
+- [Natural Earth](https://www.naturalearthdata.com/), version 5.1.2, carte 1:10m,
   domaine public. Les coordonnées originales restent disponibles pour une future
   carte ; le rendu de silhouette utilise une projection équirectangulaire locale,
   centrée, avec coupure dans le plus grand intervalle vide de longitude. Cela
@@ -48,8 +57,8 @@ périmètre, exonymes français, alias, capitales multiples, sélection des ques
 jointure des géométries par ISO3 et noms de fichiers de drapeaux par hash.
 Aucune dépendance supplémentaire n’est nécessaire.
 
-La carte fournit 166 géométries pour ce périmètre ; les pays absents de cette
-échelle ne sont jamais tirés en silhouette. Les petites îles non représentées par
+La carte fournit 195 géométries pour ce périmètre. Le corpus complet représente
+environ 11 Mo avant compression. Les petites îles non représentées par
 la source ne peuvent être inventées. Tous les polygones disponibles sont conservés,
 y compris les territoires éloignés : certaines silhouettes sont donc dispersées.
 Cette généralisation cartographique ne constitue pas une définition juridique
@@ -98,6 +107,9 @@ ensuite. Flèches/Entrée, Échap et sélection tactile sont disponibles.
 options. Il privilégie voisins, sous-région, région puis reste du monde, et mélange
 la bonne réponse avec trois ou un distracteur. Pour les capitales, ce classement
 s’applique aux pays auxquels elles appartiennent.
+Pour une question de voisins, tous les pays cités comme indices sont exclus des
+propositions. Les distracteurs privilégient les voisins de ces voisins, puis la
+sous-région, la région et le reste du monde si nécessaire pour remplir le choix.
 
 ## Extension et présentation
 
@@ -107,7 +119,7 @@ visuelles ; les domaines et distracteurs sont partagés par type de réponse.
 Ajouter une catégorie nécessite son type, un générateur, ses clés i18n et, si
 nécessaire, une variante de données/rendu. La distribution découvre le registre.
 
-Les composants `question`, `cash-answer`, `answers` et `result` reçoivent des
+Les composants `toolbar`, `question`, `cash-answer`, `answers` et `result` reçoivent des
 inputs et émettent des outputs. Leurs pages showcase sont accessibles depuis
 `/dev/components`. Le SCSS SMACSS du jeu est chargé par la route et les wrappers
 showcase ; il utilise les tokens clair/sombre du portail. Tous les textes du jeu
@@ -126,12 +138,22 @@ npm test -- quiz           # moteur, corpus, géométries
 npx ng test quiz --watch=false
 npm run build:quiz         # UI et game-core, puis paquet quiz strict
 npm run build              # portail, assets et manifeste de service worker
+node projects/games/quiz/tools/verify-offline.mjs # Chromium, build requis
 ```
 
 Le cache des sources est sous `tmp/geography-sources` (ignoré par Git). Pour
 changer une version épinglée, renouveler également les fichiers correspondants
 dans ce cache. Le build ordinaire utilise les fichiers déjà préparés et ne
-télécharge rien. Le service worker précharge le petit corpus et tous ses drapeaux
+télécharge rien. Le service worker précharge le corpus et tous ses drapeaux
 dans le groupe `quiz-geography`, pour les parties hors connexion une fois
 l’installation PWA achevée. Un chargement échoué affiche une action de nouvelle
 tentative ; quitter la route annule la requête.
+
+La vérification Playwright utilise un profil vierge, attend l'installation de tous
+les fichiers du manifeste, coupe le réseau et arrête le serveur puis recharge
+`/quiz`. Elle exerce les cinq catégories, les trois modes de réponse, le résultat,
+la persistance des réglages, l'annulation, le retour du focus et l'absence de
+débordement à 320 pixels. Le premier téléchargement doit donc se faire en ligne.
+Le serveur de développement n'active pas le service worker. Les liens externes
+des crédits exigent le réseau ; les autres jeux utilisent leurs propres caches,
+dont certains sont chargés à la demande.

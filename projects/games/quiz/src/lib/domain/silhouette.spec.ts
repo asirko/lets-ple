@@ -1,6 +1,15 @@
 import { expect, it } from 'vitest';
 import { silhouette } from './silhouette';
 
+it('projette un contour détaillé sans dépasser la limite des arguments JavaScript', () => {
+  const ring: [number, number][] = Array.from({ length: 150000 }, (_, i) => [
+    Math.cos(i / 1000),
+    Math.sin(i / 1000),
+  ]);
+  ring.push(ring[0]);
+  expect(silhouette({ type: 'Polygon', coordinates: [ring] }).path).not.toMatch(/NaN|Infinity/);
+});
+
 it('centre tous les polygones et conserve les trous', () => {
   const result = silhouette({
     type: 'Polygon',

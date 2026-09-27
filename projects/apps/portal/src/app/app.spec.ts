@@ -10,7 +10,7 @@ describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter([{ path: '', component: EmptyPage }, { path: 'cryptogramme', component: EmptyPage }])],
+      providers: [provideRouter([{ path: '', component: EmptyPage }, { path: 'cryptogramme', component: EmptyPage }, { path: 'quiz', component: EmptyPage }])],
     }).compileComponents();
   });
 
@@ -27,10 +27,10 @@ describe('App', () => {
     expect(compiled.querySelector('h1')?.textContent).toContain("Let's Plé");
   });
 
-  it('laisse le jeu afficher son bandeau puis rétablit le titre au retour', async () => {
+  it.each(['/cryptogramme', '/quiz'])('laisse %s afficher son bandeau puis rétablit le titre au retour', async (url) => {
     const fixture = TestBed.createComponent(App);
     const router = TestBed.inject(Router);
-    await router.navigateByUrl('/cryptogramme');
+    await router.navigateByUrl(url);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('h1')).toBeNull();
     await router.navigateByUrl('/');

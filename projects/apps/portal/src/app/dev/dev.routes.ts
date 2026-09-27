@@ -3,6 +3,10 @@ import { Routes } from '@angular/router';
 export const DEV_ROUTES: Routes = [
   ...[
     {
+      path: 'quiz-toolbar',
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_TOOLBAR_SHOWCASE),
+    },
+    {
       path: 'quiz-question',
       loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_QUESTION_SHOWCASE),
     },

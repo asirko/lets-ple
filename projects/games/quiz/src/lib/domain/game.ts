@@ -1,7 +1,7 @@
 import type { Catalog } from './catalog';
 import { matchesAnswer } from './catalog';
 import { generateQuestions, optionsFor } from './questions';
-import type { Answer, Mode, Question, Random } from './types';
+import type { Answer, Mode, Question, QuestionType, Random } from './types';
 
 export const POINTS: Readonly<Record<Mode, number>> = { cash: 5, carre: 3, duo: 1 };
 export interface GameState {
@@ -22,9 +22,13 @@ export type Action =
   | { readonly type: 'answer'; readonly value: string }
   | { readonly type: 'next' };
 
-export function createGame(catalog: Catalog, random: Random): GameState {
+export function createGame(
+  catalog: Catalog,
+  random: Random,
+  enabled?: readonly QuestionType[],
+): GameState {
   return {
-    questions: generateQuestions(catalog, random),
+    questions: generateQuestions(catalog, random, enabled),
     index: 0,
     phase: 'choosing',
     score: 0,

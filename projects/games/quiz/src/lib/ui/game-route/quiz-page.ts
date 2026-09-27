@@ -9,7 +9,6 @@ import {
   ViewEncapsulation,
   viewChild,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { I18nService } from '@lets-ple/game-core';
 import { LpButton, LpPanel } from '@lets-ple/ui';
 import { loadGeography } from '../../data/geography';
@@ -17,21 +16,28 @@ import { QuizStore } from '../../store/quiz.store';
 import { LpQuizQuestion } from '../question/question';
 import { LpQuizAnswers } from '../answers/answers';
 import { LpQuizResult } from '../result/result';
+import { LpQuizToolbar } from '../toolbar/toolbar';
+import { QuizSettingsService } from '../../store/quiz-settings.service';
+import type { QuizPreferences } from '../../domain/preferences';
 
 @Component({
   selector: 'lp-quiz-page',
-  imports: [RouterLink, LpButton, LpPanel, LpQuizQuestion, LpQuizAnswers, LpQuizResult],
+  imports: [LpButton, LpPanel, LpQuizQuestion, LpQuizAnswers, LpQuizResult, LpQuizToolbar],
   providers: [QuizStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // The global game module travels with this lazy entry point, as in the other games.
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['../../../styles/_quiz.scss'],
   template: `
+    <lp-quiz-toolbar
+      [preferences]="settings.preferences()"
+      (settingsSaved)="saveSettings($event)"
+      (replay)="replay()"
+    />
     <main class="quiz-shell">
-      <header class="quiz-header">
-        <a routerLink="/">{{ i18n.t('quiz.home') }}</a>
-        <strong>{{ i18n.t('quiz.title') }}</strong>
-      </header>
+      @if (settingsFailed()) {
+        <p role="alert">{{ i18n.t('quiz.settings.error') }}</p>
+      }
       @if (failed()) {
         <lp-panel
           ><p role="alert">{{ i18n.t('quiz.load.error') }}</p>
@@ -61,6 +67,13 @@ import { LpQuizResult } from '../result/result';
             (next)="next()"
           />
         }
+      } @else if (store.catalog()) {
+        <lp-panel>
+          <p>{{ i18n.t('quiz.settings.empty') }}</p>
+          <lp-button (click)="toolbar()?.openSettings()">{{
+            i18n.t('quiz.settings.title')
+          }}</lp-button>
+        </lp-panel>
       } @else {
         <p role="status">{{ i18n.t('quiz.load.pending') }}</p>
       }
@@ -78,6 +91,9 @@ import { LpQuizResult } from '../result/result';
   `,
 })
 export class QuizPage {
+  protected readonly settings = inject(QuizSettingsService);
+  protected readonly settingsFailed = signal(false);
+  protected readonly toolbar = viewChild(LpQuizToolbar);
   protected readonly store = inject(QuizStore);
   protected readonly i18n = inject(I18nService);
   protected readonly failed = signal(false);
@@ -111,6 +127,11 @@ export class QuizPage {
   protected replay(): void {
     this.store.start();
     this.focusQuestion();
+  }
+  protected saveSettings(preferences: QuizPreferences): void {
+    const saved = this.settings.save(preferences);
+    this.settingsFailed.set(!saved);
+    if (saved) this.replay();
   }
   private focusQuestion(): void {
     afterNextRender(() => this.question()?.focus(), { injector: this.injector });

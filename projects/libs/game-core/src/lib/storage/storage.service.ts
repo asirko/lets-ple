@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
-const PREFIX = 'letsple:v1:';
+import { STORAGE_PREFIX as PREFIX, STORAGE_KEYS } from './storage-keys';
 const SCHEMA_VERSION = 1;
 
 function isLocalStorageAvailable(): boolean {
   try {
-    const probeKey = `${PREFIX}__probe__`;
+    const probeKey = PREFIX + STORAGE_KEYS.probe;
     window.localStorage.setItem(probeKey, '1');
     window.localStorage.removeItem(probeKey);
     return true;
@@ -20,7 +20,7 @@ export class StorageService {
   private readonly useLocalStorage = isLocalStorageAvailable();
 
   constructor() {
-    this.write('schemaVersion', SCHEMA_VERSION);
+    this.write(STORAGE_KEYS.schemaVersion, SCHEMA_VERSION);
   }
 
   read<T>(key: string, fallback: T): T {

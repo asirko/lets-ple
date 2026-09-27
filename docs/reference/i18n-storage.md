@@ -21,6 +21,18 @@ retombe sur une carte en mémoire quand `localStorage` est indisponible (navigat
 y est stocké : progression, statistiques par jeu, préférences (mode accents, thème) et partie locale
 en cours. Aucune donnée ne quitte l'appareil et aucun backend n'est appelé.
 
+Le préfixe et toutes les clés applicatives sont centralisés dans
+`projects/libs/game-core/src/lib/storage/storage-keys.ts`, exportés par
+`@lets-ple/game-core` (`STORAGE_PREFIX`, `STORAGE_KEYS`). Les identifiants existants
+sont conservés pour garder les sauvegardes compatibles. Les nouvelles clés doivent
+être ajoutées ici plutôt que déclarées dans leurs consommateurs.
+
+Le quiz persiste ses cinq préférences de catégories sous `letsple:v1:quiz:settings`.
+Seul `false` désactive une catégorie ; une clé absente (dont une nouvelle catégorie)
+ou un JSON illisible laisse les options actives par défaut. La partie elle-même
+reste en mémoire. Voir `domain-quiz-geographie.md` pour la modale et le cas où toutes
+les catégories sont désactivées.
+
 Dernier Mot persiste après chaque transition la partie active sous la clé logique
 `dernierMot:activeMatch`, soit la clé `localStorage` complète
 `letsple:v1:dernierMot:activeMatch`. L'objet `GameState` porte lui aussi `version: 1`. Une version

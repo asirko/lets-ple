@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { StorageService } from '@lets-ple/game-core';
+import { StorageService, STORAGE_KEYS } from '@lets-ple/game-core';
 import { createGame, type GameState } from '../domain/game';
 
 export interface SavedCryptogramme {
@@ -10,7 +10,7 @@ export interface SavedCryptogramme {
   readonly maxLetters: number | null;
 }
 
-const KEY = 'cryptogramme:activeGame';
+const KEY = STORAGE_KEYS.cryptogrammeActiveGame;
 const record = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 const integer = (value: unknown, minimum: number): value is number =>

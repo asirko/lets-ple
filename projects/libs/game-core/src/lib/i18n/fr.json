@@ -125,6 +125,20 @@
   "quiz.retry": "Réessayer",
   "quiz.load.pending": "Préparation de votre voyage…",
   "quiz.credits": "Données et crédits",
-  "quiz.coverage": "195 États. Les silhouettes sont simplifiées à l’échelle 1:110 millions ; certaines petites îles ne sont pas représentées. Les questions aux réponses ambiguës sont écartées.",
-  "quiz.download": "Télécharger la base géographique (ODbL-1.0)"
+  "quiz.coverage": "195 États avec des contours à l’échelle 1:10 millions. Les îles et territoires éloignés présents dans la source sont conservés. Les questions aux réponses ambiguës sont écartées.",
+  "quiz.download": "Télécharger la base géographique (ODbL-1.0)",
+  "quiz.menu": "Menu du quiz",
+  "quiz.newGame": "Nouvelle partie",
+  "quiz.settings.title": "Paramètres du quiz",
+  "quiz.settings.hint": "Choisissez les questions de votre prochaine partie. Enregistrer commence une nouvelle partie de dix questions.",
+  "quiz.settings.categories": "Types de questions",
+  "quiz.settings.silhouette": "Reconnaître le pays par ses contours",
+  "quiz.settings.flag": "Reconnaître le pays par son drapeau",
+  "quiz.settings.neighbors": "Reconnaître le pays par ses voisins",
+  "quiz.settings.country-from-capital": "Reconnaître le pays par sa capitale",
+  "quiz.settings.capital": "Reconnaître la capitale par son pays",
+  "quiz.settings.empty": "Choisissez au moins un type de question.",
+  "quiz.settings.cancel": "Annuler",
+  "quiz.settings.save": "Enregistrer et jouer",
+  "quiz.settings.error": "Les paramètres n’ont pas pu être enregistrés. Vérifiez l’espace disponible ou les autorisations du navigateur, puis réessayez."
 }

@@ -1,5 +1,5 @@
 import { computed, signal, type Signal, type WritableSignal } from '@angular/core';
-import type { StorageService } from '@lets-ple/game-core';
+import { type StorageService, STORAGE_KEYS } from '@lets-ple/game-core';
 import type { DictionaryPort } from '../domain/dictionary';
 import {
   createMatch,
@@ -10,7 +10,7 @@ import {
   type PlayerState,
 } from '../domain/game';
 
-const ACTIVE_MATCH_KEY = 'dernierMot:activeMatch';
+const ACTIVE_MATCH_KEY = STORAGE_KEYS.dernierMotActiveMatch;
 
 /** Façade signals : elle délègue toutes les règles au réducteur pur et persiste son résultat. */
 export class DernierMotGameStore {
