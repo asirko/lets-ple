@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.2.0",
+    "date": "2026-09-27",
+    "features": [
+      "harmonise les modales focus pour le mobile",
+      "presente le catalogue focus avec recherche",
+      "propose les mises a jour et affiche les nouveautes"
+    ],
+    "fixes": [
+      "renomme le jeu en geoquizz",
+      "corrige les choix et ajoute les preferences de questions"
+    ],
+    "breaking": []
+  },
+  {
     "version": "0.1.0",
     "date": "2026-09-27",
     "features": [
