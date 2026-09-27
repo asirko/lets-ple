@@ -14,6 +14,15 @@ test automatisé imposant la convention de nommage pour l'instant — envisageab
 
 ## Règle d'or
 
+Le mobile est prioritaire : les nouvelles règles partent du petit écran et sont
+enrichies par des media queries `min-width` lorsque nécessaire. Les styles existants
+évoluent progressivement, sans refonte globale imposée à chaque changement.
+
+Les codes communs (espacements, typographie, états, interactions) sont partagés ;
+chaque jeu peut définir sa palette, ses illustrations et ses surfaces dans son
+module et ses tokens de thème. L'identité Focus du portail utilise une classe
+locale `theme-focus` : elle ne remplace pas le thème racine des jeux.
+
 L'immense majorité du style est globale. Un composant Angular ne porte en `styleUrl` que la
 disposition entre ses **propres** éléments enfants (`display: flex`/`grid`, `gap`, alignement,
 position relative/absolue interne). Jamais de couleur, typographie, bordure, ombre ou rayon dans un

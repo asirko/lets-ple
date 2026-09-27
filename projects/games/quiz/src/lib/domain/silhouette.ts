@@ -19,11 +19,17 @@ export function silhouette(geometry: Geometry): {
     }
   }
   const longitude = (x: number) => (((x + 360) % 360) - start + 360) % 360;
-  const latitudes = points.map(([, y]) => y);
-  const minLat = Math.min(...latitudes),
-    maxLat = Math.max(...latitudes);
+  let minLat = Infinity,
+    maxLat = -Infinity,
+    longitudeWidth = 0;
+  // Detailed coastlines can exceed the engine's function-argument limit.
+  for (const [x, y] of points) {
+    minLat = Math.min(minLat, y);
+    maxLat = Math.max(maxLat, y);
+    longitudeWidth = Math.max(longitudeWidth, longitude(x));
+  }
   const correction = Math.max(0.1, Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180));
-  const width = Math.max(...points.map(([x]) => longitude(x))) * correction;
+  const width = longitudeWidth * correction;
   const height = maxLat - minLat;
   const scale = Math.min(440 / Math.max(width, 0.001), 260 / Math.max(height, 0.001));
   const left = (480 - width * scale) / 2,

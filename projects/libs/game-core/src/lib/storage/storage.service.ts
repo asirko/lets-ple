@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
-const PREFIX = 'letsple:v1:';
+import { STORAGE_PREFIX as PREFIX, STORAGE_KEYS } from './storage-keys';
 const SCHEMA_VERSION = 1;
 
 function isLocalStorageAvailable(): boolean {
   try {
-    const probeKey = `${PREFIX}__probe__`;
+    const probeKey = PREFIX + STORAGE_KEYS.probe;
     window.localStorage.setItem(probeKey, '1');
     window.localStorage.removeItem(probeKey);
     return true;
@@ -17,10 +17,10 @@ function isLocalStorageAvailable(): boolean {
 @Injectable({ providedIn: 'root' })
 export class StorageService {
   private readonly memory = new Map<string, string>();
-  private readonly useLocalStorage = isLocalStorageAvailable();
+  private useLocalStorage = isLocalStorageAvailable();
 
   constructor() {
-    this.write('schemaVersion', SCHEMA_VERSION);
+    this.write(STORAGE_KEYS.schemaVersion, SCHEMA_VERSION);
   }
 
   read<T>(key: string, fallback: T): T {
@@ -39,24 +39,34 @@ export class StorageService {
 
   remove(key: string): void {
     const fullKey = PREFIX + key;
-    if (this.useLocalStorage) {
-      window.localStorage.removeItem(fullKey);
-    } else {
-      this.memory.delete(fullKey);
+    this.memory.delete(fullKey);
+    try {
+      if (this.useLocalStorage) window.localStorage.removeItem(fullKey);
+    } catch {
+      this.useLocalStorage = false;
     }
   }
 
   private getRaw(fullKey: string): string | null {
-    return this.useLocalStorage
-      ? window.localStorage.getItem(fullKey)
-      : (this.memory.get(fullKey) ?? null);
+    if (this.useLocalStorage) {
+      try {
+        const raw = window.localStorage.getItem(fullKey);
+        if (raw === null) this.memory.delete(fullKey);
+        else this.memory.set(fullKey, raw);
+        return raw;
+      } catch {
+        this.useLocalStorage = false;
+      }
+    }
+    return this.memory.get(fullKey) ?? null;
   }
 
   private setRaw(fullKey: string, raw: string): void {
-    if (this.useLocalStorage) {
-      window.localStorage.setItem(fullKey, raw);
-    } else {
-      this.memory.set(fullKey, raw);
+    this.memory.set(fullKey, raw);
+    try {
+      if (this.useLocalStorage) window.localStorage.setItem(fullKey, raw);
+    } catch {
+      this.useLocalStorage = false;
     }
   }
 }

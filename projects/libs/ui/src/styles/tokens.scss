@@ -41,6 +41,21 @@
   --lp-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
+// Identité du portail. Portée locale : ne modifie pas les thèmes propres aux jeux.
+.theme-focus {
+  --lp-color-background: #010102;
+  --lp-color-surface: #0f1011;
+  --lp-color-surface-raised: #141516;
+  --lp-color-border: #34343a;
+  --lp-color-text: #f7f8f8;
+  --lp-color-text-muted: #a3a8b4;
+  --lp-color-primary: #626edc;
+  --lp-color-primary-contrast: #ffffff;
+  --lp-color-primary-hover: #505dc9;
+  --lp-color-focus-ring: #a4adff;
+  --lp-color-dialog-backdrop: rgb(0 0 0 / 72%);
+}
+
 // Thème clair — par défaut.
 :root,
 :root[data-theme='light'] {

@@ -44,6 +44,37 @@ describe('normalisation et domaines', () => {
 });
 
 describe('générateurs', () => {
+  it('ne propose aucun voisin cité et privilégie leurs propres voisins', () => {
+    const generator = generators.find((g) => g.type === 'neighbors')!;
+    for (const country of countries.filter((c) => generator.eligible(c, catalog))) {
+      const q = generator.build(country, catalog);
+      const secondDegree = new Set(
+        countries
+          .filter((c) => country.borders.includes(c.iso3))
+          .flatMap((c) => c.borders)
+          .filter((code) => code !== country.iso3 && !country.borders.includes(code)),
+      );
+      for (const mode of ['carre', 'duo'] as const) {
+        const options = optionsFor(q, catalog, mode, random(42));
+        expect(options.every((a) => !country.borders.includes(a.id))).toBe(true);
+        const wrong = options.filter((a) => a.id !== country.iso3);
+        expect(wrong.filter((a) => secondDegree.has(a.id))).toHaveLength(
+          Math.min(wrong.length, secondDegree.size),
+        );
+      }
+    }
+  });
+  it('répartit dix questions entre les catégories sélectionnées uniquement', () => {
+    for (const enabled of [['flag'], ['neighbors', 'capital']] as const) {
+      const questions = generateQuestions(catalog, random(5), enabled);
+      expect(questions).toHaveLength(10);
+      expect(new Set(questions.map((q) => q.countryCode)).size).toBe(10);
+      expect(questions.every((q) => (enabled as readonly string[]).includes(q.type))).toBe(true);
+      for (const type of enabled)
+        expect(questions.filter((q) => q.type === type)).toHaveLength(10 / enabled.length);
+    }
+    expect(() => generateQuestions(catalog, random(1), [])).toThrow('No eligible');
+  });
   it('produit dix pays distincts, deux questions de chaque catégorie, sans types consécutifs', () => {
     for (let seed = 1; seed < 60; seed++) {
       const questions = generateQuestions(catalog, random(seed));

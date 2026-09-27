@@ -5,6 +5,15 @@ a le droit d'en porter.
 
 ## Règle d'or
 
+Le mobile est la cible prioritaire : concevoir et revoir d'abord les composants à
+320–390 px, puis leur adaptation tablette et desktop. Vérifier les cibles tactiles,
+les textes longs, les états vides et les contenus défilants, notamment dans les modales.
+
+La composition suit l'esprit de l'atomic design : éléments simples, assemblages,
+puis écrans. Réutiliser les briques communes sans imposer un habillage identique à
+tous les jeux. Le showcase permet une revue purement graphique avec données fixes
+et états contrôlés, indépendamment des services métier.
+
 Un composant **UI** (`libs/ui/src/lib/*` ou le dossier `ui/` d'un jeu, ex.
 `projects/games/cryptogramme/src/lib/ui/cryptogram-cell/`) se conçoit et se construit **d'abord
 dans le showcase de composants (`/dev/components`)**, isolé de tout store ou service métier. Il

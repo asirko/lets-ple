@@ -1,3 +1,4 @@
+import { RELEASE_DATA } from './releases/release-data';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { provideRouter, Router } from '@angular/router';
@@ -10,7 +11,15 @@ describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter([{ path: '', component: EmptyPage }, { path: 'cryptogramme', component: EmptyPage }])],
+      providers: [
+        { provide: RELEASE_DATA, useValue: { version: '0.1.0', releases: [] } },
+        provideRouter([
+          { path: '', component: EmptyPage },
+          { path: 'cryptogramme', component: EmptyPage },
+          { path: 'quiz', component: EmptyPage },
+          { path: 'dev', component: EmptyPage },
+        ]),
+      ],
     }).compileComponents();
   });
 
@@ -20,21 +29,25 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('affiche le titre du portail sur les pages sans en-tête propre', async () => {
     const fixture = TestBed.createComponent(App);
+    await TestBed.inject(Router).navigateByUrl('/dev');
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain("Let's Plé");
   });
 
-  it('laisse le jeu afficher son bandeau puis rétablit le titre au retour', async () => {
-    const fixture = TestBed.createComponent(App);
-    const router = TestBed.inject(Router);
-    await router.navigateByUrl('/cryptogramme');
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('h1')).toBeNull();
-    await router.navigateByUrl('/');
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain("Let's Plé");
-  });
+  it.each(['/?design=atelier', '/?design=focus', '/?design=arcade', '/cryptogramme', '/quiz'])(
+    'laisse %s afficher son bandeau puis rétablit le titre au retour',
+    async (url) => {
+      const fixture = TestBed.createComponent(App);
+      const router = TestBed.inject(Router);
+      await router.navigateByUrl(url);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('h1')).toBeNull();
+      await router.navigateByUrl('/dev');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain("Let's Plé");
+    },
+  );
 });

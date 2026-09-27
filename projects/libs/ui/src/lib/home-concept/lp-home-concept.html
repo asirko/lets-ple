@@ -1,0 +1,117 @@
+<div class="home-concept home-focus theme-focus">
+  <a class="home-skip" href="#jeux" (click)="skipToGames($event, gameSection)">Aller aux jeux</a>
+  <div class="home-shell">
+    <header class="home-header">
+      <a class="home-brand" href="/" aria-label="Let’s Plé, accueil"
+        ><span class="home-brand-mark" aria-hidden="true">p<span>é</span></span
+        >let’s plé<span class="home-brand-period">.</span></a
+      >
+      <ng-content select="[home-actions]" />
+    </header>
+    <main class="home-games" id="jeux" #gameSection tabindex="-1" aria-labelledby="home-title">
+      <div class="home-catalogue-heading">
+        <h1 id="home-title">Les jeux</h1>
+        <search class="home-search">
+          <label for="home-search-field">Rechercher un jeu</label>
+          <div class="home-search-control">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m16 16 5 5" />
+            </svg>
+            <input
+              #searchField
+              id="home-search-field"
+              type="search"
+              placeholder="Nom, thème, mot-clé…"
+              autocomplete="off"
+              [value]="query()"
+              (input)="query.set(searchField.value)"
+              (keydown.escape)="clearSearch(searchField)"
+              aria-controls="home-results"
+            />
+            @if (query()) {
+              <button
+                class="home-search-clear"
+                type="button"
+                aria-label="Effacer la recherche"
+                (click)="clearSearch(searchField)"
+              >
+                ×
+              </button>
+            }
+          </div>
+        </search>
+      </div>
+      <p class="home-result-count" role="status" aria-live="polite" aria-atomic="true">
+        {{ filteredGames().length }} {{ filteredGames().length > 1 ? 'jeux' : 'jeu' }}
+        @if (query().trim()) {
+          sur {{ games().length }}
+        }
+      </p>
+      <div class="home-game-grid" id="home-results">
+        @for (game of filteredGames(); track game.id) {
+          <a
+            class="home-game"
+            [class.home-game-cipher]="game.id === 'cryptogramme'"
+            [class.home-game-word]="game.id === 'dernier-mot'"
+            [class.home-game-quiz]="game.id === 'quiz'"
+            [href]="game.route"
+            [attr.aria-label]="'Jouer à ' + game.title"
+          >
+            <div class="home-game-art" aria-hidden="true">
+              @switch (game.id) {
+                @case ('cryptogramme') {
+                  <div class="home-cipher-row">
+                    <span>L<small>12</small></span
+                    ><span>_<small>5</small></span
+                    ><span>J<small>10</small></span
+                    ><span>E<small>5</small></span
+                    ><span>U<small>21</small></span>
+                  </div>
+                }
+                @case ('dernier-mot') {
+                  <div class="home-word-stack">
+                    <span>M</span><span>MO</span
+                    ><span>MOT<span class="home-word-cursor">?</span></span>
+                  </div>
+                }
+                @case ('quiz') {
+                  <svg class="home-globe" viewBox="0 0 180 180" fill="none">
+                    <circle cx="90" cy="90" r="68" />
+                    <ellipse cx="90" cy="90" rx="30" ry="68" />
+                    <path d="M22 90h136M33 54h114M33 126h114M90 22v136" />
+                    <circle class="home-globe-pin" cx="119" cy="55" r="9" />
+                  </svg>
+                }
+                @default {
+                  <span class="home-game-initial">{{ game.title.slice(0, 2) }}</span>
+                }
+              }
+            </div>
+            <div class="home-game-body">
+              <div class="home-game-meta">
+                <span>{{ game.themes?.join(' / ') }}</span>
+              </div>
+              <h2>{{ game.title }}</h2>
+              <p>{{ game.summary }}</p>
+              <div class="home-game-bottom">
+                <span>{{ game.themes?.includes('multi') ? 'À plusieurs' : 'En solo' }}</span
+                ><span class="home-game-link">Jouer <span aria-hidden="true">↗</span></span>
+              </div>
+            </div>
+          </a>
+        } @empty {
+          <div class="home-empty">
+            <h2>{{ games().length ? 'Aucun jeu trouvé' : 'Aucun jeu disponible' }}</h2>
+            @if (games().length) {
+              <p>Essayez un autre nom ou un autre thème.</p>
+              <button type="button" (click)="clearSearch(searchField)">
+                Afficher tous les jeux
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </main>
+  </div>
+</div>

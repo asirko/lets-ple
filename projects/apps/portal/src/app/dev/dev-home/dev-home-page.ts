@@ -8,13 +8,17 @@ import { RouterLink } from '@angular/router';
   template: `
     <h1>Showcase de composants</h1>
     <ul class="dev-home-list">
+      <li><a routerLink="lp-home-concept">Accueil Focus — catalogue</a></li>
       <li><a routerLink="style">Guide de style</a></li>
       <li><a routerLink="quiz-question">Quiz — question</a></li>
       <li><a routerLink="quiz-cash">Quiz — Cash</a></li>
       <li><a routerLink="quiz-answers">Quiz — réponses et correction</a></li>
+      <li><a routerLink="quiz-toolbar">Quiz — en-tête et paramètres</a></li>
       <li><a routerLink="quiz-result">Quiz — résultat</a></li>
       <li><a routerLink="lp-button">LpButton</a></li>
       <li><a routerLink="lp-dialog">LpDialog</a></li>
+      <li><a routerLink="lp-update-dialog">Mise à jour de l’application</a></li>
+      <li><a routerLink="lp-release-notes-dialog">Nouveautés des versions</a></li>
       <li><a routerLink="lp-card">LpCard</a></li>
       <li><a routerLink="lp-panel">LpPanel</a></li>
       <li><a routerLink="lp-cryptogram-cell">LpCryptogramCell</a></li>

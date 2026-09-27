@@ -1,8 +1,11 @@
 {
   "name": "lets-ple",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "ng": "ng",
+    "release:prepare": "tsx scripts/release/prepare.ts",
+    "check:commits": "tsx scripts/release/check-commits.ts",
+    "check:release": "tsx scripts/release/check-release.ts",
     "start": "tsx scripts/serve.ts portal",
     "ticket": "tsx scripts/ticket.ts",
     "ticket:deps": "tsx scripts/ticket.ts --detach-deps",

@@ -1,7 +1,24 @@
 import { Routes } from '@angular/router';
 
 export const DEV_ROUTES: Routes = [
+  {
+    path: 'lp-home-concept',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: { loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_HOME_CONCEPT_SHOWCASE) },
+  },
   ...[
+    {
+      path: 'lp-update-dialog',
+      loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_UPDATE_DIALOG_SHOWCASE),
+    },
+    {
+      path: 'lp-release-notes-dialog',
+      loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_RELEASE_NOTES_DIALOG_SHOWCASE),
+    },
+    {
+      path: 'quiz-toolbar',
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_TOOLBAR_SHOWCASE),
+    },
     {
       path: 'quiz-question',
       loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_QUESTION_SHOWCASE),

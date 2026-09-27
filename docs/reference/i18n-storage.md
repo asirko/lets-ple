@@ -1,5 +1,17 @@
 # i18n et storage
 
+Les nouveautés acquittées sont enregistrées sous `letsple:v1:portal:releaseNotesRead`.
+Seule une fermeture volontaire avance ce marqueur de version ; un rollback le conserve.
+`StorageService` garde désormais un miroir des lectures/écritures en mémoire et y bascule
+si une opération lève une erreur après la sonde initiale (quota ou stockage bloqué).
+Ce repli vaut pour la session, sans garantie de persistance après fermeture du navigateur.
+Voir [le parcours complet](releases.md).
+
+Les libellés des modales de version utilisent `releases.notes.*` et `releases.update.*`.
+Le portail résout ces clés et passe les textes aux composants UI par inputs, pour garder
+le design system indépendant des services métier. Les notes elles-mêmes sont du contenu
+de release français, distinct des libellés traduisibles.
+
 Les chaînes d'interface ne sont jamais en dur dans les templates — tout passe par `I18nService`,
 qui résout des clés depuis des dictionnaires JSON (`i18n/fr.json`), interpole `{n}`, et retombe sur
 la clé brute si elle est absente (une clé manquante doit se voir, jamais planter l'app). Français
@@ -20,6 +32,18 @@ seuls les libellés de présentation passent par `I18nService`.
 retombe sur une carte en mémoire quand `localStorage` est indisponible (navigation privée). Ce qui
 y est stocké : progression, statistiques par jeu, préférences (mode accents, thème) et partie locale
 en cours. Aucune donnée ne quitte l'appareil et aucun backend n'est appelé.
+
+Le préfixe et toutes les clés applicatives sont centralisés dans
+`projects/libs/game-core/src/lib/storage/storage-keys.ts`, exportés par
+`@lets-ple/game-core` (`STORAGE_PREFIX`, `STORAGE_KEYS`). Les identifiants existants
+sont conservés pour garder les sauvegardes compatibles. Les nouvelles clés doivent
+être ajoutées ici plutôt que déclarées dans leurs consommateurs.
+
+Le quiz persiste ses cinq préférences de catégories sous `letsple:v1:quiz:settings`.
+Seul `false` désactive une catégorie ; une clé absente (dont une nouvelle catégorie)
+ou un JSON illisible laisse les options actives par défaut. La partie elle-même
+reste en mémoire. Voir `domain-quiz-geographie.md` pour la modale et le cas où toutes
+les catégories sont désactivées.
 
 Dernier Mot persiste après chaque transition la partie active sous la clé logique
 `dernierMot:activeMatch`, soit la clé `localStorage` complète

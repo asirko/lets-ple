@@ -1,6 +1,7 @@
 import type { Catalog } from './catalog';
 import { generators } from './generators';
-import type { Answer, Mode, Question, Random } from './types';
+import type { Answer, Mode, Question, QuestionType, Random } from './types';
+import { QUESTION_TYPES } from './preferences';
 
 export function shuffle<T>(values: readonly T[], random: Random): T[] {
   const result = [...values];
@@ -11,8 +12,13 @@ export function shuffle<T>(values: readonly T[], random: Random): T[] {
   return result;
 }
 
-export function generateQuestions(catalog: Catalog, random: Random): readonly Question[] {
+export function generateQuestions(
+  catalog: Catalog,
+  random: Random,
+  enabled: readonly QuestionType[] = QUESTION_TYPES,
+): readonly Question[] {
   const available = generators
+    .filter((generator) => enabled.includes(generator.type))
     .map((generator) => ({
       generator,
       candidates: catalog.countries.filter((c) => generator.eligible(c, catalog)),
@@ -48,18 +54,28 @@ export function optionsFor(
   const domain = catalog[question.answerType];
   const correct = domain.filter((a) => question.correctAnswers.includes(a.id));
   const country = catalog.countries.find((c) => c.iso3 === question.countryCode)!;
+  const isNeighbors = question.type === 'neighbors';
+  const preferred = isNeighbors
+    ? new Set(
+        catalog.countries.filter((c) => country.borders.includes(c.iso3)).flatMap((c) => c.borders),
+      )
+    : new Set(country.borders);
   const rank = (answer: Answer): number =>
     Math.min(
       ...answer.countryCodes.map((code) => {
         const candidate = catalog.countries.find((c) => c.iso3 === code)!;
-        if (country.borders.includes(code)) return 0;
+        if (preferred.has(code)) return 0;
         if (candidate.subregion === country.subregion) return 1;
         if (candidate.continent === country.continent) return 2;
         return 3;
       }),
     );
   const distractors = shuffle(
-    domain.filter((a) => !question.correctAnswers.includes(a.id)),
+    domain.filter(
+      (a) =>
+        !question.correctAnswers.includes(a.id) &&
+        (!isNeighbors || !a.countryCodes.some((code) => country.borders.includes(code))),
+    ),
     random,
   ).sort((a, b) => rank(a) - rank(b));
   const count = mode === 'carre' ? 3 : 1;
