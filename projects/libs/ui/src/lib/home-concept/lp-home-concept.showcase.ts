@@ -18,7 +18,7 @@ const games: HomeGame[] = [
   },
   {
     id: 'quiz',
-    title: 'Quiz géographie',
+    title: 'Géoquizz',
     summary:
       '10 questions pour explorer les pays du monde. Cash, Carré ou Duo : à vous de choisir !',
     route: '/quiz',

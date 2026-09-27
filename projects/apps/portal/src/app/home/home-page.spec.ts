@@ -63,7 +63,7 @@ describe('Recherche du catalogue', () => {
   }
 
   it.each([
-    ['  GEOGRAPHIE  pays ', 'Quiz géographie'],
+    ['  GEOGRAPHIE  pays ', 'Géoquizz'],
     ['competitif', 'Dernier Mot'],
     ['citation lettre', 'Cryptogramme'],
   ])('recherche nom, description et thèmes sans accents : %s', (query, title) => {

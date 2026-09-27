@@ -1,4 +1,4 @@
-# Quiz géographie
+# Géoquizz
 
 Bibliothèque Angular chargée sous `/quiz`, moteur pur sous `src/lib/domain`,
 façade signals sous `store`, composants avec showcases sous `ui`.
