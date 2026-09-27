@@ -66,3 +66,8 @@ Thumbs.db
 
 # Local preview captures, logs and verification scripts
 /.angular/
+
+# Réglages personnels et état temporaire des assistants
+/.claude/settings.local.json
+/.claude/scheduled_tasks.lock
+/.superpowers/
