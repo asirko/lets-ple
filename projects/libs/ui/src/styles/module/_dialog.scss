@@ -69,6 +69,26 @@
   border-top: 1px solid var(--lp-color-text-muted);
 }
 
+// Les modales du portail reprennent Focus, sans imposer ce thème aux jeux.
+.theme-focus .dialog-surface,
+.theme-focus .dialog-actions {
+  border-color: var(--lp-color-border);
+}
+
+.theme-focus .dialog-actions {
+  flex-direction: column;
+}
+
+.theme-focus .dialog-actions .b-button {
+  min-height: 44px;
+}
+
+@media (min-width: 600px) {
+  .theme-focus .dialog-actions {
+    flex-direction: row;
+  }
+}
+
 @keyframes lp-dialog-enter {
   from {
     opacity: 0.94;

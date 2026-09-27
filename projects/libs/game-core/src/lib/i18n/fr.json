@@ -89,7 +89,7 @@
   "dernierMot.credits.by": "par {name}",
   "dernierMot.credits.retrievedAt": "collecté le {date}",
   "dernierMot.credits.adaptation": "Transformations appliquées :",
-  "quiz.title": "Quiz géographie",
+  "quiz.title": "Géoquizz",
   "quiz.home": "Retour à l’accueil",
   "quiz.progress": "Question {n} / 10",
   "quiz.progress.label": "Progression du quiz",
