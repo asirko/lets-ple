@@ -7,4 +7,5 @@ export const STORAGE_KEYS = {
   cryptogrammeActiveGame: 'cryptogramme:activeGame',
   dernierMotActiveMatch: 'dernierMot:activeMatch',
   quizSettings: 'quiz:settings',
+  releaseNotesRead: 'portal:releaseNotesRead',
 } as const;

@@ -17,7 +17,7 @@ function isLocalStorageAvailable(): boolean {
 @Injectable({ providedIn: 'root' })
 export class StorageService {
   private readonly memory = new Map<string, string>();
-  private readonly useLocalStorage = isLocalStorageAvailable();
+  private useLocalStorage = isLocalStorageAvailable();
 
   constructor() {
     this.write(STORAGE_KEYS.schemaVersion, SCHEMA_VERSION);
@@ -39,24 +39,34 @@ export class StorageService {
 
   remove(key: string): void {
     const fullKey = PREFIX + key;
-    if (this.useLocalStorage) {
-      window.localStorage.removeItem(fullKey);
-    } else {
-      this.memory.delete(fullKey);
+    this.memory.delete(fullKey);
+    try {
+      if (this.useLocalStorage) window.localStorage.removeItem(fullKey);
+    } catch {
+      this.useLocalStorage = false;
     }
   }
 
   private getRaw(fullKey: string): string | null {
-    return this.useLocalStorage
-      ? window.localStorage.getItem(fullKey)
-      : (this.memory.get(fullKey) ?? null);
+    if (this.useLocalStorage) {
+      try {
+        const raw = window.localStorage.getItem(fullKey);
+        if (raw === null) this.memory.delete(fullKey);
+        else this.memory.set(fullKey, raw);
+        return raw;
+      } catch {
+        this.useLocalStorage = false;
+      }
+    }
+    return this.memory.get(fullKey) ?? null;
   }
 
   private setRaw(fullKey: string, raw: string): void {
-    if (this.useLocalStorage) {
-      window.localStorage.setItem(fullKey, raw);
-    } else {
-      this.memory.set(fullKey, raw);
+    this.memory.set(fullKey, raw);
+    try {
+      if (this.useLocalStorage) window.localStorage.setItem(fullKey, raw);
+    } catch {
+      this.useLocalStorage = false;
     }
   }
 }

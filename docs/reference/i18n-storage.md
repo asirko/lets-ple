@@ -1,5 +1,17 @@
 # i18n et storage
 
+Les nouveautés acquittées sont enregistrées sous `letsple:v1:portal:releaseNotesRead`.
+Seule une fermeture volontaire avance ce marqueur de version ; un rollback le conserve.
+`StorageService` garde désormais un miroir des lectures/écritures en mémoire et y bascule
+si une opération lève une erreur après la sonde initiale (quota ou stockage bloqué).
+Ce repli vaut pour la session, sans garantie de persistance après fermeture du navigateur.
+Voir [le parcours complet](releases.md).
+
+Les libellés des modales de version utilisent `releases.notes.*` et `releases.update.*`.
+Le portail résout ces clés et passe les textes aux composants UI par inputs, pour garder
+le design system indépendant des services métier. Les notes elles-mêmes sont du contenu
+de release français, distinct des libellés traduisibles.
+
 Les chaînes d'interface ne sont jamais en dur dans les templates — tout passe par `I18nService`,
 qui résout des clés depuis des dictionnaires JSON (`i18n/fr.json`), interpole `{n}`, et retombe sur
 la clé brute si elle est absente (une clé manquante doit se voir, jamais planter l'app). Français

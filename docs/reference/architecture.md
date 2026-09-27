@@ -134,6 +134,12 @@ construit donc d'abord `ui`, puis `game-core`, avant `dernier-mot`.
 
 ## PWA et service worker
 
+Le cycle de version est décrit dans [Versions et mises à jour](releases.md).
+`App` monte `ReleaseDialogs` qui coordonne les modales UI partagées, `PwaUpdateService`
+et `ReleaseNotesService`. Le showcase reste indépendant de ces services. Les scripts
+transversaux de release vivent sous `scripts/release/`, avec les scripts de travail
+existants ; leurs tests sont inclus dans le runner Vitest Node.
+
 Le portail est une PWA via `@angular/service-worker` (`^22.0.8` dans `package.json`), configuré par
 `projects/apps/portal/ngsw-config.json`. Deux stratégies de cache selon le groupe de ressources :
 

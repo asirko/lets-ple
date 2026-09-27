@@ -50,6 +50,12 @@ Commits follow `type(scope): sujet` (Conventional Commits, scope = touched area,
 accents) — read `docs/conventions/commits.md` before writing a commit message. The body, when
 present, explains _why_, never restates the diff.
 
+Conventional Commits are mandatory, including squash messages; CI enforces them on develop/main.
+Declare breaking changes with `!` or a `BREAKING CHANGE:` footer. Release priority is breaking
+=> major, feat => minor, fix => patch; technical-only commits do not bump. Use
+`npm run release:prepare -- --dry-run` then `npm run release:prepare` on committed work.
+Read `docs/reference/releases.md` before changing versioning, update prompts or release CI.
+
 ## Project tracking
 
 Backlog and status live on GitHub, not in this file — check them at the start of planning/work,

@@ -84,7 +84,16 @@ domaine personnalisé via la console, pas via un fichier `CNAME` versionné.
 
 ## Workflow CI/CD
 
-`.github/workflows/ci.yml` construit et teste sur chaque push/PR vers `main`, et déploie
+Le workflow couvre désormais les push/PR de **main et develop**, avec validation des
+Conventional Commits et de la cohérence package/lockfile/changelog/notes. Pour main,
+`check:release -- --released` exige une release préparée et son tag accessible avant
+intégration. Le déploiement reste réservé au push de main. Voir le
+[processus de release](releases.md) et le
+[workflow de publication pas à pas](releases.md#workflow-dune-publication) : préparation
+sur une branche issue de develop, push atomique branche/tag, PR vers main sans squash,
+vérification du déploiement, puis réintégration de main dans develop.
+
+`.github/workflows/ci.yml` construit et teste sur chaque push/PR vers `main` ou `develop`, et déploie
 uniquement sur push vers `main` :
 
 ```yaml
@@ -92,15 +101,17 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -108,9 +119,15 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+      - run: npm run check:commits
+      - run: npm run check:release
+      - name: Verifier que les changements publiables ont une version
+        if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
+        run: npm run check:release -- --released
       - run: npm test
       - run: npm run test:ng
       - run: npm run validate:quotes
+      - run: npm run validate:dernier-mot-dictionary
       - run: npm run build
 
       - name: Deployer sur Firebase Hosting

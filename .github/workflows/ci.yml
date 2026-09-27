@@ -2,15 +2,17 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -18,6 +20,14 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+
+      - run: npm run check:commits
+
+      - run: npm run check:release
+
+      - name: Verifier que les changements publiables ont une version
+        if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
+        run: npm run check:release -- --released
 
       - run: npm test
 
