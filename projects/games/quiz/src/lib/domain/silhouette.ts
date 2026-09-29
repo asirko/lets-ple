@@ -1,7 +1,44 @@
 import type { Geometry } from './types';
 
+/** Silhouettes écartées après revue visuelle ; pays conservés dans les autres catégories. */
+export const EXCLUDED_SILHOUETTE_COUNTRIES: ReadonlySet<string> = new Set([
+  'MHL',
+  'KIR',
+  'MDV',
+  'FSM',
+]);
+
+/** Pays dont le nouveau cadrage a été validé lors de la revue visuelle. */
+export const APPROVED_SILHOUETTE_COUNTRIES: ReadonlySet<string> = new Set([
+  'BLZ',
+  'CIV',
+  'GIN',
+  'IRL',
+  'JAM',
+  'MEX',
+  'PAN',
+  'PER',
+  'DOM',
+  'SLE',
+  'SUR',
+  'TTO',
+  'URY',
+]);
+
+export function silhouette(geometry: Geometry, countryCode = '') {
+  return projectSilhouette(geometry, APPROVED_SILHOUETTE_COUNTRIES.has(countryCode));
+}
+
+/** Aperçu de revue pour les pays dont le cadrage n’est pas encore validé. */
+export function correctedSilhouette(geometry: Geometry) {
+  return projectSilhouette(geometry, true);
+}
+
 /** Equirectangular local projection with the cut placed in the largest empty longitude gap. */
-export function silhouette(geometry: Geometry): {
+function projectSilhouette(
+  geometry: Geometry,
+  corrected: boolean,
+): {
   path: string;
   viewBox: string;
   longitudeSpan: number;
@@ -15,7 +52,9 @@ export function silhouette(geometry: Geometry): {
     const next = longitudes[(i + 1) % longitudes.length] + (i === longitudes.length - 1 ? 360 : 0);
     if (next - longitudes[i] > gap) {
       gap = next - longitudes[i];
-      start = next % 360;
+      // L'aller-retour +360/-360 peut déplacer la coupure d'un epsilon,
+      // projetant alors le point le plus à l'ouest à presque 360°.
+      start = corrected ? longitudes[(i + 1) % longitudes.length] : next % 360;
     }
   }
   const longitude = (x: number) => (((x + 360) % 360) - start + 360) % 360;

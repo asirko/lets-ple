@@ -11,6 +11,10 @@ import { RouterLink } from '@angular/router';
       <li><a routerLink="lp-home-concept">Accueil Focus — catalogue</a></li>
       <li><a routerLink="style">Guide de style</a></li>
       <li><a routerLink="quiz-question">Quiz — question</a></li>
+      <li><a routerLink="quiz-silhouettes">Quiz — revue de toutes les silhouettes</a></li>
+      <li>
+        <a routerLink="quiz-silhouettes-selection">Quiz — bilan de la revue des silhouettes</a>
+      </li>
       <li><a routerLink="quiz-cash">Quiz — Cash</a></li>
       <li><a routerLink="quiz-answers">Quiz — réponses et correction</a></li>
       <li><a routerLink="quiz-toolbar">Quiz — en-tête et paramètres</a></li>

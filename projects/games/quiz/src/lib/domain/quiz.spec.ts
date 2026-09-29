@@ -44,6 +44,29 @@ describe('normalisation et domaines', () => {
 });
 
 describe('générateurs', () => {
+  it('exclut les quatre silhouettes illisibles sans retirer leurs drapeaux ni leurs réponses', () => {
+    const shape = generators.find((g) => g.type === 'silhouette')!;
+    const flag = generators.find((g) => g.type === 'flag')!;
+    const excluded = ['MHL', 'KIR', 'MDV', 'FSM'];
+    expect(
+      countries
+        .filter((c) => c.geometry && !shape.eligible(c, catalog))
+        .map((c) => c.iso3)
+        .sort(),
+    ).toEqual([...excluded].sort());
+    for (const code of excluded) {
+      const country = countries.find((c) => c.iso3 === code)!;
+      expect(flag.eligible(country, catalog)).toBe(true);
+      expect(catalog.country.some((answer) => answer.id === code)).toBe(true);
+    }
+    for (let seed = 0; seed < 30; seed++) {
+      expect(
+        generateQuestions(catalog, random(seed), ['silhouette']).every(
+          (q) => !excluded.includes(q.countryCode),
+        ),
+      ).toBe(true);
+    }
+  });
   it('ne propose aucun voisin cité et privilégie leurs propres voisins', () => {
     const generator = generators.find((g) => g.type === 'neighbors')!;
     for (const country of countries.filter((c) => generator.eligible(c, catalog))) {

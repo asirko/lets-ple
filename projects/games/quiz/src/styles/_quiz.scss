@@ -1,3 +1,59 @@
+.quiz-review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--lp-space-4);
+}
+.quiz-review-composed {
+  grid-column: 1 / -1;
+}
+.quiz-review-composition {
+  display: block;
+  width: 100%;
+  max-width: 50rem;
+  margin-inline: auto;
+  fill: var(--lp-color-text);
+}
+.quiz-review-composition rect {
+  fill: none;
+  stroke: var(--lp-color-text-muted);
+  stroke-width: 1;
+}
+.quiz-review-composition text {
+  font-size: 16px;
+}
+.quiz-review-insets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: var(--lp-space-3);
+}
+.quiz-review-insets figure {
+  margin: 0;
+  padding: var(--lp-space-2);
+  border: 1px solid var(--lp-color-border);
+}
+.quiz-review-insets .quiz-silhouette {
+  height: 9rem;
+}
+.quiz-review-grid summary {
+  cursor: pointer;
+  padding-block: var(--lp-space-3);
+}
+.quiz-review-grid .panel {
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--lp-color-border);
+}
+.quiz-review-grid h2 {
+  font-size: var(--lp-font-size-lg);
+  overflow-wrap: anywhere;
+}
+.quiz-review-missing {
+  min-height: 12rem;
+  display: grid;
+  place-items: center;
+  color: var(--lp-color-text-muted);
+}
+
 .quiz-shell {
   display: grid;
   gap: var(--lp-space-5);

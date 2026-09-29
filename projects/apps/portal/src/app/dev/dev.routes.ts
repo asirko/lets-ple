@@ -2,6 +2,15 @@ import { Routes } from '@angular/router';
 
 export const DEV_ROUTES: Routes = [
   {
+    path: 'quiz-silhouettes-selection',
+    loadComponent: () => import('@lets-ple/quiz').then((m) => m.SilhouetteReviewPage),
+    data: { focused: true },
+  },
+  {
+    path: 'quiz-silhouettes',
+    loadComponent: () => import('@lets-ple/quiz').then((m) => m.SilhouetteReviewPage),
+  },
+  {
     path: 'lp-home-concept',
     loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
     data: { loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_HOME_CONCEPT_SHOWCASE) },

@@ -10,11 +10,13 @@ import {
 import { I18nService } from '@lets-ple/game-core';
 import { LpPanel } from '@lets-ple/ui';
 import { silhouette } from '../../domain/silhouette';
+import { approvedComposition } from '../../domain/silhouette-composition';
+import { ComposedSilhouette } from '../silhouette-review/composed-silhouette';
 import type { Question } from '../../domain/types';
 
 @Component({
   selector: 'lp-quiz-question',
-  imports: [LpPanel],
+  imports: [LpPanel, ComposedSilhouette],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="quiz-progress">
@@ -41,7 +43,12 @@ import type { Question } from '../../domain/types';
             />
           }
           @case ('silhouette') {
-            @if (shape(); as shape) {
+            @if (composition(); as composition) {
+              <lp-composed-silhouette
+                [composition]="composition"
+                [label]="i18n.t('quiz.silhouette.alt')"
+              />
+            } @else if (shape(); as shape) {
               <svg
                 class="quiz-silhouette"
                 [attr.viewBox]="shape.viewBox"
@@ -73,9 +80,17 @@ export class LpQuizQuestion {
   readonly score = input.required<number>();
   protected readonly i18n = inject(I18nService);
   private readonly heading = viewChild<ElementRef<HTMLElement>>('heading');
+  protected readonly composition = computed(() => {
+    const question = this.question();
+    return question.data.kind === 'silhouette'
+      ? approvedComposition({ iso3: question.countryCode, geometry: question.data.geometry })
+      : null;
+  });
   protected readonly shape = computed(() => {
     const data = this.question().data;
-    return data.kind === 'silhouette' ? silhouette(data.geometry) : null;
+    return data.kind === 'silhouette'
+      ? silhouette(data.geometry, this.question().countryCode)
+      : null;
   });
   protected readonly flagSrc = computed(() => {
     const data = this.question().data;

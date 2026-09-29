@@ -1,5 +1,6 @@
 import type { Catalog } from './catalog';
 import { normalizeSearch } from './normalize';
+import { EXCLUDED_SILHOUETTE_COUNTRIES } from './silhouette';
 import type { Country, Question, QuestionType } from './types';
 
 export interface QuestionGenerator {
@@ -36,7 +37,7 @@ function hasUniqueCapitals(c: Country, catalog: Catalog): boolean {
 export const generators: readonly QuestionGenerator[] = [
   {
     type: 'silhouette',
-    eligible: (c) => !!c.geometry,
+    eligible: (c) => !!c.geometry && !EXCLUDED_SILHOUETTE_COUNTRIES.has(c.iso3),
     build: (c) => ({
       ...base(c, 'silhouette'),
       data: { kind: 'silhouette', geometry: c.geometry! },

@@ -64,6 +64,34 @@ y compris les territoires éloignés : certaines silhouettes sont donc dispersé
 Cette généralisation cartographique ne constitue pas une définition juridique
 des frontières.
 
+### Revue des silhouettes
+
+`/dev/components/quiz-silhouettes` affiche le corpus complet ;
+`/dev/components/quiz-silhouettes-selection` affiche le bilan de la revue terminée.
+Le cadrage corrigé est validé pour BLZ, CIV, GIN, IRL, JAM, MEX, PAN, PER, DOM,
+SLE, SUR, TTO et URY : le quiz et la revue complète utilisent cette version.
+La coupure de longitude conserve la coordonnée exacte pour éviter qu'un arrondi
+projette le point occidental à presque 360°. Les autres pays gardent leur rendu
+actuel, avec aperçu corrigé et zones séparées disponibles dans la revue.
+
+Le module `domain/silhouette-composition.ts` fournit les compositions en boîtes :
+boîtes rapprochées pour MUS, TUV et TON ; cadrage principal avec encadrés latéraux
+pour NOR, NZL, PLW, NLD et SYC. Elles conservent tous les polygones de la source,
+chacun exactement une fois. Le nord reste en haut mais chaque boîte possède sa
+propre échelle. Les positions des trois compositions compactes sont calées sur
+le corpus épinglé ; les vues principales utilisent des fenêtres géographiques,
+en gardant les petites îles voisines et les deux grandes îles néo-zélandaises.
+Les zones lointaines sont regroupées par proximité (Svalbard regroupé explicitement).
+MUS, NOR, PLW, NLD, TUV, TON, SYC et NZL sont validés et intégrés au quiz via
+`approvedComposition`, avec le même composant SVG que la revue complète.
+NZL utilise une fenêtre élargie (165° à 185° Est, 53° à 28° Sud) :
+24 polygones dans la vue principale, deux polygones tropicaux lointains en encadrés
+à droite du cadre principal aminci. SYC utilise le cadrage resserré avec les encadrés à droite et en bas.
+MHL, KIR, MDV et FSM sont exclus uniquement du générateur de silhouettes via
+`EXCLUDED_SILHOUETTE_COUNTRIES` : leurs contours sont trop dispersés pour ce jeu.
+Leurs données, réponses et critères d'éligibilité dans les autres catégories sont
+conservés. La revue complète les affiche avec une mention d'exclusion.
+
 Les données sont une photographie des versions épinglées, pas un service de
 veille géopolitique. Le changement de capitale ou de drapeau d’un pays nécessite
 une revue des sources et de ses indicateurs d’éligibilité avant réactivation.
