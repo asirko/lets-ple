@@ -1,5 +1,14 @@
 [
   {
+    "version": "0.2.1",
+    "date": "2026-09-29",
+    "features": [],
+    "fixes": [
+      "rend les silhouettes de pays lisibles"
+    ],
+    "breaking": []
+  },
+  {
     "version": "0.2.0",
     "date": "2026-09-27",
     "features": [

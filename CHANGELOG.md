@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 — 2026-09-29
+
+### Corrections
+
+- rend les silhouettes de pays lisibles
+
 ## 0.2.0 — 2026-09-27
 
 ### Nouveautés
