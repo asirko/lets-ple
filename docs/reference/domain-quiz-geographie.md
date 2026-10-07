@@ -182,6 +182,54 @@ des chemins opaques, sans titre ni description SVG importée. La silhouette est
 un path inline sans identifiant de pays. Il ne s’agit pas d’une protection contre
 l’inspection des données locales : aucun mécanisme anti-triche n’est prévu.
 
+## Correction modale et globe
+
+La correction utilise le dialogue partagé `LpDialog` en modal natif : le plateau
+reste visible et inerte. Le focus initial arrive sur « Question suivante » ou
+« Voir le résultat », reste dans la modale et revient à la question suivante ou
+au titre du résultat. Échap est neutralisé : la correction est une étape du
+parcours, dont le bouton est la seule sortie. La destruction d'un dialogue ouvert
+ferme le dialogue natif et restaure son focus déclencheur.
+
+`LpQuizCorrection` affiche le verdict, la réponse donnée, toutes les réponses
+acceptées et les points. Le pays provient de `question.countryCode`, même pour une
+question de capitale ou une réponse incorrecte. La fiche reprend le drapeau, les
+capitales, les voisins et la région du corpus local. Les villes des pays exclus
+des questions de capitales sont qualifiées comme villes de référence ; les
+restrictions sur les drapeaux sont rappelées. Ces médias et leurs noms accessibles
+ne sont montés qu'après soumission.
+
+`LpCountryGlobe` charge Three.js et OrbitControls à la demande. Le pays est centré
+sur le centroïde de son territoire principal, avec longitude déroulée pour les
+pays traversant l'antéméridien. Une texture issue des mêmes géométries locales
+met en évidence le pays. Glissement, molette et pincement permettent rotation et
+zoom ; seul le bouton « Recentrer sur la solution » reste affiché, accompagné
+d'un bouton « ? » qui affiche l'aide au survol, au focus ou au toucher. Le tooltip
+se ferme avec Échap sans fermer la correction. La rotation est ralentie (40 % de
+la vitesse par défaut à la distance initiale), proportionnelle à la hauteur de
+la caméra au-dessus du globe pour rester douce en zoom rapproché. Les noms français apparaissent selon la vue et le zoom, avec priorité
+au pays de la question et suppression des chevauchements. La liste « Pays dans la vue » et les boutons de
+rotation/zoom sont retirés pour privilégier l'exploration directe du globe.
+
+Le rendu n'a ni rotation automatique ni inertie animée ; il ne redessine que lors
+d'une interaction, d'un redimensionnement ou d'un changement de thème. La texture
+est limitée à 2048 × 1024, le pixel ratio à 2. À destruction, les ressources,
+observateurs, écouteurs et le contexte GPU sont libérés ; un import tardif est
+ignoré. L'accès à l'export du module dynamique reste via son namespace pour être
+conservé par le build optimisé.
+
+Une projection SVG fixe et la fiche textuelle remplacent WebGL si celui-ci est
+indisponible, perdu, ou si le chunk ne peut pas être chargé. Sans géométrie,
+l'absence de carte est explicitée. Le dialogue respecte reduced motion ; le globe
+reste manipulable sans animation automatique. Les tokens clair/sombre sont
+partagés avec le portail. Le corps défile et l'action reste visible à 320 pixels.
+
+Les showcases `/dev/components/quiz-globe` et
+`/dev/components/quiz-correction` permettent de vérifier France, Japon,
+Nouvelle-Zélande, Afrique du Sud, Vatican et Fidji, ainsi que les rendus de secours.
+Les styles visuels globaux sont regroupés dans `_quiz-correction.scss`, chargé
+par la route et ces wrappers ; les écrans composent les composants.
+
 ## Préparation et vérification
 
 ```sh
@@ -191,6 +239,7 @@ npx ng test quiz --watch=false
 npm run build:quiz         # UI et game-core, puis paquet quiz strict
 npm run build              # portail, assets et manifeste de service worker
 node projects/games/quiz/tools/verify-offline.mjs # Chromium, build requis
+node projects/games/quiz/tools/verify-correction.mjs # modale, WebGL et clavier
 ```
 
 Le cache des sources est sous `tmp/geography-sources` (ignoré par Git). Pour
@@ -209,3 +258,13 @@ débordement à 320 pixels. Le premier téléchargement doit donc se faire en li
 Le serveur de développement n'active pas le service worker. Les liens externes
 des crédits exigent le réseau ; les autres jeux utilisent leurs propres caches,
 dont certains sont chargés à la demande.
+
+La vérification de correction utilise le build optimisé et Chromium avec WebGL
+logiciel. Elle vérifie centrage, zoom dans les deux sens, rotation par glissement,
+recentrage et aide au clavier, inertie du plateau, focus, perte de contexte et libération GPU,
+secours sans WebGL, thèmes, contrastes textuels et reduced motion. Elle parcourt
+les dix questions et les cinq catégories jusqu'au résultat. Le repli à 200 % est
+vérifié par son viewport CSS équivalent (640 × 500 pour un affichage 1280 × 1000),
+en complément du viewport mobile de 320 pixels ; cela n'automatise pas le réglage
+de zoom de l'interface Chrome. Les captures sont enregistrées sous
+`tmp/quiz-correction-verification` (ignoré par Git).

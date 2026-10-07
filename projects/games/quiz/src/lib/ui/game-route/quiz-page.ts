@@ -15,6 +15,7 @@ import { loadGeography } from '../../data/geography';
 import { QuizStore } from '../../store/quiz.store';
 import { LpQuizQuestion } from '../question/question';
 import { LpQuizAnswers } from '../answers/answers';
+import { LpQuizCorrection } from '../correction/correction';
 import { LpQuizResult } from '../result/result';
 import { LpQuizToolbar } from '../toolbar/toolbar';
 import { QuizSettingsService } from '../../store/quiz-settings.service';
@@ -22,12 +23,20 @@ import type { QuizPreferences } from '../../domain/preferences';
 
 @Component({
   selector: 'lp-quiz-page',
-  imports: [LpButton, LpPanel, LpQuizQuestion, LpQuizAnswers, LpQuizResult, LpQuizToolbar],
+  imports: [
+    LpButton,
+    LpPanel,
+    LpQuizQuestion,
+    LpQuizAnswers,
+    LpQuizResult,
+    LpQuizToolbar,
+    LpQuizCorrection,
+  ],
   providers: [QuizStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // The global game module travels with this lazy entry point, as in the other games.
   encapsulation: ViewEncapsulation.None,
-  styleUrls: ['../../../styles/_quiz.scss'],
+  styleUrls: ['../../../styles/_quiz.scss', '../../../styles/_quiz-correction.scss'],
   template: `
     <lp-quiz-toolbar
       [preferences]="settings.preferences()"
@@ -66,6 +75,15 @@ import type { QuizPreferences } from '../../domain/preferences';
             (answered)="store.dispatch({ type: 'answer', value: $event })"
             (next)="next()"
           />
+          @if (state.phase === 'correction' && store.country(); as country) {
+            <lp-quiz-correction
+              [state]="state"
+              [country]="country"
+              [countries]="store.catalog()!.countries"
+              [correctLabels]="store.correctLabels()"
+              (next)="next()"
+            />
+          }
         }
       } @else if (store.catalog()) {
         <lp-panel>

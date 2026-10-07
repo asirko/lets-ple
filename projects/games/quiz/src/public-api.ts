@@ -5,3 +5,5 @@ export { QUIZ_QUESTION_SHOWCASE } from './lib/ui/question/question.showcase';
 export { QUIZ_ANSWERS_SHOWCASE } from './lib/ui/answers/answers.showcase';
 export { QUIZ_RESULT_SHOWCASE } from './lib/ui/result/result.showcase';
 export { QUIZ_TOOLBAR_SHOWCASE } from './lib/ui/toolbar/toolbar.showcase';
+export { QUIZ_GLOBE_SHOWCASE } from './lib/ui/country-globe/country-globe.showcase';
+export { QUIZ_CORRECTION_SHOWCASE } from './lib/ui/correction/correction.showcase';

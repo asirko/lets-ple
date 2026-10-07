@@ -16,6 +16,7 @@ export class QuizStore {
     const state = this.state();
     return state?.questions[state.index] ?? null;
   });
+  readonly country = computed(() => this.catalog()?.countries.find(c => c.iso3 === this.question()?.countryCode) ?? null);
   readonly domain = computed(() => {
     const q = this.question();
     return q ? this.catalog()![q.answerType] : [];

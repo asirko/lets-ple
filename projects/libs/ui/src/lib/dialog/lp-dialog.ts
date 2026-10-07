@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  DestroyRef,
+  inject,
   effect,
   input,
   output,
@@ -61,6 +63,14 @@ export class LpDialog {
   private closingFromInput = false;
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => {
+      const element = this.dialog()?.nativeElement;
+      if (element?.open) {
+        this.closingFromInput = true;
+        element.close();
+      }
+      this.restoreFocus();
+    });
     effect(() => {
       const element = this.dialog()?.nativeElement;
       if (this.open() && element && !element.open) {

@@ -191,4 +191,14 @@ describe('LpDialog', () => {
 
     expect(document.activeElement).toBe(trigger);
   });
+  it('restaure le focus lors de la destruction du dialogue ouvert', () => {
+    const trigger = document.createElement('button');
+    document.body.append(trigger);
+    trigger.focus();
+    openDialog();
+    expect(document.activeElement).not.toBe(trigger);
+    fixture.destroy();
+    expect(document.activeElement).toBe(trigger);
+    trigger.remove();
+  });
 });

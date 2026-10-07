@@ -16,6 +16,8 @@ export const DEV_ROUTES: Routes = [
     data: { loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_HOME_CONCEPT_SHOWCASE) },
   },
   ...[
+    { path: 'quiz-correction', loadShowcase: () => import('@lets-ple/quiz').then(m => m.QUIZ_CORRECTION_SHOWCASE) },
+    { path: 'quiz-globe', loadShowcase: () => import('@lets-ple/quiz').then(m => m.QUIZ_GLOBE_SHOWCASE) },
     {
       path: 'lp-update-dialog',
       loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_UPDATE_DIALOG_SHOWCASE),

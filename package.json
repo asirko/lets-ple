@@ -42,6 +42,7 @@
     "@angular/router": "^22.0.0",
     "@angular/service-worker": "^22.0.8",
     "rxjs": "~7.8.0",
+    "three": "0.186.1",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -54,6 +55,7 @@
     "@angular/compiler-cli": "^22.0.0",
     "@compodoc/compodoc": "^2.0.0",
     "@types/node": "^20.19.43",
+    "@types/three": "0.186.0",
     "@vitest/browser-playwright": "4.1.10",
     "@vitest/coverage-v8": "4.1.10",
     "firebase-tools": "^15.26.0",

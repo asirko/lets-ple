@@ -3,6 +3,10 @@ import { LpDialogShowcase } from './lp-dialog.showcase';
 
 describe('LpDialogShowcase', () => {
   beforeAll(() => {
+    HTMLDialogElement.prototype.close ??= function () {
+      this.removeAttribute('open');
+      this.dispatchEvent(new Event('close'));
+    };
     if (!HTMLDialogElement.prototype.showModal) {
       HTMLDialogElement.prototype.showModal = function () {
         this.setAttribute('open', '');

@@ -16,7 +16,7 @@ import { LpCashAnswer } from '../cash-answer/cash-answer';
 
 @Component({
   selector: 'lp-quiz-answers',
-  imports: [LpButton, LpPanel, LpCashAnswer],
+  imports: [LpCashAnswer],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (state().phase === 'choosing') {
@@ -65,27 +65,7 @@ import { LpCashAnswer } from '../cash-answer/cash-answer';
         </div>
       }
     }
-    @if (state().phase === 'correction') {
-      <lp-panel>
-        <div
-          class="quiz-feedback"
-          [class.is-correct]="state().correct"
-          [class.is-incorrect]="!state().correct"
-        >
-          <h2 #feedback tabindex="-1">
-            {{ i18n.t(state().correct ? 'quiz.correct' : 'quiz.incorrect') }}
-          </h2>
-          <p>{{ i18n.t('quiz.awarded', { n: state().awarded }) }}</p>
-          <p>{{ i18n.t('quiz.submitted', { answer: state().submittedAnswer! }) }}</p>
-          <p>
-            {{ i18n.t('quiz.solution') }} <strong>{{ correctLabels().join(' / ') }}</strong>
-          </p>
-          <lp-button (click)="next.emit()">{{
-            i18n.t(state().index === 9 ? 'quiz.results' : 'quiz.next')
-          }}</lp-button>
-        </div>
-      </lp-panel>
-    }
+
   `,
 })
 export class LpQuizAnswers {
