@@ -67,7 +67,11 @@ des frontières.
 ### Revue des silhouettes
 
 `/dev/components/quiz-silhouettes` affiche le corpus complet ;
-`/dev/components/quiz-silhouettes-selection` affiche le bilan de la revue terminée.
+`/dev/components/quiz-silhouettes-selection` présente la silhouette validée de la France :
+métropole et Corse au centre, Guadeloupe/Martinique/Guyane à gauche, Mayotte/La Réunion
+à droite. Ces cinq ensembles sont les seuls territoires ultramarins présents dans
+la géométrie FRA du corpus ; les autres ne sont pas inventés. Cette composition
+est intégrée au quiz ; l’ancien rendu est conservé dans la revue pour comparaison.
 Le cadrage corrigé est validé pour BLZ, CIV, GIN, IRL, JAM, MEX, PAN, PER, DOM,
 SLE, SUR, TTO et URY : le quiz et la revue complète utilisent cette version.
 La coupure de longitude conserve la coordonnée exacte pour éviter qu'un arrondi
@@ -76,13 +80,13 @@ actuel, avec aperçu corrigé et zones séparées disponibles dans la revue.
 
 Le module `domain/silhouette-composition.ts` fournit les compositions en boîtes :
 boîtes rapprochées pour MUS, TUV et TON ; cadrage principal avec encadrés latéraux
-pour NOR, NZL, PLW, NLD et SYC. Elles conservent tous les polygones de la source,
+pour NOR, NZL, PLW, NLD, SYC et FRA. Elles conservent tous les polygones de la source,
 chacun exactement une fois. Le nord reste en haut mais chaque boîte possède sa
 propre échelle. Les positions des trois compositions compactes sont calées sur
 le corpus épinglé ; les vues principales utilisent des fenêtres géographiques,
 en gardant les petites îles voisines et les deux grandes îles néo-zélandaises.
 Les zones lointaines sont regroupées par proximité (Svalbard regroupé explicitement).
-MUS, NOR, PLW, NLD, TUV, TON, SYC et NZL sont validés et intégrés au quiz via
+MUS, NOR, PLW, NLD, TUV, TON, SYC, NZL et FRA sont validés et intégrés au quiz via
 `approvedComposition`, avec le même composant SVG que la revue complète.
 NZL utilise une fenêtre élargie (165° à 185° Est, 53° à 28° Sud) :
 24 polygones dans la vue principale, deux polygones tropicaux lointains en encadrés

@@ -1,7 +1,7 @@
 import type { Country, Geometry, Position } from './types';
 import { correctedSilhouette } from './silhouette';
 
-const approved = new Set(['MUS', 'NOR', 'PLW', 'NLD', 'TUV', 'TON', 'SYC', 'NZL']);
+const approved = new Set(['MUS', 'NOR', 'PLW', 'NLD', 'TUV', 'TON', 'SYC', 'NZL', 'FRA']);
 type CompositionCountry = Pick<Country, 'iso3' | 'geometry'>;
 export function approvedComposition(country: CompositionCountry): ReviewComposition | null {
   return approved.has(country.iso3) ? reviewComposition(country) : null;
@@ -58,6 +58,7 @@ const compact: Record<string, readonly (readonly [number, number])[]> = {
   ],
 };
 const mainBounds: Record<string, readonly [number, number, number, number]> = {
+  FRA: [-6, 10, 41, 52],
   NOR: [0, 35, 57, 72],
   NZL: [165, 185, -53, -28],
   PLW: [133.8, 135, 6.7, 8.3],
@@ -132,6 +133,30 @@ export function reviewComposition(country: CompositionCountry): ReviewCompositio
   const primary = zones.filter(isMain);
   if (!primary.length) throw new Error(`Zone principale absente : ${country.iso3}`);
   const remaining = zones.filter((z) => !isMain(z));
+  if (country.iso3 === 'FRA') {
+    // Le corpus FRA ne contient que ces cinq ensembles ultramarins.
+    // Fenêtres explicites pour éviter de fusionner des territoires voisins.
+    const territories = [
+      { label: 'Guadeloupe', bounds: [-62, -60, 15.5, 17], x: 0, y: 20 },
+      { label: 'Martinique', bounds: [-62, -60, 14, 15.5], x: 0, y: 200 },
+      { label: 'Guyane', bounds: [-55, -51, 2, 6], x: 0, y: 380 },
+      { label: 'Mayotte', bounds: [44, 46, -14, -12], x: 725, y: 140 },
+      { label: 'La Réunion', bounds: [55, 56, -22, -20], x: 725, y: 320 },
+    ];
+    const boxes = territories.map(({ label, bounds: [w, e, s, n], x, y }) => {
+      const parts = remaining.filter((z) => z.lon >= w && z.lon <= e && z.lat >= s && z.lat <= n);
+      if (!parts.length) throw new Error(`Territoire absent du corpus : ${label}`);
+      return box(merge(parts), label, x, y, 175, 150);
+    });
+    if (boxes.flatMap((b) => b.indices).length !== remaining.length) {
+      throw new Error('Composition France à revoir : territoire non classé');
+    }
+    return {
+      kind: 'main',
+      viewBox: '0 0 900 550',
+      boxes: [box(merge(primary), 'Métropole et Corse', 195, 60, 510, 440), ...boxes],
+    };
+  }
   const groups: Zone[][] = [];
   // Le Svalbard reste un ensemble ; les autres îlots proches sont regroupés.
   for (const zone of remaining) {

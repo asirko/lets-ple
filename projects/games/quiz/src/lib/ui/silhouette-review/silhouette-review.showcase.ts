@@ -20,13 +20,12 @@ import { SilhouetteReview } from './silhouette-review';
   styleUrls: ['../../../styles/_quiz.scss'],
   template: `
     <a routerLink="/dev/components">Retour au showcase</a>
-    <h1>{{ focused ? 'Revue des silhouettes terminée' : 'Revue des silhouettes' }}</h1>
+    <h1>{{ focused ? 'France — revue de la silhouette' : 'Revue des silhouettes' }}</h1>
     @if (focused) {
       <a routerLink="/dev/components/quiz-silhouettes">Voir les 195 pays</a>
       <p>
-        Toutes les compositions validées, dont la Nouvelle-Zélande, sont intégrées au quiz. Les Îles
-        Marshall, Kiribati, les Maldives et la Micronésie sont exclus uniquement des questions de
-        silhouette. Aucun pays ne reste à revoir.
+        La silhouette centrée sur la métropole et la Corse est intégrée au quiz. L’ancien rendu sans
+        encadrés est conservé en dessous pour comparaison.
       </p>
       <p>
         Sources de référence :
@@ -43,7 +42,9 @@ import { SilhouetteReview } from './silhouette-review';
         alternatives.
       </p>
     } @else {
-      <a routerLink="/dev/components/quiz-silhouettes-selection">Bilan de la revue</a>
+      <a routerLink="/dev/components/quiz-silhouettes-selection"
+        >Revoir la silhouette de la France</a
+      >
       <p>Relève les noms ou codes des pays dont la silhouette est inexploitable.</p>
     }
     @if (countries(); as countries) {

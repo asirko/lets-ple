@@ -3,7 +3,7 @@ import { expect, it } from 'vitest';
 import type { Country } from '../src/lib/domain/types';
 import { approvedComposition, reviewComposition } from '../src/lib/domain/silhouette-composition';
 
-it.each(['MUS', 'NOR', 'PLW', 'NLD', 'TUV', 'TON', 'SYC', 'NZL'])(
+it.each(['MUS', 'NOR', 'PLW', 'NLD', 'TUV', 'TON', 'SYC', 'NZL', 'FRA'])(
   'active la composition validée de %s dans le quiz',
   (code) => {
     const country = countries.find((c) => c.iso3 === code)!;
@@ -34,7 +34,7 @@ it('zoome la Nouvelle-Zélande sans couper les contours du groupe principal', ()
     expect(+p[2]).toBeLessThan(y + h);
   }
 });
-it.each(['MUS', 'TUV', 'TON', 'NOR', 'NZL', 'PLW', 'NLD', 'SYC'])(
+it.each(['MUS', 'TUV', 'TON', 'NOR', 'NZL', 'PLW', 'NLD', 'SYC', 'FRA'])(
   'compose %s sans perte, duplication ni chevauchement',
   (code) => {
     const country = countries.find((c) => c.iso3 === code)!;
@@ -78,4 +78,16 @@ it('garde les deux grandes îles néo-zélandaises dans la vue principale', () =
 
 it('ne propose pas de composition pour les pays non demandés', () => {
   expect(reviewComposition(countries.find((c) => c.iso3 === 'MHL')!)).toBeNull();
+});
+
+it('garde la métropole et la Corse ensemble et sépare les cinq ensembles ultramarins disponibles', () => {
+  const { boxes } = reviewComposition(countries.find((c) => c.iso3 === 'FRA')!)!;
+  expect(boxes[0].indices).toEqual([2, 11, 12, 13, 14, 15, 16, 17, 18, 21]);
+  expect(boxes.slice(1).map((b) => [b.label, b.indices])).toEqual([
+    ['Guadeloupe', [4, 5, 6, 7, 19, 20]],
+    ['Martinique', [3]],
+    ['Guyane', [1]],
+    ['Mayotte', [9, 10]],
+    ['La Réunion', [8]],
+  ]);
 });

@@ -6,7 +6,7 @@ import { reviewSilhouette } from './review-projection';
 import { approvedComposition, reviewComposition } from '../../domain/silhouette-composition';
 import { ComposedSilhouette } from './composed-silhouette';
 
-export const REVIEW_COUNTRIES = new Set<string>();
+export const REVIEW_COUNTRIES = new Set<string>(['FRA']);
 
 @Component({
   selector: 'lp-silhouette-review',
@@ -19,6 +19,13 @@ export const REVIEW_COUNTRIES = new Set<string>();
         <lp-panel [class.quiz-review-composed]="!!entry.composition">
           <h2>{{ entry.country.name }}</h2>
           <p class="quiz-eyebrow">{{ entry.country.iso3 }}</p>
+          @if (focused() && entry.country.iso3 === 'FRA') {
+            <p>
+              Version intégrée : métropole et Corse au centre, outre-mer en encadrés. Le corpus ne
+              contient que la Guadeloupe, la Martinique, la Guyane, Mayotte et La Réunion. Les
+              autres territoires ultramarins ne sont pas représentés.
+            </p>
+          }
           @if (entry.excluded) {
             <p>Exclu des questions de silhouette — conservé pour les autres catégories.</p>
           }
@@ -33,12 +40,12 @@ export const REVIEW_COUNTRIES = new Set<string>();
             <p>
               Nord en haut · distances réduites · échelle propre à chaque boîte. Tous les contours
               du corpus sont conservés.
-              {{ focused() ? 'Proposition à valider.' : 'Version intégrée au quiz.' }}
+              {{ entry.approved ? 'Version intégrée au quiz.' : 'Proposition à valider.' }}
             </p>
             <lp-composed-silhouette [composition]="composition" [label]="entry.country.name" />
           }
           @if (focused()) {
-            <h3>Rendu actuel du quiz</h3>
+            <h3>{{ entry.approved ? 'Ancien rendu sans encadrés' : 'Rendu actuel du quiz' }}</h3>
           }
           @if (entry.shape; as shape) {
             <svg
@@ -101,6 +108,7 @@ export class SilhouetteReview {
       .sort((a, b) => a.name.localeCompare(b.name, 'fr'))
       .map((country) => ({
         country,
+        approved: !!approvedComposition(country),
         excluded: EXCLUDED_SILHOUETTE_COUNTRIES.has(country.iso3),
         composition: this.focused() ? reviewComposition(country) : approvedComposition(country),
         shape:
