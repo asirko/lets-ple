@@ -3,7 +3,7 @@ import { matchesAnswer } from './catalog';
 import { generateQuestions, optionsFor } from './questions';
 import type { Answer, Mode, Question, QuestionType, Random } from './types';
 
-export const POINTS: Readonly<Record<Mode, number>> = { cash: 5, carre: 3, duo: 1 };
+export const POINTS: Readonly<Record<Mode, number>> = { cash: 5, carre: 3 };
 export interface GameState {
   readonly questions: readonly Question[];
   readonly index: number;
@@ -56,7 +56,7 @@ export function reduceGame(
         ...state,
         mode: action.mode,
         phase: 'answering',
-        options: action.mode === 'cash' ? [] : optionsFor(question, catalog, action.mode, random),
+        options: action.mode === 'cash' ? [] : optionsFor(question, catalog, random),
       };
     case 'answer': {
       if (state.phase !== 'answering' || !state.mode) return state;

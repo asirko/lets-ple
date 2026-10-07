@@ -1,6 +1,6 @@
 export type AnswerType = 'country' | 'capital';
 export type QuestionType = 'silhouette' | 'flag' | 'country-from-capital' | 'capital' | 'neighbors';
-export type Mode = 'cash' | 'carre' | 'duo';
+export type Mode = 'cash' | 'carre';
 export type Position = readonly [number, number];
 export type Geometry =
   | { readonly type: 'Polygon'; readonly coordinates: readonly (readonly Position[])[] }

@@ -9,7 +9,7 @@ consécutives diffèrent tant qu'au moins deux sont actives.
 
 ## Règles et état
 
-Le joueur choisit Cash (5 points), Carré (3) ou Duo (1) à chaque question. Ce choix
+Le joueur choisit Cash (5 points) ou Carré (3) à chaque question. Ce choix
 est définitif : montrer les propositions puis revenir en Cash fausserait le score.
 Une mauvaise réponse rapporte zéro. Une réponse doit appartenir au domaine
 attendu ; une faute inconnue en Cash reste éditable avec une erreur explicite.
@@ -105,7 +105,7 @@ une revue des sources et de ses indicateurs d’éligibilité avant réactivatio
 Les capitales multiples sont conservées, notamment pour l’Afrique du Sud,
 la Bolivie, l’Eswatini et le Sri Lanka. Pour l’Afrique du Sud, la question demande
 explicitement **une** capitale et accepte Pretoria, Bloemfontein ou Le Cap ; les
-choix Carré/Duo ne contiennent qu’une de ces bonnes réponses.
+choix Carré ne contiennent qu’une de ces bonnes réponses.
 
 Les situations nécessitant une précision de statut (Bolivie, Eswatini, Sri Lanka,
 Pays-Bas, Malaisie, Nauru, Israël, Palestine, Yémen, Indonésie, Guinée équatoriale,
@@ -157,7 +157,7 @@ restent disponibles.
 
 `optionsFor` exclut toutes les réponses acceptées avant de tirer les mauvaises
 options. Il privilégie voisins, sous-région, région puis reste du monde, et mélange
-la bonne réponse avec trois ou un distracteur. Pour les capitales, ce classement
+la bonne réponse avec trois distracteurs. Pour les capitales, ce classement
 s’applique aux pays auxquels elles appartiennent.
 Pour une question de voisins, tous les pays cités comme indices sont exclus des
 propositions. Les distracteurs privilégient les voisins de ces voisins, puis la
@@ -203,7 +203,7 @@ tentative ; quitter la route annule la requête.
 
 La vérification Playwright utilise un profil vierge, attend l'installation de tous
 les fichiers du manifeste, coupe le réseau et arrête le serveur puis recharge
-`/quiz`. Elle exerce les cinq catégories, les trois modes de réponse, le résultat,
+`/quiz`. Elle exerce les cinq catégories, les deux modes de réponse, le résultat,
 la persistance des réglages, l'annulation, le retour du focus et l'absence de
 débordement à 320 pixels. Le premier téléchargement doit donc se faire en ligne.
 Le serveur de développement n'active pas le service worker. Les liens externes

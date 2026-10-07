@@ -107,14 +107,18 @@ try {
   const categories = new Set();
   for (let round = 0; round < 10; round++) {
     await page.locator('.quiz-mode').first().waitFor();
+    assert.equal(await page.locator('.quiz-mode').count(), 2);
     const category = (await page.locator('.quiz-eyebrow').textContent()).trim();
     categories.add(category);
     if (category === 'Drapeaux') {
       await page.waitForFunction(() => document.querySelector('.quiz-flag')?.naturalWidth > 0);
     }
     if (category === 'Silhouettes')
-      assert.ok((await page.locator('.quiz-silhouette path').getAttribute('d')).length > 100);
-    if (round % 3 === 0) {
+      assert.ok(
+        (await page.locator('.quiz-question svg[role="img"] path').first().getAttribute('d'))
+          .length > 100,
+      );
+    if (round % 2 === 0) {
       await page.getByRole('button', { name: /^Cash/i }).click();
       const field = page.getByRole('combobox');
       await field.fill(category === 'Capitales' ? 'Paris' : 'France');
@@ -122,7 +126,9 @@ try {
       await field.press('Enter');
       await page.getByRole('button', { name: 'Valider ma réponse', exact: true }).click();
     } else {
-      await page.getByRole('button', { name: round % 3 === 1 ? /^Carré/i : /^Duo/i }).click();
+      await page.getByRole('button', { name: /^Carré/i }).click();
+      await page.locator('.quiz-option').first().waitFor();
+      assert.equal(await page.locator('.quiz-option').count(), 4);
       const neighbors = await page.locator('.quiz-neighbors li').allTextContents();
       for (const label of await page.locator('.quiz-option').allTextContents()) {
         assert.ok(!neighbors.some((neighbor) => label.trim().slice(1).trim() === neighbor.trim()));
@@ -156,9 +162,9 @@ try {
   await mkdir('tmp/quiz-verification', { recursive: true });
   await page.screenshot({ path: 'tmp/quiz-verification/settings-mobile.png' });
   await page.getByRole('button', { name: 'Enregistrer et jouer' }).click();
-  await page.locator('.quiz-silhouette').waitFor();
+  await page.locator('.quiz-question svg[role="img"]').waitFor();
   await page.reload();
-  await page.locator('.quiz-silhouette').waitFor();
+  await page.locator('.quiz-question svg[role="img"]').waitFor();
   await openSettings();
   assert.equal(await page.getByRole('checkbox', { checked: true }).count(), 1);
   await page.getByLabel('Reconnaître le pays par son drapeau', { exact: true }).check();
@@ -183,7 +189,7 @@ try {
         offline: true,
         rounds: 10,
         categories: [...categories],
-        modes: ['cash', 'carre', 'duo'],
+        modes: ['cash', 'carre'],
         settingsRestored: true,
         cancelPreservesSettings: true,
         emptySelectionBlocked: true,

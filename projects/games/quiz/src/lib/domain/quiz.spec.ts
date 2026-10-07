@@ -44,6 +44,10 @@ describe('normalisation et domaines', () => {
 });
 
 describe('générateurs', () => {
+  it('génère quatre propositions sans paramètre de mode', () => {
+    const question = generateQuestions(catalog, random(12))[0];
+    expect(optionsFor(question, catalog, random(1))).toHaveLength(4);
+  });
   it('exclut les quatre silhouettes illisibles sans retirer leurs drapeaux ni leurs réponses', () => {
     const shape = generators.find((g) => g.type === 'silhouette')!;
     const flag = generators.find((g) => g.type === 'flag')!;
@@ -77,8 +81,8 @@ describe('générateurs', () => {
           .flatMap((c) => c.borders)
           .filter((code) => code !== country.iso3 && !country.borders.includes(code)),
       );
-      for (const mode of ['carre', 'duo'] as const) {
-        const options = optionsFor(q, catalog, mode, random(42));
+      {
+        const options = optionsFor(q, catalog, random(42));
         expect(options.every((a) => !country.borders.includes(a.id))).toBe(true);
         const wrong = options.filter((a) => a.id !== country.iso3);
         expect(wrong.filter((a) => secondDegree.has(a.id))).toHaveLength(
@@ -112,17 +116,14 @@ describe('générateurs', () => {
     const positions = new Set<number>();
     for (let seed = 1; seed < 80; seed++)
       for (const q of generateQuestions(catalog, random(seed))) {
-        for (const [mode, count] of [
-          ['carre', 4],
-          ['duo', 2],
-        ] as const) {
-          const answers = optionsFor(q, catalog, mode, random(seed + 1));
+        {
+          const count = 4;
+          const answers = optionsFor(q, catalog, random(seed + 1));
           expect(answers).toHaveLength(count);
           expect(new Set(answers.map((a) => normalizeSearch(a.label))).size).toBe(count);
           expect(answers.filter((a) => q.correctAnswers.includes(a.id))).toHaveLength(1);
           expect(answers.every((a) => catalog[q.answerType].includes(a))).toBe(true);
-          if (mode === 'carre')
-            positions.add(answers.findIndex((a) => q.correctAnswers.includes(a.id)));
+          positions.add(answers.findIndex((a) => q.correctAnswers.includes(a.id)));
         }
       }
     expect(positions.size).toBe(4);
@@ -131,7 +132,7 @@ describe('générateurs', () => {
     const spain = countries.find((c) => c.iso3 === 'ESP')!;
     for (const type of ['capital', 'country-from-capital'] as const) {
       const q = generators.find((g) => g.type === type)!.build(spain, catalog);
-      const incorrect = optionsFor(q, catalog, 'carre', random(1)).filter(
+      const incorrect = optionsFor(q, catalog, random(1)).filter(
         (a) => !q.correctAnswers.includes(a.id),
       );
       expect(
@@ -169,9 +170,33 @@ describe('générateurs', () => {
 
 describe('partie', () => {
   it.each([
+    ['cash', 50],
+    ['carre', 30],
+  ] as const)('termine dix bonnes réponses en %s avec %i points', (mode, score) => {
+    let state = createGame(catalog, random(9));
+    for (let i = 0; i < 10; i++) {
+      state = reduceGame(state, { type: 'mode', mode }, catalog, random(i));
+      const question = state.questions[i];
+      const answer = (mode === 'cash' ? catalog[question.answerType] : state.options).find((a) =>
+        question.correctAnswers.includes(a.id),
+      )!;
+      if (mode === 'cash') expect(state.options).toEqual([]);
+      else expect(state.options).toHaveLength(4);
+      state = reduceGame(
+        state,
+        { type: 'answer', value: mode === 'cash' ? answer.label : answer.id },
+        catalog,
+      );
+      state = reduceGame(state, { type: 'next' }, catalog);
+    }
+    expect(state.phase).toBe('finished');
+    expect(state.score).toBe(score);
+    expect(state.correctCount).toBe(10);
+    expect(state.wrongCount).toBe(0);
+  });
+  it.each([
     ['cash', 5],
     ['carre', 3],
-    ['duo', 1],
   ] as const)('%s attribue %i points une seule fois', (mode, points) => {
     const initial = createGame(catalog, random(12));
     const selected = reduceGame(initial, { type: 'mode', mode }, catalog, random(1));
@@ -190,7 +215,7 @@ describe('partie', () => {
     const initial = createGame(catalog, random(8));
     expect(reduceGame(initial, { type: 'next' }, catalog)).toBe(initial);
     expect(reduceGame(initial, { type: 'answer', value: 'Paris' }, catalog)).toBe(initial);
-    const selected = reduceGame(initial, { type: 'mode', mode: 'duo' }, catalog, random(4));
+    const selected = reduceGame(initial, { type: 'mode', mode: 'carre' }, catalog, random(4));
     expect(reduceGame(selected, { type: 'answer', value: 'absent' }, catalog)).toBe(selected);
   });
   it('termine après dix corrections et conserve le compte de mauvaises réponses', () => {

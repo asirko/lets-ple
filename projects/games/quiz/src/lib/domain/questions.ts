@@ -1,6 +1,6 @@
 import type { Catalog } from './catalog';
 import { generators } from './generators';
-import type { Answer, Mode, Question, QuestionType, Random } from './types';
+import type { Answer, Question, QuestionType, Random } from './types';
 import { QUESTION_TYPES } from './preferences';
 
 export function shuffle<T>(values: readonly T[], random: Random): T[] {
@@ -48,7 +48,6 @@ export function generateQuestions(
 export function optionsFor(
   question: Question,
   catalog: Catalog,
-  mode: Exclude<Mode, 'cash'>,
   random: Random,
 ): readonly Answer[] {
   const domain = catalog[question.answerType];
@@ -78,7 +77,7 @@ export function optionsFor(
     ),
     random,
   ).sort((a, b) => rank(a) - rank(b));
-  const count = mode === 'carre' ? 3 : 1;
+  const count = 3;
   if (!correct.length || distractors.length < count) throw new Error('Insufficient answer domain');
   return shuffle(
     [correct[Math.floor(random() * correct.length)], ...distractors.slice(0, count)],

@@ -97,7 +97,7 @@ export class LpQuizAnswers {
   readonly answered = output<string>();
   readonly next = output<void>();
   protected readonly i18n = inject(I18nService);
-  protected readonly modes: readonly Mode[] = ['cash', 'carre', 'duo'];
+  protected readonly modes: readonly Mode[] = ['cash', 'carre'];
   protected readonly points = POINTS;
   protected readonly letters = ['A', 'B', 'C', 'D'];
   private readonly feedback = viewChild<ElementRef<HTMLElement>>('feedback');

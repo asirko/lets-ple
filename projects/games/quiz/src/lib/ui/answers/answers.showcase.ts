@@ -49,7 +49,6 @@ export const QUIZ_ANSWERS_SHOWCASE: ComponentShowcase<QuizAnswersShowcase> = {
         'Choix du mode': () => initial,
         Cash: () => ({ ...initial, phase: 'answering', mode: 'cash' }),
         Carré: () => ({ ...initial, phase: 'answering', mode: 'carre', options }),
-        Duo: () => ({ ...initial, phase: 'answering', mode: 'duo', options: options.slice(0, 2) }),
         Correct: () => ({
           ...initial,
           phase: 'correction',
