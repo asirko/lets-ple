@@ -24,6 +24,7 @@ import { LpButton, LpPanel } from '@lets-ple/ui';
         <p>{{ i18n.t('quiz.correctCount', { n: correct() }) }}</p>
         <p>{{ i18n.t('quiz.wrongCount', { n: wrong() }) }}</p>
         <lp-button (click)="replay.emit()">{{ i18n.t('quiz.replay') }}</lp-button>
+        <a class="quiz-home" routerLink="/quiz/statistiques">{{ i18n.t('quiz.stats.title') }}</a>
         <a class="quiz-home" routerLink="/">{{ i18n.t('quiz.home') }}</a>
       </div>
     </lp-panel>

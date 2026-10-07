@@ -1,0 +1,7 @@
+{
+  "ref": "106866e",
+  "node": "24.18.0",
+  "angular": "22.0.8",
+  "flowGzipBytes": 124888,
+  "description": "Static closure main + quiz public API + quiz page, production esbuild, gzip Node default. Optional full build baseline tmp/knowledge-stats/baseline takes precedence."
+}

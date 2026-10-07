@@ -8,6 +8,17 @@ import { RouterLink } from '@angular/router';
   template: `
     <h1>Showcase de composants</h1>
     <ul class="dev-home-list">
+      <li><a routerLink="quiz-knowledge-globe">Geoquizz : knowledge-globe</a></li>
+      <li><a routerLink="quiz-clear-history-dialog">Geoquizz : clear-history-dialog</a></li>
+      <li><a routerLink="quiz-history-status">Geoquizz : history-status</a></li>
+      <li><a routerLink="quiz-empty-history">Geoquizz : empty-history</a></li>
+      <li><a routerLink="quiz-knowledge-legend">Geoquizz : knowledge-legend</a></li>
+      <li><a routerLink="quiz-country-detail">Geoquizz : country-detail</a></li>
+      <li><a routerLink="quiz-country-list">Geoquizz : country-list</a></li>
+      <li><a routerLink="quiz-type-breakdown">Geoquizz : type-breakdown</a></li>
+      <li><a routerLink="quiz-weekly-trend">Geoquizz : weekly-trend</a></li>
+      <li><a routerLink="quiz-continent-focus">Geoquizz : continent-focus</a></li>
+      <li><a routerLink="quiz-statistics-summary">Geoquizz : statistics-summary</a></li>
       <li><a routerLink="lp-home-concept">Accueil Focus — catalogue</a></li>
       <li><a routerLink="style">Guide de style</a></li>
       <li><a routerLink="quiz-question">Quiz — question</a></li>

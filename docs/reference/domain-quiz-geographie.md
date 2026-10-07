@@ -213,7 +213,7 @@ rotation/zoom sont retirés pour privilégier l'exploration directe du globe.
 
 Le rendu n'a ni rotation automatique ni inertie animée ; il ne redessine que lors
 d'une interaction, d'un redimensionnement ou d'un changement de thème. La texture
-est limitée à 2048 × 1024, le pixel ratio à 2. À destruction, les ressources,
+est limitée à 2048 × 1024, le pixel ratio à 1,5, politique partagée avec le globe des statistiques. À destruction, les ressources,
 observateurs, écouteurs et le contexte GPU sont libérés ; un import tardif est
 ignoré. L'accès à l'export du module dynamique reste via son namespace pour être
 conservé par le build optimisé.
@@ -268,3 +268,17 @@ vérifié par son viewport CSS équivalent (640 × 500 pour un affichage 1280 ×
 en complément du viewport mobile de 320 pixels ; cela n'automatise pas le réglage
 de zoom de l'interface Chrome. Les captures sont enregistrées sous
 `tmp/quiz-correction-verification` (ignoré par Git).
+
+## Historique et connaissances
+
+Chaque transition valide de réponse vers correction capture un événement local versionné, y compris la dixième réponse et les parties interrompues. Une UUID renouvelée au démarrage identifie uniquement la partie locale ; la clé session:index rend les répétitions idempotentes. Le snapshot inclut date ISO UTC, identifiant/type de question, ISO3, continent, mode, réponse canonique, réponses acceptées, résultat, points obtenus/possibles et empreinte du corpus. Aucun compte ni identifiant personnel.
+
+La route /quiz/statistiques, accessible depuis la barre du jeu et le résultat, expose le nombre de réponses, la réussite (correctes/n) et le score moyen (somme des points/n). Sans réponse, les deux moyennes valent null, affiché N.A. Les moyennes globales sont pondérées par les réponses. Focus continent et filtre de mode s'appliquent à toutes les vues. La couleur d'un pays reste « aucune donnée » à zéro, « données insuffisantes » avant cinq réponses, puis dépend du score moyen : faible sous 2, intermédiaire sous 3,5, élevé à partir de 3,5. Les barèmes Cash/Carré influencent le score : la légende le rappelle.
+
+L'évolution montre quatre semaines calendaires locales, lundi 00h à lundi suivant, actuelle comprise. Le fuseau du navigateur est affiché ; les bornes sont converties en UTC pour comparer les événements. Les semaines vides affichent N.A., avec rupture des courbes et tableau équivalent.
+
+Globe Three.js à la demande, rotation souris, gestes tactiles et molette après activation explicite, boutons/clavier de rotation/zoom, sélection des pays et détail par type/mode. Une liste cherchable et triable expose les mêmes pays, y compris petites îles. Pas de rotation automatique ni d'inertie ; rendu uniquement sur changement et suspendu hors écran. Perte WebGL : libération immédiate et repli liste. Changer vers un pays hors continent propose explicitement le nouveau focus.
+
+Les assets knowledge sont préparés hors exécution depuis le corpus local : simplification 0,35 degré, six faces sphériques gnomoniques, trous conservés, triangulation/subdivision à 5 degrés, positions Int16 et indices Uint16. Les ancres sont intérieures aux maillages. 195 pays, 17 881 sommets, environ 222 Ko gzip ; aucun CDN. Commandes : npm run prepare:knowledge, verify:knowledge, measure:knowledge. Les tests de génération vérifient les 195 maillages, ancres, indices et arêtes.
+
+Validation disponible : Chromium hors ligne, axe état vide/rempli, navigation continent/détail/effacement avec focus, perte WebGL, 320/360/390 px et enregistrement réel de dix réponses. À compléter avant clôture : appareils Android/iOS réels, Firefox/WebKit, lecteur d'écran, zoom navigateur 200 %, trace d'interaction 30 s et budgets mobiles. Les preuves desktop ne valident pas les téléphones.

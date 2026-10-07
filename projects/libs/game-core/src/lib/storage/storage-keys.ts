@@ -9,3 +9,9 @@ export const STORAGE_KEYS = {
   quizSettings: 'quiz:settings',
   releaseNotesRead: 'portal:releaseNotesRead',
 } as const;
+
+/** Dedicated IndexedDB database; independent of localStorage schema versions. */
+export const QUIZ_HISTORY_DATABASE = 'letsple:quiz:history';
+
+/** Cross-tab notification only; never contains answer history. */
+export const QUIZ_HISTORY_HINT = 'letsple:v1:quiz:history-hint';

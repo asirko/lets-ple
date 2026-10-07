@@ -1,5 +1,8 @@
+import { loadCorpusVersion } from '../../data/knowledge-data';
+import { QUIZ_HISTORY_COLLECTOR, QuizHistoryService } from '../../store/quiz-history.service';
 import {
   afterNextRender,
+  computed,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -32,7 +35,7 @@ import type { QuizPreferences } from '../../domain/preferences';
     LpQuizToolbar,
     LpQuizCorrection,
   ],
-  providers: [QuizStore],
+  providers: [QuizStore, { provide: QUIZ_HISTORY_COLLECTOR, useExisting: QuizHistoryService }],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // The global game module travels with this lazy entry point, as in the other games.
   encapsulation: ViewEncapsulation.None,
@@ -44,6 +47,19 @@ import type { QuizPreferences } from '../../domain/preferences';
       (replay)="replay()"
     />
     <main class="quiz-shell">
+      @if (historyStatus().kind !== 'durable') {
+        <p role="status">
+          {{ i18n.t('quiz.stats.status.' + historyStatus().kind) }}
+          @if (historyStatus().pending) {
+            {{ historyStatus().pending }} {{ i18n.t('quiz.stats.pendingAnswers') }}
+          }
+          @if (historyStatus().kind !== 'pending') {
+            <button class="b-button" type="button" (click)="history.retry()">
+              {{ i18n.t('quiz.stats.retry') }}
+            </button>
+          }
+        </p>
+      }
       @if (settingsFailed()) {
         <p role="alert">{{ i18n.t('quiz.settings.error') }}</p>
       }
@@ -109,6 +125,11 @@ import type { QuizPreferences } from '../../domain/preferences';
   `,
 })
 export class QuizPage {
+  protected readonly history = inject(QuizHistoryService);
+  protected readonly historyStatus = computed(() => {
+    this.history.revision();
+    return this.history.coordinator.status();
+  });
   protected readonly settings = inject(QuizSettingsService);
   protected readonly settingsFailed = signal(false);
   protected readonly toolbar = viewChild(LpQuizToolbar);
@@ -130,9 +151,12 @@ export class QuizPage {
     const controller = this.controller;
     this.failed.set(false);
     try {
-      const countries = await loadGeography(controller.signal);
+      const [countries, version] = await Promise.all([
+        loadGeography(controller.signal),
+        loadCorpusVersion(controller.signal),
+      ]);
       if (this.destroyRef.destroyed || controller.signal.aborted) return;
-      this.store.start(countries);
+      this.store.start(countries, version);
       this.focusQuestion();
     } catch {
       if (!this.destroyRef.destroyed && !controller.signal.aborted) this.failed.set(true);

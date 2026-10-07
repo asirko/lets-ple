@@ -1,3 +1,5 @@
+import { QUIZ_HISTORY_COLLECTOR } from './quiz-history.service';
+import { createAnswerEvent } from './create-answer-event';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { createCatalog, type Catalog } from '../domain/catalog';
 import { createGame, reduceGame, type Action, type GameState } from '../domain/game';
@@ -7,6 +9,9 @@ import { QuizSettingsService } from './quiz-settings.service';
 
 @Injectable()
 export class QuizStore {
+  private readonly collector = inject(QUIZ_HISTORY_COLLECTOR, { optional: true });
+  private sessionId = '';
+  private corpusVersion = '';
   private readonly settings = inject(QuizSettingsService);
   private readonly game = signal<GameState | null>(null);
   private readonly answers = signal<Catalog | null>(null);
@@ -27,7 +32,9 @@ export class QuizStore {
       .map((a) => a.label),
   );
 
-  start(countries?: readonly Country[]): void {
+  start(countries?: readonly Country[], corpusVersion?: string): void {
+    if (corpusVersion) this.corpusVersion = corpusVersion;
+    this.sessionId = crypto.randomUUID();
     if (countries) this.answers.set(createCatalog(countries));
     const catalog = this.catalog();
     const enabled = enabledQuestionTypes(this.settings.preferences());
@@ -36,6 +43,18 @@ export class QuizStore {
   dispatch(action: Action): void {
     const state = this.state(),
       catalog = this.catalog();
-    if (state && catalog) this.game.set(reduceGame(state, action, catalog));
+    if (state && catalog) {
+      const next = reduceGame(state, action, catalog);
+      const event = createAnswerEvent(
+        state,
+        next,
+        action,
+        catalog,
+        this.sessionId,
+        this.corpusVersion,
+      );
+      this.game.set(next);
+      if (event && this.corpusVersion) this.collector?.capture(event);
+    }
   }
 }

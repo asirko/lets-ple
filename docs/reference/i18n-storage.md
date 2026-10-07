@@ -62,3 +62,13 @@ vérifiés ; une sauvegarde corrompue est ignorée. Des filtres invalides sont r
 perdre la partie. La reprise est immédiate même si le chargement du catalogue échoue ; un bouton
 permet de réessayer ce chargement pour accéder aux autres citations. Un quota dépassé ou un
 stockage bloqué n'interrompt pas le jeu.
+
+## Historique Geoquizz (IndexedDB)
+
+La base letsple:quiz:history version 1 utilise idb. Les migrations sont conditionnées par oldVersion dans upgrade ; la version initiale crée answers (clé id) et metadata, avec indexes sequence/date/session/country. Chaque ligne contient un événement brut, generation et insertionSequence. Les KPI ne sont jamais persistés. Une version de base plus récente est refusée sans reset. Les lignes invalides sont ignorées et signalées ; des métadonnées corrompues produisent une erreur explicite.
+
+Append compare atomiquement la génération capturée, déduplique l'identifiant puis écrit événement et séquence ; la sauvegarde n'est annoncée qu'après tx.done. Lecture par lots bornés de 1000, bornée par génération G et séquence maximale H, puis vérification finale de G. L'effacement confirmé vide answers et incrémente G dans la même transaction, sans remettre la séquence à zéro. Il interdit la résurrection d'une ancienne file après effacement dans un autre onglet.
+
+Quota, blocage ou indisponibilité : le jeu continue avec une file mémoire de 1000 réponses maximum et un statut explicite. Les réponses de génération inconnue restent temporaires ; elles ne sont jamais réattribuées à une génération nouvelle. Les captures suivantes de génération connue peuvent être persistées. Réessayer conserve les snapshots ; un effacement échoué conserve la mémoire. La lecture fusionne les réponses temporaires sans compter deux fois celles déjà durables. Fermer la page perd les réponses temporaires.
+
+BroadcastChannel transporte uniquement changed/cleared. À défaut, storage-event utilise la clé QUIZ_HISTORY_HINT (letsple:v1:quiz:history-hint) avec un jeton éphémère de notification, jamais les réponses ; retour du focus relit aussi la génération. Les connexions se ferment sur versionchange. Les clés et la base sont déclarées dans storage-keys.ts.

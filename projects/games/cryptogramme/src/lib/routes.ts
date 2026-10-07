@@ -13,6 +13,7 @@ import type { Routes } from '@angular/router';
 export const CRYPTOGRAMME_ROUTES: Routes = [
   {
     path: '',
+    data: { preload: true },
     loadComponent: () => import('./ui/game-route/lp-game-route').then((m) => m.LpGameRoute),
   },
 ];

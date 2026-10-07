@@ -2,6 +2,116 @@ import { Routes } from '@angular/router';
 
 export const DEV_ROUTES: Routes = [
   {
+    path: 'quiz-knowledge-globe',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/knowledge-globe/knowledge-globe.showcase').then(
+          (m) => m.LPKNOWLEDGEGLOBE_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-clear-history-dialog',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/clear-history-dialog/clear-history-dialog.showcase').then(
+          (m) => m.LPCLEARHISTORYDIALOG_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-history-status',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/history-status/history-status.showcase').then(
+          (m) => m.LPHISTORYSTATUS_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-empty-history',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/empty-history/empty-history.showcase').then(
+          (m) => m.LPEMPTYHISTORY_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-knowledge-legend',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/knowledge-legend/knowledge-legend.showcase').then(
+          (m) => m.LPKNOWLEDGELEGEND_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-country-detail',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/country-detail/country-detail.showcase').then(
+          (m) => m.LPCOUNTRYDETAIL_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-country-list',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/country-list/country-list.showcase').then(
+          (m) => m.LPCOUNTRYLIST_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-type-breakdown',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/type-breakdown/type-breakdown.showcase').then(
+          (m) => m.LPTYPEBREAKDOWN_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-weekly-trend',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/weekly-trend/weekly-trend.showcase').then(
+          (m) => m.LPWEEKLYTREND_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-continent-focus',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/continent-focus/continent-focus.showcase').then(
+          (m) => m.LPCONTINENTFOCUS_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-statistics-summary',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/statistics-summary/statistics-summary.showcase').then(
+          (m) => m.LPSTATISTICSSUMMARY_SHOWCASE,
+        ),
+    },
+  },
+  {
     path: 'quiz-silhouettes-selection',
     loadComponent: () => import('@lets-ple/quiz').then((m) => m.SilhouetteReviewPage),
     data: { focused: true },

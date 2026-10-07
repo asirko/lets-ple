@@ -1,6 +1,20 @@
 import { orbitalRotationSpeed } from './globe-motion';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {
+  Scene,
+  PerspectiveCamera,
+  CanvasTexture,
+  SRGBColorSpace,
+  SphereGeometry,
+  MeshBasicMaterial,
+  Mesh,
+  Vector3,
+} from 'three';
+import {
+  createGlobeRenderer,
+  createGlobeControls,
+  disposeGlobeRenderer,
+  createGlobeFrameLoop,
+} from '../../globe/three-runtime';
 import type { Country } from '../../domain/types';
 import {
   countryAnchor,
@@ -21,52 +35,45 @@ export function createGlobe(
   onLabels: (labels: readonly LabelCandidate[]) => void,
   onFailure: () => void,
 ): GlobeRenderer {
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  const renderer = createGlobeRenderer(host, { alpha: true });
   renderer.domElement.setAttribute('aria-hidden', 'true');
   renderer.domElement.className = 'quiz-globe-canvas';
-  host.prepend(renderer.domElement);
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 20);
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enablePan = false;
-  controls.enableDamping = false;
-  controls.autoRotate = false;
-  controls.minDistance = 1.35;
-  controls.maxDistance = 5.5;
+  const scene = new Scene();
+  const camera = new PerspectiveCamera(38, 1, 0.05, 20);
+  const controls = createGlobeControls(camera, renderer.domElement, {
+    minDistance: 1.35,
+    maxDistance: 5.5,
+  });
   const canvas = document.createElement('canvas');
   canvas.width = 2048;
   canvas.height = 1024;
   const ctx = canvas.getContext('2d');
   if (!ctx) {
     controls.dispose();
-    renderer.dispose();
-    renderer.forceContextLoss();
-    renderer.domElement.remove();
+    disposeGlobeRenderer(renderer);
     throw new Error('Canvas unavailable');
   }
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
   texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-  const geometry = new THREE.SphereGeometry(1, 96, 64);
-  const material = new THREE.MeshBasicMaterial({ map: texture });
-  const earth = new THREE.Mesh(geometry, material);
+  const geometry = new SphereGeometry(1, 96, 64);
+  const material = new MeshBasicMaterial({ map: texture });
+  const earth = new Mesh(geometry, material);
   scene.add(earth);
   const anchor = countryAnchor(country.geometry!);
-  const direction = new THREE.Vector3(...spherePoint(anchor));
-  const markerGeometry = new THREE.SphereGeometry(0.012, 12, 8);
-  const markerMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-  const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+  const direction = new Vector3(...spherePoint(anchor));
+  const markerGeometry = new SphereGeometry(0.012, 12, 8);
+  const markerMaterial = new MeshBasicMaterial({ color: 0x000000 });
+  const marker = new Mesh(markerGeometry, markerMaterial);
   marker.position.copy(direction).multiplyScalar(1.012);
   scene.add(marker);
   const locations = countries
     .filter((c) => c.geometry)
     .map((c) => ({
       country: c,
-      point: new THREE.Vector3(...spherePoint(countryAnchor(c.geometry!))),
+      point: new Vector3(...spherePoint(countryAnchor(c.geometry!))),
     }));
-  let disposed = false,
-    frame = 0;
+  let disposed = false;
   const color = (token: string, fallback: string) =>
     getComputedStyle(host).getPropertyValue(token).trim() || fallback;
   function paint() {
@@ -109,7 +116,6 @@ export function createGlobe(
     schedule();
   }
   function render() {
-    frame = 0;
     if (disposed) return;
     const w = host.clientWidth,
       h = host.clientHeight;
@@ -141,7 +147,7 @@ export function createGlobe(
     schedule();
   }
   function schedule() {
-    if (!disposed && !frame) frame = requestAnimationFrame(render);
+    frames.invalidate();
   }
   function recenter() {
     camera.position.copy(direction).multiplyScalar(3.6);
@@ -156,8 +162,7 @@ export function createGlobe(
   }
   renderer.domElement.addEventListener('webglcontextlost', lost);
   controls.addEventListener('change', orbitChanged);
-  const resize = new ResizeObserver(schedule);
-  resize.observe(host);
+  const frames = createGlobeFrameLoop(host, render);
   const theme = new MutationObserver(paint);
   theme.observe(document.documentElement, {
     attributes: true,
@@ -172,8 +177,7 @@ export function createGlobe(
     dispose() {
       if (disposed) return;
       disposed = true;
-      cancelAnimationFrame(frame);
-      resize.disconnect();
+      frames.dispose();
       theme.disconnect();
       media.removeEventListener('change', paint);
       renderer.domElement.removeEventListener('webglcontextlost', lost);
@@ -184,9 +188,7 @@ export function createGlobe(
       texture.dispose();
       markerGeometry.dispose();
       markerMaterial.dispose();
-      renderer.dispose();
-      if (!renderer.getContext().isContextLost()) renderer.forceContextLoss();
-      renderer.domElement.remove();
+      disposeGlobeRenderer(renderer);
     },
   };
 }

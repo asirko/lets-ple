@@ -189,3 +189,19 @@ La route `/quiz`, le store et les styles du jeu sont lazy. Le groupe service wor
 après installation. Le build isolé `npm run build:quiz` construit d’abord `ui` et `game-core`.
 Les règles, générateurs, données, licences et limites de couverture sont détaillés dans
 [`domain-quiz-geographie.md`](domain-quiz-geographie.md).
+
+## Geoquizz : connaissances locales
+
+La séparation est domain/knowledge-stats (contrats/validation/agrégation purs), history (port, idb, coordination et calendrier), store (adaptation minimale de QuizStore, collecte racine et façade de lecture), ui (composants showcase et page), globe (rendu Three.js). Les tests purs utilisent le runner domaine ; Angular/history utilisent ng test avec fake-indexeddb.
+
+/quiz/statistiques est lazy, plus spécifique que la route jeu vide. Three.js et la carte lourde sont importés seulement à la création du globe ; les métadonnées pays/version restent légères. Les nouveaux showcases sont chargés directement par les routes dev, pour éviter de les importer dans le flux produit. Le groupe SW quiz-geography précharge les trois assets knowledge, et app les chunks JS, donc un deep reload statistiques est disponible après installation complète sans visite préalable.
+
+IdlePreloadingStrategy précharge les routes produit marquées après navigation et disponibilité idle ; attend après interaction, suspend pendant navigation/onglet caché, exclut dev et respecte saveData/2g. Un lancement par opportunité idle, sans bloquer sur la complétion d'un parent dont Angular attend les enfants. Aucun renderer ni fetch de données de page n'est instancié par le preload.
+
+Budgets : delta du flux jeu <=10 Ko gzip, statistics+globe <=250 Ko gzip, assets <=500 Ko gzip, sommets <=50 000. Mesure production avec --stats-json ; npm run measure:knowledge compare la fermeture statique des chunks avec le poids du build develop 106866e consigné dans tools/knowledge-budget-baseline.json (un build complet conservé sous tmp/knowledge-stats/baseline est prioritaire). Les scripts measure-knowledge-calculation.ts et measure-knowledge-runtime.mjs mesurent calcul 100k, lecture réelle, heap après cinq visites et estimation des buffers GPU ; résultats sous tmp/knowledge-stats. Les budgets mobiles restent à valider sur matériel : lecture+calcul <=1s, >=30fps/p95<=33ms, heap +50Mo, GPU estimé <=32Mo.
+
+### Runtime Three.js commun aux deux globes
+
+Le globe de correction et celui des connaissances importent à la demande leurs renderers spécifiques, qui utilisent globe/three-runtime.ts : WebGLRenderer basse consommation avec antialiasing, DPR <=1,5, OrbitControls sans déplacement latéral/inertie/autorotation, RAF à la demande suspendue hors écran ou onglet caché, nettoyage idempotent du renderer/contexte et déconnexion des observateurs. Alpha, limites de zoom et activation de la molette restent des options de présentation. Les géométries/textures et alternatives accessibles restent propres à chaque vue.
+
+Three.js 0.186.1 est une dépendance racine unique et peerDependency du paquet quiz ; @types/three 0.186.0 est unique. OrbitControls est importé via three/addons/controls/OrbitControls.js par le socle commun. Le build doit contenir un seul chunk moteur partagé par les deux renderers ; measure:knowledge vérifie ce partage et l'absence de Three.js du bundle initial/flux jeu statique.
