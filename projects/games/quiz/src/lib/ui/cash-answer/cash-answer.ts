@@ -1,5 +1,7 @@
 import {
+  afterRenderEffect,
   ChangeDetectionStrategy,
+  DestroyRef,
   Component,
   computed,
   effect,
@@ -22,7 +24,11 @@ let nextId = 0;
   imports: [LpButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <form class="quiz-cash" (submit)="submit($event)">
+    <form
+      class="quiz-cash"
+      [class.is-editing]="query().trim().length > 0"
+      (submit)="submit($event)"
+    >
       <label [for]="id">{{ i18n.t('quiz.cash.' + answerType()) }}</label>
       <p class="quiz-hint" [id]="id + '-help'">{{ i18n.t('quiz.cash.help') }}</p>
       <input
@@ -38,7 +44,7 @@ let nextId = 0;
         (input)="change($event)"
         (keydown)="keydown($event)"
         (focus)="open.set(true)"
-        (blur)="open.set(false)"
+        (blur)="blur()"
         aria-autocomplete="list"
         [attr.aria-expanded]="expanded()"
         [attr.aria-controls]="id + '-list'"
@@ -49,7 +55,14 @@ let nextId = 0;
         [attr.aria-describedby]="id + '-help' + (invalid() ? ' ' + id + '-error' : '')"
       />
       <ul
+        #list
         class="quiz-suggestions"
+        [style.left.px]="placement().left"
+        [style.top.px]="placement().top"
+        [style.width.px]="placement().width"
+        [style.max-height.px]="placement().height"
+        (pointerdown)="pointerdown($event)"
+        (mousedown)="$event.preventDefault()"
         role="listbox"
         [id]="id + '-list'"
         [hidden]="!expanded()"
@@ -62,7 +75,7 @@ let nextId = 0;
             [id]="id + '-option-' + index"
             [attr.aria-selected]="active() === index"
             [class.is-selected]="active() === index"
-            (pointerdown)="$event.preventDefault()"
+            (pointerup)="pointerup($event, answer)"
             (click)="select(answer)"
           >
             {{ answer.label }}
@@ -93,14 +106,132 @@ export class LpCashAnswer {
   protected readonly invalid = signal(false);
   protected readonly suggestions = computed(() => searchAnswers(this.domain(), this.query()));
   protected readonly expanded = computed(() => this.open() && this.suggestions().length > 0);
+  protected readonly placement = signal({ left: 0, top: 0, width: 0, height: 0 });
+  private readonly list = viewChild<ElementRef<HTMLElement>>('list');
+  private touchingList = false;
+  private touchStart = { x: 0, y: 0 };
+  private frame = 0;
+  private releaseTimer: ReturnType<typeof setTimeout> | undefined;
   private readonly field = viewChild<ElementRef<HTMLInputElement>>('field');
   private readonly options = viewChildren<ElementRef<HTMLElement>>('option');
 
   constructor() {
     effect(() => this.field()?.nativeElement.focus());
-    effect(() =>
-      this.options()[this.active()]?.nativeElement.scrollIntoView?.({ block: 'nearest' }),
-    );
+    afterRenderEffect(() => {
+      if (!this.expanded()) return;
+      this.positionList();
+    });
+    afterRenderEffect(() => {
+      this.query();
+      this.expanded();
+      const list = this.list()?.nativeElement;
+      if (list) list.scrollTop = 0;
+    });
+    afterRenderEffect(() => {
+      this.placement();
+      if (!this.expanded()) return;
+      const list = this.list()?.nativeElement;
+      const option = this.options()[this.active()]?.nativeElement;
+      if (!list || !option) return;
+      // Scroll only the list, never the page or the field above the keyboard.
+      const item = option.getBoundingClientRect();
+      const box = list.getBoundingClientRect();
+      if (item.top < box.top + list.clientTop)
+        list.scrollTop -= box.top + list.clientTop - item.top;
+      else if (item.bottom > box.top + list.clientTop + list.clientHeight)
+        list.scrollTop += item.bottom - (box.top + list.clientTop + list.clientHeight);
+    });
+    const reposition = (event: Event) => {
+      if (event.target === this.list()?.nativeElement) return;
+      cancelAnimationFrame(this.frame);
+      this.frame = requestAnimationFrame(() => {
+        if (this.expanded()) this.positionList();
+      });
+    };
+    const release = () => {
+      if (!this.touchingList) return;
+      clearTimeout(this.releaseTimer);
+      this.releaseTimer = setTimeout(() => {
+        this.touchingList = false;
+        if (document.activeElement !== this.field()?.nativeElement) this.blur();
+      }, 0);
+    };
+    const cancel = () => {
+      if (!this.touchingList) return;
+      this.touchingList = false;
+      this.field()?.nativeElement.focus({ preventScroll: true });
+    };
+    const viewport = window.visualViewport;
+    window.addEventListener('resize', reposition);
+    window.addEventListener('scroll', reposition, true);
+    viewport?.addEventListener('resize', reposition);
+    viewport?.addEventListener('scroll', reposition);
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', cancel);
+    inject(DestroyRef).onDestroy(() => {
+      cancelAnimationFrame(this.frame);
+      clearTimeout(this.releaseTimer);
+      window.removeEventListener('resize', reposition);
+      window.removeEventListener('scroll', reposition, true);
+      viewport?.removeEventListener('resize', reposition);
+      viewport?.removeEventListener('scroll', reposition);
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', cancel);
+    });
+  }
+
+  private positionList(): void {
+    const field = this.field()?.nativeElement;
+    if (!field) return;
+    const viewport = window.visualViewport;
+    const top = viewport?.offsetTop ?? 0;
+    const left = viewport?.offsetLeft ?? 0;
+    const height = viewport?.height ?? window.innerHeight;
+    const width = viewport?.width ?? window.innerWidth;
+    const margin = 8;
+    let box = field.getBoundingClientRect();
+    // Leave room above the field even when focus/zoom places it at the top.
+    const desiredTop = top + Math.min(160, Math.max(0, height - box.height - margin * 2));
+    if (box.top < top + Math.min(96, height / 3) || box.bottom > top + height - margin) {
+      window.scrollBy({ top: box.top - desiredTop, behavior: 'instant' });
+      box = field.getBoundingClientRect();
+    }
+    const bottom = Math.max(top + margin, Math.min(box.top - margin, top + height - margin));
+    const listLeft = Math.max(left + margin, Math.min(box.left, left + width - margin * 2));
+    this.placement.set({
+      left: listLeft,
+      top: bottom,
+      width: Math.max(0, Math.min(box.width, left + width - margin - listLeft)),
+      height: Math.max(0, bottom - top - margin),
+    });
+  }
+
+  protected pointerdown(event: PointerEvent): void {
+    if (event.pointerType === 'touch') {
+      this.touchingList = true;
+      this.touchStart = { x: event.clientX, y: event.clientY };
+    } else {
+      event.preventDefault();
+    }
+  }
+
+  protected pointerup(event: PointerEvent, answer: Answer): void {
+    if (!this.touchingList) return;
+    if (
+      Math.hypot(
+        (event.clientX ?? 0) - this.touchStart.x,
+        (event.clientY ?? 0) - this.touchStart.y,
+      ) > 10
+    )
+      return;
+    this.touchingList = false;
+    this.select(answer);
+  }
+
+  protected blur(): void {
+    if (this.touchingList) return;
+    this.open.set(false);
+    this.active.set(-1);
   }
   protected change(event: Event): void {
     this.query.set((event.target as HTMLInputElement).value);
@@ -113,7 +244,7 @@ export class LpCashAnswer {
     this.open.set(false);
     this.active.set(-1);
     this.invalid.set(false);
-    this.field()?.nativeElement.focus();
+    this.field()?.nativeElement.focus({ preventScroll: true });
     this.open.set(false);
   }
   protected keydown(event: KeyboardEvent): void {

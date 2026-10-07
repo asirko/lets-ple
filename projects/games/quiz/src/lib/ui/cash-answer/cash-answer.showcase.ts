@@ -14,6 +14,12 @@ export class CashAnswerShowcase {
   readonly domain = [
     { id: 'CIV', label: 'Côte d’Ivoire', aliases: [], countryCodes: ['CIV'] },
     { id: 'FRA', label: 'France', aliases: [], countryCodes: ['FRA'] },
+    ...Array.from({ length: 30 }, (_, i) => ({
+      id: 'demo-' + i,
+      label: 'Pays de démonstration avec un nom long ' + (i + 1),
+      aliases: [],
+      countryCodes: [],
+    })),
     { id: 'STP', label: 'São Tomé-et-Príncipe', aliases: [], countryCodes: ['STP'] },
   ];
 }
