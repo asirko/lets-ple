@@ -90,7 +90,7 @@ if (
   !sharedEngine ||
   flowDelta > 10000 ||
   statsBytes > 250000 ||
-  assetBytes > 500000 ||
+  assetBytes > 600000 ||
   manifest.vertices > 50000 ||
   report.threeInInitial ||
   report.threeInQuizFlow

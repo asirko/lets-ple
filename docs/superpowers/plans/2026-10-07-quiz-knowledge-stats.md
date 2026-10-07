@@ -1,3 +1,5 @@
+> Ajustement approuvé le 8 octobre 2026 : contours simplifiés à 0,08 degré, budget des assets porté à 600 Ko gzip ; limite de 50 000 sommets conservée.
+
 # Geoquizz — Knowledge Statistics Implementation Plan
 
 Évolution d’interface validée le 2026-10-08 : la liste complète et le choix de vue liste sont remplacés par un sélecteur natif compact ; le détail pays devient une modale accessible. Les noms sont visibles sur le globe, avec placement partagé avec la correction. Les boutons de rotation/zoom/reset sont retirés ; molette active par défaut sur desktop, activation explicite des gestes sur tactile, flèches/+/- au clavier. Ces décisions remplacent les indications de liste, détail inline et boutons ci-dessous ; les critères matériels restant ouverts sont conservés.
@@ -19,7 +21,7 @@
 - Aucun KPI persistant ; N, taux de réussite et score moyen seulement, global pondéré par réponse ; focus continent/mode cohérent partout.
 - Quatre semaines locales calendaires dont celle en cours, N.A. sans données ; moyenne réelle et seuil de cinq réponses pour coloration.
 - UI/showcase avant assemblage, CSS SMACSS, i18n `quiz.stats.*` ; moteur pur.
-- Budget JS flux réponse 10 Ko gzip ; route stats + globe 250 Ko gzip ; assets 500 Ko gzip et 50 000 sommets ; heap +50 Mo ; GPU estimé 32 Mo ; ≥30 fps, frame p95 ≤33 ms ; lecture/KPI 100 000 réponses ≤1 s sur mobile réel.
+- Budget JS flux réponse 10 Ko gzip ; route stats + globe 250 Ko gzip ; assets 600 Ko gzip et 50 000 sommets ; heap +50 Mo ; GPU estimé 32 Mo ; ≥30 fps, frame p95 ≤33 ms ; lecture/KPI 100 000 réponses ≤1 s sur mobile réel.
 - Worker supplémentaire, changement de barème/budget ou abandon 3D exigent une conception actualisée et validée.
 
 ## Review Focus
@@ -217,7 +219,7 @@ expect(coversHole(mesh,fixtureHoleCenter)).toBe(false);
 Définir buildCountryMesh dans knowledge-map.ts et helpers de contrôle dans spec ; comparer aires et couverture aux géométries originales, pas seulement la forme du buffer.
 - [ ] Run `npm test -- knowledge-map` rouge. Simplifier déterministement en conservant topologie ; découper en patches sphériques ≤30°, gérer winding/trous, projection tangent gnomonique locale, earcut puis inversion sur sphère unitaire. Subdiviser arêtes/triangles pour angle ≤5° ; rejet de trous remplis, coordonnées invalides ou couverture absente. Vérifier antéméridien et surfaces éloignées sans triangle traversant la sphère.
 - [ ] Générer 195 métadonnées même si une île n’a pas de surface visible ; ancre intérieure au fragment principal, pas centroïde extérieur. Tri stable des assets, manifest transformations/tolérance/licences et version SHA du corpus préparé. Conserver silhouettes/countries.json existants strictement identiques.
-- [ ] Ajouter `prepare:knowledge-map` = `tsx projects/games/quiz/tools/prepare-knowledge-map.ts` ; deux runs doivent être identiques, ≤50 000 sommets et ≤500 Ko gzip combinés. Valider assets unknown avant rendu et fetch annulable. Run tests verts/build:quiz ; commit `feat(quiz): prepare les assets locaux du globe`.
+- [ ] Ajouter `prepare:knowledge-map` = `tsx projects/games/quiz/tools/prepare-knowledge-map.ts` ; deux runs doivent être identiques, ≤50 000 sommets et ≤600 Ko gzip combinés. Valider assets unknown avant rendu et fetch annulable. Run tests verts/build:quiz ; commit `feat(quiz): prepare les assets locaux du globe`.
 
 ## Tâche 6 — capture de réponse et façade statistiques
 
@@ -318,7 +320,7 @@ interface GlobeHandle {
 **Produces:** `npm run measure:knowledge` lisant build production/stats-json et baseline tâche 0, rapport tmp et exit nonzero si limites dépassées.
 
 - [ ] Tester contrôle gzip sur fichiers artificiels trop lourds, graphe imports avec Three dans initial et double comptage partagé. Utiliser node:zlib ; Ko=1000 octets ; sommer contributions réellement incrémentales, pas uniquement nom de chunk.
-- [ ] Implémenter rapport brut/gzip/code/assets/sommets et vérifier Three absent du flux réponse (≤10 Ko ajouté), route+globe ≤250 Ko, knowledge assets combinés ≤500 Ko/50k sommets. Corpus 11 Mo jamais fetch par stats. Conserver Angular budgets existants sans relèvement.
+- [ ] Implémenter rapport brut/gzip/code/assets/sommets et vérifier Three absent du flux réponse (≤10 Ko ajouté), route+globe ≤250 Ko, knowledge assets combinés ≤600 Ko/50k sommets. Corpus 11 Mo jamais fetch par stats. Conserver Angular budgets existants sans relèvement.
 - [ ] Vérifier ngsw.json : app couvre tous les chunks JS et quiz-geography couvre knowledge assets ; ajouter règle seulement si couverture absente. SW cache le code sans import/évaluation ; le preload router l’évalue sans instancier page.
 
 ```powershell

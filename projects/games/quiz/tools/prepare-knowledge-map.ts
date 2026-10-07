@@ -11,7 +11,7 @@ async function main() {
 
   const meshes = countries
     .filter((c) => c.geometry)
-    .map((c) => buildCountryMesh(c.iso3, c.geometry!, 0.35));
+    .map((c) => buildCountryMesh(c.iso3, c.geometry!, 0.08));
   const metadata = countries.map((c) => {
     const mesh = meshes.find((m) => m.iso3 === c.iso3);
     let anchor = c.geometry ? geoCentroid(c.geometry as never) : [0, 0];
@@ -59,7 +59,7 @@ async function main() {
     source: 'Natural Earth 5.1.2; derived from local pinned countries.json',
     license: 'Public domain geometry / ODbL-1.0 metadata',
     transformations:
-      '0.35 degree RDP; six spherical cube-face gnomonic clips; earcut with holes; spherical subdivision edges <=5 degrees; unit coordinates quantized Int16, indices Uint16, base64 little-endian buffers',
+      '0.08 degree RDP; six spherical cube-face gnomonic clips; earcut with holes; spherical subdivision edges <=5 degrees; unit coordinates quantized Int16, indices Uint16, base64 little-endian buffers',
     vertices: meshes.reduce((n, m) => n + m.positions.length / 3, 0),
   };
   const files = { 'countries.json': metadata, 'map.json': map, 'manifest.json': manifest };
@@ -71,7 +71,7 @@ async function main() {
     await writeFile('content/geography/knowledge/' + name, data + '\n');
   }
   console.log(JSON.stringify({ gzipBytes: bytes, vertices: manifest.vertices }));
-  if (bytes > 500_000 || manifest.vertices > 50_000)
+  if (bytes > 600_000 || manifest.vertices > 50_000)
     throw new Error('Knowledge map exceeds approved budget');
 }
 main().catch((e) => {

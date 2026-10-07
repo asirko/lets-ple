@@ -92,3 +92,10 @@ Demandes validées en conversation : retrait de la liste exhaustive et des bouto
 Parcours vérifiés : sélection carte/sélecteur, réouverture du même pays, Échap/bouton de fermeture et restauration du focus, axe de la modale, showcase rouvrable, scroll tactile passif puis rotation activée, 320/360/390 px sans débordement. Script verify-knowledge-inputs couvre en plus le détail avec un nom long jusqu'à 640 px CSS ; ce contrôle ne valide pas le zoom navigateur réel. Revue indépendante sans constat. 320 tests métier passent avec concurrence bornée à deux workers après trois timeouts sous validations lourdes parallèles (invariants, difficulty, prepare) ; 66 quiz, 57 portail, 23 game-core passent ; build production et isolé quiz passent.
 
 Budget courant : delta jeu 8578 octets gzip ; stats+globe 158176 ; assets 221942 ; toujours un seul chunk Three.js lazy. Cinq sorties de route libèrent le globe ; GPU estimé ≈4,76 Mo, lecture/affichage 100k ≈1,8 s dans la mesure desktop avec charge concurrente. Les critères matériels et le seuil d'une seconde restent ouverts.
+
+
+## Précision des contours — 8 octobre 2026
+
+Choix utilisateur : simplification 0,08 degré. Génération locale : 39 682 sommets, 542 894 octets gzip (sans nouvelles lignes finales). Budget des assets relevé à 600 Ko gzip ; limite de sommets inchangée. Les mesures sur téléphone réel restent à effectuer.
+
+Validation : 3 tests de géométrie passent, régénération déterministe, build production réussi. Rapport bundle : 542 902 octets gzip avec fins de ligne, 39 682 sommets, JavaScript inchangé (stats+globe 158 176 octets gzip), un seul chunk Three.js partagé. Vérification navigateur réussie : 195 pays, hors ligne après installation, sélection carte/modal, molette desktop, clavier, repli WebGL, axe et largeurs 320/360/390. Revue indépendante sans problème relevé.

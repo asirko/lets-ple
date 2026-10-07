@@ -1,3 +1,5 @@
+> Ajustement approuvé le 8 octobre 2026 : contours simplifiés à 0,08 degré, budget des assets porté à 600 Ko gzip ; limite de 50 000 sommets conservée.
+
 # Geoquizz — historique local et statistiques de connaissances
 
 Évolution d’interface validée le 2026-10-08 : la liste complète et le choix de vue liste sont remplacés par un sélecteur natif compact ; le détail pays devient une modale accessible. Les noms sont visibles sur le globe, avec placement partagé avec la correction. Les boutons de rotation/zoom/reset sont retirés ; molette active par défaut sur desktop, activation explicite des gestes sur tactile, flèches/+/- au clavier. Ces décisions remplacent les indications de liste, détail inline et boutons ci-dessous ; les critères matériels restant ouverts sont conservés.
@@ -139,7 +141,7 @@ Mesures déjà disponibles uniquement pour le corpus existant. Les valeurs suiva
 | --- | --- |
 | JS du flux de réponse | 10 Ko gzip |
 | JS route stats + globe, hors socle partagé déjà présent | 250 Ko gzip |
-| Géométries/métadonnées dédiées | 500 Ko gzip, 50 000 sommets maximum |
+| Géométries/métadonnées dédiées | 600 Ko gzip, 50 000 sommets maximum |
 | Heap JS de la vue stats | +50 Mo face à la page produit sans stats |
 | Ressources GPU estimées | 32 Mo |
 | Interaction sur mobile réel | au moins 30 fps, frame p95 ≤33 ms |
