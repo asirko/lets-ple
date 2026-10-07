@@ -129,7 +129,27 @@ Les alias explicites permettent notamment Pékin/Beijing, RDC/Congo-Kinshasa.
 
 La même comparaison sert à la validation Cash. Les suggestions filtrent tout le
 domaine, sans limite arbitraire ; la liste est vide avant saisie et scrollable
-ensuite. Flèches/Entrée, Échap et sélection tactile sont disponibles.
+ensuite. Elle flotte au-dessus du champ et reste bornée au viewport visible,
+y compris lorsque le clavier mobile ou le zoom réduit cet espace. Une nouvelle
+recherche remet le premier résultat en vue ; les flèches ramènent l'option active
+dans la liste sans déplacer la page. Flèches/Entrée, Échap et sélection tactile
+sont disponibles ; un glissement tactile fait défiler sans sélectionner.
+
+Pendant le focus de la saisie, le défilement de la page est verrouillé. Sur mobile,
+le champ et le bouton sont fixés au bas du viewport visible, au-dessus du clavier.
+Le focus peut passer au bouton par Tab sans déplacer ce bloc. Quitter le bloc ou
+démonter le composant restaure les styles et la position de défilement de la page.
+Une disposition compacte conserve des cibles tactiles de 44 pixels sur les
+viewports très courts ; le bloc lui-même reste scrollable si un message dépasse
+l'espace disponible.
+
+« Valider ma réponse » occupe toute la largeur et reste grisé et désactivé tant
+que la saisie ne correspond pas à une entrée du domaine attendu. Ce contrôle
+utilise exactement la comparaison de validation Cash, alias compris : il vérifie
+qu'il s'agit d'un pays ou d'une capitale reconnus, sans révéler si cette réponse
+est correcte pour la question. La combobox conserve le focus lors d'un tap sur
+une suggestion ; ses rôles et attributs ARIA, ainsi que les annonces d'erreur,
+restent disponibles.
 
 `optionsFor` exclut toutes les réponses acceptées avant de tirer les mauvaises
 options. Il privilégie voisins, sous-région, région puis reste du monde, et mélange
