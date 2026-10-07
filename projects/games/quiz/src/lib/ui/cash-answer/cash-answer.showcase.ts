@@ -13,7 +13,7 @@ import { LpCashAnswer } from './cash-answer';
 export class CashAnswerShowcase {
   readonly domain = [
     { id: 'CIV', label: 'Côte d’Ivoire', aliases: [], countryCodes: ['CIV'] },
-    { id: 'FRA', label: 'France', aliases: [], countryCodes: ['FRA'] },
+    { id: 'FRA', label: 'France', aliases: ['République française'], countryCodes: ['FRA'] },
     ...Array.from({ length: 30 }, (_, i) => ({
       id: 'demo-' + i,
       label: 'Pays de démonstration avec un nom long ' + (i + 1),

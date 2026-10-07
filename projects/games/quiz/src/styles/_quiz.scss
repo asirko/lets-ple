@@ -186,11 +186,52 @@
   display: grid;
   gap: var(--lp-space-2);
 }
-// Keep scroll room throughout editing, including selection/Escape/empty results, to avoid jumps.
-.quiz-cash.is-editing::after {
-  content: '';
-  height: 50dvh;
-  pointer-events: none;
+.quiz-cash .quiz-cash-entry {
+  display: grid;
+  gap: var(--lp-space-2);
+  min-width: 0;
+}
+.quiz-cash.is-docked .quiz-cash-entry {
+  position: fixed;
+  z-index: 20;
+  box-sizing: border-box;
+  padding: var(--lp-space-3);
+  border: 1px solid var(--lp-color-border);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-color-surface);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.quiz-cash.is-docked.is-compact .quiz-cash-entry {
+  padding: var(--lp-space-1);
+  gap: var(--lp-space-1);
+}
+.quiz-cash.is-docked.is-compact .quiz-input {
+  min-height: 2.75rem;
+  padding: var(--lp-space-2);
+}
+.quiz-cash.is-docked.is-compact lp-button button {
+  padding: var(--lp-space-1) var(--lp-space-2);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+.quiz-cash.is-docked.is-compact .quiz-suggestions li {
+  padding: var(--lp-space-1) var(--lp-space-2);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+.quiz-cash lp-button {
+  display: block;
+  min-width: 0;
+}
+.quiz-cash lp-button button {
+  width: 100%;
+  min-height: 2.75rem;
+}
+.quiz-cash lp-button button:disabled {
+  color: var(--lp-color-text-muted);
+  background: var(--lp-color-surface-raised);
+  border-color: var(--lp-color-border);
 }
 .quiz-cash label {
   font-weight: var(--lp-font-weight-bold);

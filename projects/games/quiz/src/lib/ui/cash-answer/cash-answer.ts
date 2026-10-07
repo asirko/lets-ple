@@ -25,72 +25,91 @@ let nextId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form
+      #form
       class="quiz-cash"
-      [class.is-editing]="query().trim().length > 0"
+      [class.is-docked]="docked()"
+      [class.is-compact]="compact()"
       (submit)="submit($event)"
     >
       <label [for]="id">{{ i18n.t('quiz.cash.' + answerType()) }}</label>
       <p class="quiz-hint" [id]="id + '-help'">{{ i18n.t('quiz.cash.help') }}</p>
-      <input
-        #field
-        class="quiz-input"
-        [id]="id"
-        type="text"
-        role="combobox"
-        autocomplete="off"
-        autocapitalize="words"
-        [spellcheck]="false"
-        [value]="query()"
-        (input)="change($event)"
-        (keydown)="keydown($event)"
-        (focus)="open.set(true)"
-        (blur)="blur()"
-        aria-autocomplete="list"
-        [attr.aria-expanded]="expanded()"
-        [attr.aria-controls]="id + '-list'"
-        [attr.aria-activedescendant]="
-          expanded() && active() >= 0 ? id + '-option-' + active() : null
-        "
-        [attr.aria-invalid]="invalid()"
-        [attr.aria-describedby]="id + '-help' + (invalid() ? ' ' + id + '-error' : '')"
-      />
-      <ul
-        #list
-        class="quiz-suggestions"
-        [style.left.px]="placement().left"
-        [style.top.px]="placement().top"
-        [style.width.px]="placement().width"
-        [style.max-height.px]="placement().height"
-        (pointerdown)="pointerdown($event)"
-        (mousedown)="$event.preventDefault()"
-        role="listbox"
-        [id]="id + '-list'"
-        [hidden]="!expanded()"
-        [attr.aria-label]="i18n.t('quiz.cash.suggestions')"
-      >
-        @for (answer of suggestions(); track answer.id; let index = $index) {
-          <li
-            #option
-            role="option"
-            [id]="id + '-option-' + index"
-            [attr.aria-selected]="active() === index"
-            [class.is-selected]="active() === index"
-            (pointerup)="pointerup($event, answer)"
-            (click)="select(answer)"
+      <div class="quiz-cash-anchor" [style.height.px]="docked() ? reservedHeight() : null">
+        <div
+          #entry
+          class="quiz-cash-entry"
+          [style.left.px]="docked() ? dock().left : null"
+          [style.top.px]="docked() ? dock().top : null"
+          [style.width.px]="docked() ? dock().width : null"
+          [style.max-height.px]="docked() ? dock().maxHeight : null"
+          (focusout)="entryBlur($event)"
+        >
+          <input
+            #field
+            class="quiz-input"
+            [id]="id"
+            type="text"
+            role="combobox"
+            autocomplete="off"
+            autocapitalize="words"
+            [spellcheck]="false"
+            [value]="query()"
+            (input)="change($event)"
+            (keydown)="keydown($event)"
+            (focus)="focus()"
+            (blur)="blur($event)"
+            aria-autocomplete="list"
+            [attr.aria-expanded]="expanded()"
+            [attr.aria-controls]="id + '-list'"
+            [attr.aria-activedescendant]="
+              expanded() && active() >= 0 ? id + '-option-' + active() : null
+            "
+            [attr.aria-invalid]="invalid()"
+            [attr.aria-describedby]="id + '-help' + (invalid() ? ' ' + id + '-error' : '')"
+          />
+          <ul
+            #list
+            class="quiz-suggestions"
+            [style.left.px]="placement().left"
+            [style.top.px]="placement().top"
+            [style.width.px]="placement().width"
+            [style.max-height.px]="placement().height"
+            (pointerdown)="pointerdown($event)"
+            (mousedown)="$event.preventDefault()"
+            role="listbox"
+            [id]="id + '-list'"
+            [hidden]="!expanded()"
+            [attr.aria-label]="i18n.t('quiz.cash.suggestions')"
           >
-            {{ answer.label }}
-          </li>
-        }
-      </ul>
-      @if (open() && query().trim() && !suggestions().length) {
-        <p class="quiz-hint" role="status">{{ i18n.t('quiz.cash.empty') }}</p>
-      }
-      @if (invalid()) {
-        <p class="quiz-error" role="alert" [id]="id + '-error'">
-          {{ i18n.t('quiz.cash.invalid.' + answerType()) }}
-        </p>
-      }
-      <lp-button type="submit">{{ i18n.t('quiz.validate') }}</lp-button>
+            @for (answer of suggestions(); track answer.id; let index = $index) {
+              <li
+                #option
+                role="option"
+                [id]="id + '-option-' + index"
+                [attr.aria-selected]="active() === index"
+                [class.is-selected]="active() === index"
+                (pointerup)="pointerup($event, answer)"
+                (click)="select(answer)"
+              >
+                {{ answer.label }}
+              </li>
+            }
+          </ul>
+          @if (open() && query().trim() && !suggestions().length) {
+            <p class="quiz-hint" role="status">{{ i18n.t('quiz.cash.empty') }}</p>
+          }
+          @if (invalid()) {
+            <p class="quiz-error" role="alert" [id]="id + '-error'">
+              {{ i18n.t('quiz.cash.invalid.' + answerType()) }}
+            </p>
+          }
+          <lp-button
+            type="submit"
+            [disabled]="!acceptedAnswer()"
+            (mousedown)="$event.preventDefault()"
+            >{{ i18n.t('quiz.validate') }}</lp-button
+          >
+        </div>
+      </div>
     </form>
   `,
 })
@@ -101,6 +120,17 @@ export class LpCashAnswer {
   protected readonly i18n = inject(I18nService);
   protected readonly id = `quiz-cash-${nextId++}`;
   protected readonly query = signal('');
+  protected readonly focused = signal(false);
+  protected readonly docked = signal(false);
+  protected readonly compact = signal(false);
+  protected readonly reservedHeight = signal(0);
+  protected readonly dock = signal({ left: 0, top: 0, width: 0, maxHeight: 0 });
+  protected readonly acceptedAnswer = computed(() =>
+    this.domain().find((answer) => matchesAnswer(answer, this.query())),
+  );
+  private readonly form = viewChild<ElementRef<HTMLElement>>('form');
+  private readonly entry = viewChild<ElementRef<HTMLElement>>('entry');
+  private unlockPage: (() => void) | undefined;
   protected readonly active = signal(-1);
   protected readonly open = signal(false);
   protected readonly invalid = signal(false);
@@ -111,6 +141,7 @@ export class LpCashAnswer {
   private touchingList = false;
   private touchStart = { x: 0, y: 0 };
   private frame = 0;
+  private optionFrame = 0;
   private releaseTimer: ReturnType<typeof setTimeout> | undefined;
   private readonly field = viewChild<ElementRef<HTMLInputElement>>('field');
   private readonly options = viewChildren<ElementRef<HTMLElement>>('option');
@@ -118,8 +149,13 @@ export class LpCashAnswer {
   constructor() {
     effect(() => this.field()?.nativeElement.focus());
     afterRenderEffect(() => {
-      if (!this.expanded()) return;
-      this.positionList();
+      if (!this.focused()) return;
+      this.dock();
+      this.compact();
+      this.open();
+      this.query();
+      this.invalid();
+      this.positionControls();
     });
     afterRenderEffect(() => {
       this.query();
@@ -129,23 +165,17 @@ export class LpCashAnswer {
     });
     afterRenderEffect(() => {
       this.placement();
-      if (!this.expanded()) return;
-      const list = this.list()?.nativeElement;
       const option = this.options()[this.active()]?.nativeElement;
-      if (!list || !option) return;
-      // Scroll only the list, never the page or the field above the keyboard.
-      const item = option.getBoundingClientRect();
-      const box = list.getBoundingClientRect();
-      if (item.top < box.top + list.clientTop)
-        list.scrollTop -= box.top + list.clientTop - item.top;
-      else if (item.bottom > box.top + list.clientTop + list.clientHeight)
-        list.scrollTop += item.bottom - (box.top + list.clientTop + list.clientHeight);
+      cancelAnimationFrame(this.optionFrame);
+      if (!this.expanded() || !option) return;
+      // Measure after the dock and popup styles have reached the DOM.
+      this.optionFrame = requestAnimationFrame(() => this.revealOption(option));
     });
     const reposition = (event: Event) => {
       if (event.target === this.list()?.nativeElement) return;
       cancelAnimationFrame(this.frame);
       this.frame = requestAnimationFrame(() => {
-        if (this.expanded()) this.positionList();
+        if (this.focused()) this.positionControls();
       });
     };
     const release = () => {
@@ -166,10 +196,22 @@ export class LpCashAnswer {
     window.addEventListener('scroll', reposition, true);
     viewport?.addEventListener('resize', reposition);
     viewport?.addEventListener('scroll', reposition);
+    const preventPageGesture = (event: Event) => {
+      if (!this.focused() || this.entry()?.nativeElement.contains(event.target as Node)) return;
+      if ('touches' in event && (event as TouchEvent).touches.length > 1) return;
+      if (event instanceof WheelEvent && event.ctrlKey) return;
+      event.preventDefault();
+    };
+    window.addEventListener('touchmove', preventPageGesture, { passive: false });
+    window.addEventListener('wheel', preventPageGesture, { passive: false });
     window.addEventListener('pointerup', release);
     window.addEventListener('pointercancel', cancel);
     inject(DestroyRef).onDestroy(() => {
+      this.unlockPage?.();
+      window.removeEventListener('touchmove', preventPageGesture);
+      window.removeEventListener('wheel', preventPageGesture);
       cancelAnimationFrame(this.frame);
+      cancelAnimationFrame(this.optionFrame);
       clearTimeout(this.releaseTimer);
       window.removeEventListener('resize', reposition);
       window.removeEventListener('scroll', reposition, true);
@@ -180,22 +222,53 @@ export class LpCashAnswer {
     });
   }
 
-  private positionList(): void {
+  private revealOption(option: HTMLElement): void {
+    const list = this.list()?.nativeElement;
+    if (!list) return;
+    const item = option.getBoundingClientRect();
+    const box = list.getBoundingClientRect();
+    const top = box.top + list.clientTop;
+    const bottom = top + list.clientHeight;
+    if (item.top < top || item.height > list.clientHeight) list.scrollTop += item.top - top;
+    else if (item.bottom > bottom) list.scrollTop += item.bottom - bottom;
+  }
+
+  private positionControls(): void {
     const field = this.field()?.nativeElement;
-    if (!field) return;
+    const entry = this.entry()?.nativeElement;
+    if (!field || !entry) return;
     const viewport = window.visualViewport;
     const top = viewport?.offsetTop ?? 0;
     const left = viewport?.offsetLeft ?? 0;
     const height = viewport?.height ?? window.innerHeight;
     const width = viewport?.width ?? window.innerWidth;
-    const margin = 8;
-    let box = field.getBoundingClientRect();
-    // Leave room above the field even when focus/zoom places it at the top.
-    const desiredTop = top + Math.min(160, Math.max(0, height - box.height - margin * 2));
-    if (box.top < top + Math.min(96, height / 3) || box.bottom > top + height - margin) {
-      window.scrollBy({ top: box.top - desiredTop, behavior: 'instant' });
-      box = field.getBoundingClientRect();
+    this.compact.set(height < 240);
+    const margin = this.compact() ? 4 : 8;
+    this.docked.set(width <= 768);
+    if (this.docked()) {
+      const anchor = this.form()?.nativeElement.getBoundingClientRect();
+      const dockWidth = Math.max(0, Math.min(anchor?.width || width, width - margin * 2));
+      const dockLeft = Math.max(
+        left + margin,
+        Math.min(anchor?.left ?? left, left + width - margin - dockWidth),
+      );
+      const maxHeight = Math.max(0, height - margin * 2);
+      const entryHeight = Math.min(entry.scrollHeight + 2, maxHeight);
+      const next = {
+        left: dockLeft,
+        top: top + height - margin - entryHeight,
+        width: dockWidth,
+        maxHeight,
+      };
+      const previous = this.dock();
+      if (
+        Object.keys(next).some(
+          (key) => next[key as keyof typeof next] !== previous[key as keyof typeof next],
+        )
+      )
+        this.dock.set(next);
     }
+    const box = field.getBoundingClientRect();
     const bottom = Math.max(top + margin, Math.min(box.top - margin, top + height - margin));
     const listLeft = Math.max(left + margin, Math.min(box.left, left + width - margin * 2));
     this.placement.set({
@@ -204,6 +277,46 @@ export class LpCashAnswer {
       width: Math.max(0, Math.min(box.width, left + width - margin - listLeft)),
       height: Math.max(0, bottom - top - margin),
     });
+  }
+
+  protected focus(): void {
+    if (!this.focused()) {
+      this.reservedHeight.set(this.entry()?.nativeElement.getBoundingClientRect().height ?? 0);
+      this.lockPage();
+      this.focused.set(true);
+    }
+    this.open.set(true);
+  }
+
+  private lockPage(): void {
+    const x = window.scrollX;
+    const y = window.scrollY;
+    const overrides: [CSSStyleDeclaration, string, string][] = [
+      [document.documentElement.style, 'overflow', 'hidden'],
+      [document.body.style, 'position', 'fixed'],
+      [document.body.style, 'top', '-' + y + 'px'],
+      [document.body.style, 'left', '-' + x + 'px'],
+      [document.body.style, 'width', '100%'],
+    ];
+    const previous = overrides.map(([style, name]) => ({
+      style,
+      name,
+      value: style.getPropertyValue(name),
+      priority: style.getPropertyPriority(name),
+    }));
+    for (const [style, name, value] of overrides) style.setProperty(name, value);
+    this.unlockPage = () => {
+      for (const { style, name, value, priority } of previous) {
+        if (value) style.setProperty(name, value, priority);
+        else style.removeProperty(name);
+      }
+      window.scrollTo(x, y);
+      this.unlockPage = undefined;
+    };
+  }
+
+  protected entryBlur(event: FocusEvent): void {
+    if (!this.entry()?.nativeElement.contains(event.relatedTarget as Node | null)) this.blur(event);
   }
 
   protected pointerdown(event: PointerEvent): void {
@@ -228,10 +341,15 @@ export class LpCashAnswer {
     this.select(answer);
   }
 
-  protected blur(): void {
+  protected blur(event?: FocusEvent): void {
     if (this.touchingList) return;
     this.open.set(false);
     this.active.set(-1);
+    if (event?.relatedTarget && this.entry()?.nativeElement.contains(event.relatedTarget as Node))
+      return;
+    this.focused.set(false);
+    this.docked.set(false);
+    this.unlockPage?.();
   }
   protected change(event: Event): void {
     this.query.set((event.target as HTMLInputElement).value);
@@ -273,7 +391,7 @@ export class LpCashAnswer {
   }
   protected submit(event: Event): void {
     event.preventDefault();
-    const answer = this.domain().find((a) => matchesAnswer(a, this.query()));
+    const answer = this.acceptedAnswer();
     if (!answer) {
       this.invalid.set(true);
       return;

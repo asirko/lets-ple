@@ -4,11 +4,13 @@ import { LpCashAnswer } from './cash-answer';
 
 describe('Cash autocomplete', () => {
   afterEach(() => {
+    TestBed.resetTestingModule();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
   async function setup() {
     vi.spyOn(window, 'scrollBy').mockImplementation(() => {});
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
     const fixture = TestBed.createComponent(LpCashAnswer);
     fixture.componentRef.setInput('domain', [
       { id: 'CIV', label: 'Côte d’Ivoire', aliases: [], countryCodes: ['CIV'] },
@@ -205,5 +207,143 @@ describe('Cash autocomplete', () => {
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
     fixture.detectChanges();
     expect(input.value).toBe('Pays 0');
+  });
+  it('désactive Valider pour une saisie vide ou partielle, accepte les noms normalisés et alias', async () => {
+    const fixture = await setup();
+    const el: HTMLElement = fixture.nativeElement;
+    const input = el.querySelector('input')!;
+    const button = el.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    expect(button.disabled).toBe(true);
+    fixture.componentRef.setInput('domain', [
+      { id: 'CIV', label: 'Côte d’Ivoire', aliases: ['CI'], countryCodes: ['CIV'] },
+      { id: 'FRA', label: 'France', aliases: [], countryCodes: ['FRA'] },
+    ]);
+    for (const [value, disabled] of [
+      ['Fra', true],
+      ['Frannce', true],
+      [' France ', false],
+      ['cote divoire', false],
+      ['ci', false],
+      ['', true],
+    ] as const) {
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      expect(button.disabled, value).toBe(disabled);
+    }
+  });
+
+  it('bloque le scroll de page pendant le focus, le restaure au blur et au démontage', async () => {
+    const previous = document.body.style.cssText;
+    const rootOverflow = document.documentElement.style.overflow;
+    const fixture = await setup();
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    expect(document.body.style.position).toBe('fixed');
+    expect(document.documentElement.style.overflow).toBe('hidden');
+    input.blur();
+    fixture.detectChanges();
+    expect(document.body.style.cssText).toBe(previous);
+    expect(document.documentElement.style.overflow).toBe(rootOverflow);
+    input.focus();
+    fixture.detectChanges();
+    expect(document.body.style.position).toBe('fixed');
+    fixture.destroy();
+    expect(document.body.style.cssText).toBe(previous);
+    expect(document.documentElement.style.overflow).toBe(rootOverflow);
+  });
+
+  it('conserve le verrouillage après Échap et sélection tant que le champ garde le focus', async () => {
+    const fixture = await setup();
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    input.value = 'fra';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fixture.detectChanges();
+    expect(document.body.style.position).toBe('fixed');
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    fixture.detectChanges();
+    expect(input.value).toBe('France');
+    expect(document.activeElement).toBe(input);
+    expect(document.body.style.position).toBe('fixed');
+  });
+  it('ancre le bloc au bas du viewport mobile et revient dans le flux sur grand écran', async () => {
+    const viewport = Object.assign(new EventTarget(), {
+      offsetTop: 40,
+      offsetLeft: 10,
+      height: 280,
+      width: 320,
+    });
+    vi.stubGlobal('visualViewport', viewport);
+    const fixture = await setup();
+    const el: HTMLElement = fixture.nativeElement;
+    const input = el.querySelector('input')!;
+    const entry = el.querySelector<HTMLElement>('.quiz-cash-entry')!;
+    vi.spyOn(entry, 'scrollHeight', 'get').mockReturnValue(100);
+    vi.spyOn(el.querySelector('form')!, 'getBoundingClientRect').mockReturnValue({
+      top: 0,
+      bottom: 300,
+      left: 20,
+      right: 300,
+      width: 280,
+      height: 300,
+      x: 20,
+      y: 0,
+      toJSON() {},
+    });
+    input.value = 'fra';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(entry.style.top).toBe('210px');
+    expect(entry.style.left).toBe('20px');
+    expect(entry.style.width).toBe('280px');
+    viewport.height = 180;
+    viewport.dispatchEvent(new Event('resize'));
+    await new Promise((resolve) => setTimeout(resolve, 40));
+    fixture.detectChanges();
+    expect(entry.style.top).toBe('114px');
+    expect(entry.style.maxHeight).toBe('172px');
+    viewport.width = 1200;
+    viewport.dispatchEvent(new Event('resize'));
+    await new Promise((resolve) => setTimeout(resolve, 40));
+    fixture.detectChanges();
+    expect(el.querySelector('form')!.classList.contains('is-docked')).toBe(false);
+    expect(entry.style.top).toBe('');
+  });
+
+  it('laisse Tab accéder au bouton et restaure la page quand le focus quitte le bloc', async () => {
+    const fixture = await setup();
+    const el: HTMLElement = fixture.nativeElement;
+    const input = el.querySelector('input')!;
+    const button = el.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    input.value = 'France';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    button.focus();
+    fixture.detectChanges();
+    expect(document.activeElement).toBe(button);
+    expect(document.body.style.position).toBe('fixed');
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+    button.blur();
+    fixture.detectChanges();
+    expect(document.body.style.position).toBe('');
+    expect(input.value).toBe('France');
+  });
+
+  it('ne bloque pas le scroll interne du bloc dans un viewport court', async () => {
+    const fixture = await setup();
+    const el: HTMLElement = fixture.nativeElement;
+    const entry = el.querySelector<HTMLElement>('.quiz-cash-entry')!;
+    const inside = new Event('touchmove', { bubbles: true, cancelable: true });
+    entry.dispatchEvent(inside);
+    expect(inside.defaultPrevented).toBe(false);
+    const outside = new Event('touchmove', { bubbles: true, cancelable: true });
+    document.body.dispatchEvent(outside);
+    expect(outside.defaultPrevented).toBe(true);
+    const pinch = new Event('touchmove', { bubbles: true, cancelable: true });
+    Object.defineProperty(pinch, 'touches', { value: [{}, {}] });
+    document.body.dispatchEvent(pinch);
+    expect(pinch.defaultPrevented).toBe(false);
   });
 });
