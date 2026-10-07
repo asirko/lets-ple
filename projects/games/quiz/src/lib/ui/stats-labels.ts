@@ -15,6 +15,8 @@ export const STATS_KEYS = [
   'types',
   'modes',
   'countries',
+  'chooseCountry',
+  'chooseCountryHint',
   'search',
   'sort',
   'sortName',

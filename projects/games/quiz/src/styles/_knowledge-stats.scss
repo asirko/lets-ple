@@ -1,9 +1,11 @@
-// Knowledge statistics: geography is the main view; readable data stays available below.
+@use 'globe-labels';
+// Knowledge statistics: globe selection, accessible picker and modal country details.
 .quiz-stats-shell {
   max-width: 76rem;
   margin-inline: auto;
   padding: var(--lp-space-4);
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--lp-space-5);
 }
 .quiz-stats-heading {
@@ -53,6 +55,8 @@
 }
 .quiz-stats-filters input,
 .quiz-stats-filters select {
+  min-width: 0;
+  width: 100%;
   min-height: 44px;
   max-width: 100%;
   box-sizing: border-box;
@@ -62,35 +66,6 @@
   background: var(--lp-color-surface);
   border: 1px solid var(--lp-color-border);
   border-radius: var(--lp-radius-sm);
-}
-.quiz-stats-countries {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  gap: var(--lp-space-2);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-}
-.quiz-stats-country {
-  display: grid;
-  grid-template-columns: 1rem 1fr;
-  gap: var(--lp-space-1) var(--lp-space-2);
-  text-align: left;
-  width: 100%;
-  padding: var(--lp-space-3);
-  color: var(--lp-color-text);
-  background: var(--lp-color-surface);
-  border: 1px solid var(--lp-color-border);
-  border-radius: var(--lp-radius-sm);
-  cursor: pointer;
-  font: inherit;
-  min-height: 44px;
-}
-.quiz-stats-country span:not(.quiz-stats-swatch) {
-  grid-column: 2;
-  font-size: var(--lp-font-size-sm);
-}
-.quiz-stats-countries .is-selected .quiz-stats-country {
-  outline: 2px solid var(--lp-color-primary);
 }
 .quiz-stats-swatch {
   width: 1rem;
@@ -132,9 +107,8 @@
   max-width: 70ch;
 }
 .quiz-stats-detail {
-  padding: var(--lp-space-4);
-  border: 2px solid var(--lp-color-primary);
-  border-radius: var(--lp-radius-md);
+  display: grid;
+  gap: var(--lp-space-4);
 }
 .quiz-stats-notice {
   padding: var(--lp-space-3);
@@ -223,14 +197,23 @@
   height: clamp(17rem, 55vw, 34rem);
   position: relative;
 }
-.quiz-stats-globe-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--lp-space-2);
-  padding: var(--lp-space-3);
+.quiz-stats-touch-control {
+  margin-block-start: var(--lp-space-3);
 }
-.quiz-stats-globe-controls button {
-  min-width: 44px;
+@media (hover: hover) and (pointer: fine) {
+  .quiz-stats-touch-control {
+    display: none;
+  }
+}
+.quiz-stats-globe canvas {
+  cursor: grab;
+}
+.quiz-stats-globe canvas:active {
+  cursor: grabbing;
+}
+.quiz-stats-globe canvas:focus-visible {
+  outline: 3px solid var(--lp-color-focus-ring);
+  outline-offset: -3px;
 }
 @media (min-width: 60rem) {
   .quiz-stats-map-region {

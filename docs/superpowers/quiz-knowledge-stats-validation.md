@@ -4,11 +4,11 @@
 
 ```json
 {
-  "base": "develop 106866e",
-  "branch": "codex/quiz-knowledge-stats",
+  "base": "develop e6f1ee2",
+  "branch": "codex/quiz-stats-country-dialog",
   "unit": {
     "domain": 320,
-    "quiz": 63,
+    "quiz": 66,
     "portal": 57,
     "gameCore": 23
   },
@@ -18,7 +18,6 @@
   "axeEmptyPopulated": true,
   "realTenAnswers": true,
   "crossTabClear": true,
-  "keyboardGlobeAndPassiveWheel": true,
   "webglLossFallback": true,
   "smallWidths": [
     320,
@@ -31,8 +30,8 @@
     "baselineRef": "106866e",
     "sharedThreeChunkCount": 1,
     "bothGlobesUseSameThree": true,
-    "flowDeltaGzipBytes": 8301,
-    "statisticsAndGlobeGzipBytes": 157852,
+    "flowDeltaGzipBytes": 8578,
+    "statisticsAndGlobeGzipBytes": 158176,
     "knowledgeAssetsGzipBytes": 221942,
     "vertices": 17881,
     "threeInInitial": false,
@@ -50,7 +49,14 @@
   ],
   "noPushOrDeployment": true,
   "sharedThreeRuntime": true,
-  "correctionBrowserVerified": true
+  "correctionBrowserVerified": true,
+  "keyboardGlobeAndDefaultDesktopWheel": true,
+  "touchPassiveScrollAndActivation": true,
+  "countryListRemoved": true,
+  "countryPicker": true,
+  "countryDetailModal": true,
+  "countryNamesOnGlobe": true,
+  "interfaceReview": "Independent review: no concrete findings."
 }
 ```
 
@@ -78,3 +84,11 @@ Les rapports détaillés locaux sont dans tmp/knowledge-stats. Les mesures sur t
 Rebase sur develop 106866e, incluant la correction 3D. Conflits résolus en conservant la modale, sa sélection du pays et les deux ensembles de traductions. Runtime partagé pour création/configuration, contrôles, RAF/visibilité et libération WebGL ; couches de dessin spécifiques conservées. Une seule version et un seul chunk Three.js, import dynamique dans les deux vues. DPR désormais plafonné à 1,5 également dans la correction.
 
 63 tests quiz passent ; build production et paquet isolé passent. Scripts verify-correction et verify-knowledge passent, dont context loss, libération GPU, navigation, dix réponses et fonctionnement hors ligne. Nouveau delta jeu 8 301 octets gzip, statistiques+globe 157 852, assets 221 942. La référence de comparaison est reconstruite depuis 106866e. Les mesures matérielles et le seuil 100k restent ouverts.
+
+## Navigation pays revue (2026-10-08)
+
+Demandes validées en conversation : retrait de la liste exhaustive et des boutons de rotation/zoom/reset ; sélecteur natif compact pour clavier et repli WebGL ; clic/tap sur la carte ouvre LpDialog avec détails pays. Les noms français utilisent le même utilitaire de projection/placement et les mêmes styles que la correction. Molette active dès l'ouverture sur desktop ; gestes activables sur tactile pour conserver le scroll.
+
+Parcours vérifiés : sélection carte/sélecteur, réouverture du même pays, Échap/bouton de fermeture et restauration du focus, axe de la modale, showcase rouvrable, scroll tactile passif puis rotation activée, 320/360/390 px sans débordement. Script verify-knowledge-inputs couvre en plus le détail avec un nom long jusqu'à 640 px CSS ; ce contrôle ne valide pas le zoom navigateur réel. Revue indépendante sans constat. 320 tests métier passent avec concurrence bornée à deux workers après trois timeouts sous validations lourdes parallèles (invariants, difficulty, prepare) ; 66 quiz, 57 portail, 23 game-core passent ; build production et isolé quiz passent.
+
+Budget courant : delta jeu 8578 octets gzip ; stats+globe 158176 ; assets 221942 ; toujours un seul chunk Three.js lazy. Cinq sorties de route libèrent le globe ; GPU estimé ≈4,76 Mo, lecture/affichage 100k ≈1,8 s dans la mesure desktop avec charge concurrente. Les critères matériels et le seuil d'une seconde restent ouverts.

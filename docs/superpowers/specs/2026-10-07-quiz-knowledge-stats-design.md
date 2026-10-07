@@ -1,5 +1,7 @@
 # Geoquizz — historique local et statistiques de connaissances
 
+Évolution d’interface validée le 2026-10-08 : la liste complète et le choix de vue liste sont remplacés par un sélecteur natif compact ; le détail pays devient une modale accessible. Les noms sont visibles sur le globe, avec placement partagé avec la correction. Les boutons de rotation/zoom/reset sont retirés ; molette active par défaut sur desktop, activation explicite des gestes sur tactile, flèches/+/- au clavier. Ces décisions remplacent les indications de liste, détail inline et boutons ci-dessous ; les critères matériels restant ouverts sont conservés.
+
 Date : 2026-10-07. Statut : spec écrite approuvée le 2026-10-07. Plan rédigé séparément, approbation et méthode attendues. Aucune implémentation autorisée.
 Branche : `codex/quiz-knowledge-stats`, worktree créé depuis le main local `dfe3fb6`.
 

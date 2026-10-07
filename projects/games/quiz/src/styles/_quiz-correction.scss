@@ -1,3 +1,4 @@
+@use 'globe-labels';
 // Correction globe: these tokens follow the game theme rather than the portal showcase theme.
 .quiz-globe {
   --quiz-globe-ocean: #e5edf0;
@@ -61,22 +62,6 @@
   display: grid;
   gap: var(--lp-space-1);
   text-align: center;
-}
-.quiz-globe-label {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  white-space: nowrap;
-  color: var(--lp-color-text);
-  background: var(--lp-color-surface-raised);
-  padding: 1px 4px;
-  border-radius: var(--lp-radius-sm);
-}
-.quiz-globe-label.is-selected {
-  font-weight: var(--lp-font-weight-bold);
-  border: 1px solid var(--lp-color-text);
 }
 .quiz-globe-controls {
   display: grid;

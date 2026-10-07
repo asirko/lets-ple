@@ -23,6 +23,8 @@ import {
 import type { KnowledgeMap, KnowledgeCountry } from '../data/knowledge-data';
 import type { KnowledgeLevel } from '../domain/knowledge-stats/knowledge-level';
 import { GLOBE_COLORS, type GlobeHandle } from './globe-port';
+import { projectGlobeLabels } from './globe-labels';
+import type { LabelCandidate } from '../ui/country-globe/globe-geography';
 import { isTap } from './globe-interactions';
 export function createGlobe(
   host: HTMLElement,
@@ -30,6 +32,7 @@ export function createGlobe(
   countries: readonly KnowledgeCountry[],
   options: {
     onSelect: (iso3: string) => void;
+    onLabels: (labels: readonly LabelCandidate[]) => void;
     onUnavailable: () => void;
     reducedMotion: boolean;
     label: string;
@@ -45,10 +48,11 @@ export function createGlobe(
     camera = new PerspectiveCamera(40, 1, 0.1, 20);
   camera.position.set(0, 2, 3.3);
   camera.lookAt(0, 0, 0);
+  const desktop = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const controls = createGlobeControls(camera, canvas, {
     minDistance: 1.7,
     maxDistance: 6,
-    wheelZoom: false,
+    wheelZoom: desktop,
   });
   canvas.style.touchAction = 'pan-y';
   const sphereGeometry = new SphereGeometry(0.997, 48, 32),
@@ -100,9 +104,26 @@ export function createGlobe(
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   };
+  let selectedCode: string | null = null;
+  const locations = countries.map((c) => {
+    const lon = (c.anchor[0] * Math.PI) / 180,
+      lat = (c.anchor[1] * Math.PI) / 180;
+    return {
+      code: c.iso3,
+      name: c.name,
+      point: new Vector3(
+        Math.cos(lat) * Math.sin(lon),
+        Math.sin(lat),
+        Math.cos(lat) * Math.cos(lon),
+      ),
+    };
+  });
   const frames = createGlobeFrameLoop(host, () => {
     resize();
     renderer.render(scene, camera);
+    options.onLabels(
+      projectGlobeLabels(locations, camera, host.clientWidth, host.clientHeight, selectedCode),
+    );
   });
   const invalidate = frames.invalidate;
   controls.addEventListener('change', invalidate);
@@ -175,6 +196,7 @@ export function createGlobe(
   invalidate();
   return {
     update(levels, selectedIso3, continent) {
+      selectedCode = selectedIso3;
       for (const [code, mesh] of meshes) {
         const level = levels.get(code) ?? 'none',
           material = mesh.material as MeshBasicMaterial;
@@ -216,7 +238,7 @@ export function createGlobe(
     },
     setEngaged(value) {
       engaged = value;
-      controls.enableZoom = value;
+      controls.enableZoom = desktop || value;
       controls.enabled = true;
       canvas.style.touchAction = value ? 'none' : 'pan-y';
     },

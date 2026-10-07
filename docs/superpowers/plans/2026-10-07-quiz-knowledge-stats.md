@@ -1,5 +1,7 @@
 # Geoquizz — Knowledge Statistics Implementation Plan
 
+Évolution d’interface validée le 2026-10-08 : la liste complète et le choix de vue liste sont remplacés par un sélecteur natif compact ; le détail pays devient une modale accessible. Les noms sont visibles sur le globe, avec placement partagé avec la correction. Les boutons de rotation/zoom/reset sont retirés ; molette active par défaut sur desktop, activation explicite des gestes sur tactile, flèches/+/- au clavier. Ces décisions remplacent les indications de liste, détail inline et boutons ci-dessous ; les critères matériels restant ouverts sont conservés.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Enregistrer localement les réponses et afficher les connaissances globales ou par continent, leur évolution et un globe accessible.

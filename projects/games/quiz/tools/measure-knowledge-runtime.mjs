@@ -36,7 +36,7 @@ try {
   await page.locator('canvas').waitFor();
   assert.equal(await page.locator('main').count(), 1);
   await page.screenshot({ path: 'tmp/knowledge-stats/globe-viewport.png' });
-  await page.getByRole('button', { name: 'Liste accessible', exact: true }).click();
+  await page.getByRole('link', { name: 'Retour au quiz', exact: true }).click();
   await page.locator('canvas').waitFor({ state: 'detached' });
   const session = await context.newCDPSession(page);
   await session.send('Performance.enable');
@@ -50,16 +50,19 @@ try {
   const heaps = [];
   let framebufferBytes = 0;
   for (let i = 0; i < 5; i++) {
-    await page.getByRole('button', { name: 'Globe', exact: true }).click();
+    await page.locator('.quiz-toolbar-trigger').click();
+    await page.getByRole('link', { name: 'Mes connaissances', exact: true }).click();
     await page.locator('canvas').waitFor();
     framebufferBytes = await page.evaluate(() => {
       const c = document.querySelector('canvas');
       return c.width * c.height * 40;
     });
-    await page.getByRole('button', { name: 'Liste accessible', exact: true }).click();
+    await page.getByRole('link', { name: 'Retour au quiz', exact: true }).click();
     await page.locator('canvas').waitFor({ state: 'detached' });
     heaps.push(await heap());
   }
+  await page.locator('.quiz-toolbar-trigger').click();
+  await page.getByRole('link', { name: 'Mes connaissances', exact: true }).click();
   await seedHistory(page, 100000);
   const start = performance.now();
   await page.reload();

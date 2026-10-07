@@ -256,8 +256,8 @@
   "quiz.stats.viewGlobe": "Globe",
   "quiz.stats.viewList": "Liste accessible",
   "quiz.stats.globe": "Globe des connaissances",
-  "quiz.stats.globeHint": "Faites glisser pour tourner, pincez pour zoomer. Utilisez aussi les boutons ou la liste pour sélectionner chaque pays.",
-  "quiz.stats.globeFallback": "Le globe est indisponible. La liste ci-dessous offre les mêmes détails.",
+  "quiz.stats.globeHint": "Faites glisser pour tourner et utilisez la molette pour zoomer sur ordinateur. Au clavier : flèches pour tourner, + et − pour zoomer. Cliquez sur un pays pour voir ses statistiques, ou choisissez-le dans le sélecteur.",
+  "quiz.stats.globeFallback": "Le globe est indisponible. Le sélecteur de pays donne accès aux mêmes statistiques.",
   "quiz.stats.rotateLeft": "Tourner vers la gauche",
   "quiz.stats.rotateRight": "Tourner vers la droite",
   "quiz.stats.rotateUp": "Tourner vers le haut",
@@ -266,7 +266,7 @@
   "quiz.stats.zoomOut": "Réduire",
   "quiz.stats.reset": "Réinitialiser le globe",
   "quiz.stats.closeDetail": "Fermer le détail",
-  "quiz.stats.coverage": "195 États du corpus Geoquizz. Les petites îles sont accessibles depuis la liste ; les contours sont simplifiés.",
+  "quiz.stats.coverage": "195 États du corpus Geoquizz. Les petites îles sont accessibles depuis le sélecteur ; les contours sont simplifiés.",
   "quiz.stats.continent.Africa": "Afrique",
   "quiz.stats.continent.Americas": "Amériques",
   "quiz.stats.continent.Asia": "Asie",
@@ -290,7 +290,9 @@
   "quiz.stats.type.capital": "Capitales",
   "quiz.stats.type.country-from-capital": "Pays depuis une capitale",
   "quiz.stats.type.neighbors": "Voisins terrestres",
-  "quiz.stats.activateTouch": "Activer les gestes et la molette",
+  "quiz.stats.activateTouch": "Activer les gestes tactiles",
   "quiz.stats.selectedAnnouncement": "Pays sélectionné",
-  "quiz.stats.changeFocus": "Afficher {country} en changeant la zone étudiée ?"
+  "quiz.stats.changeFocus": "Afficher {country} en changeant la zone étudiée ?",
+  "quiz.stats.chooseCountry": "Choisir un pays",
+  "quiz.stats.chooseCountryHint": "Sélectionnez un pays pour voir ses statistiques"
 }

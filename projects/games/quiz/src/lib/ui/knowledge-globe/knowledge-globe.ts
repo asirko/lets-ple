@@ -13,6 +13,7 @@ import {
 import { loadKnowledgeMap, type KnowledgeCountry } from '../../data/knowledge-data';
 import type { KnowledgeLevel } from '../../domain/knowledge-stats/knowledge-level';
 import type { GlobeHandle } from '../../globe/globe-port';
+import type { LabelCandidate } from '../country-globe/globe-geography';
 import type { StatsLabels } from '../statistics-models';
 @Component({
   selector: 'lp-knowledge-globe',
@@ -24,22 +25,23 @@ import type { StatsLabels } from '../statistics-models';
       <p role="status">{{ labels()['globeFallback'] }}</p>
     } @else {
       <div class="quiz-stats-globe">
-        <div #surface class="quiz-stats-globe-surface"></div>
-        <div class="quiz-stats-globe-controls">
-          <button class="b-button" (click)="engage()" [attr.aria-pressed]="engaged()" type="button">
-            {{ labels()['activateTouch'] }}
-          </button>
-          @for (control of controls; track control.key) {
-            <button
-              class="b-button"
-              [attr.aria-label]="labels()[control.key]"
-              (click)="command(control.key)"
-              type="button"
+        <div #surface class="quiz-stats-globe-surface">
+          @for (label of names(); track label.code) {
+            <span
+              aria-hidden="true"
+              class="quiz-globe-label"
+              [class.is-selected]="label.code === selected()"
+              [style.left.px]="label.x"
+              [style.top.px]="label.y"
+              >{{ label.name }}</span
             >
-              {{ control.symbol }}
-            </button>
           }
         </div>
+      </div>
+      <div class="quiz-stats-touch-control">
+        <button class="b-button" (click)="engage()" [attr.aria-pressed]="engaged()" type="button">
+          {{ labels()['activateTouch'] }}
+        </button>
       </div>
     }
     <p>{{ labels()['coverage'] }}</p>
@@ -55,15 +57,7 @@ export class LpKnowledgeGlobe {
   readonly unavailable = output<void>();
   readonly failed = signal(false);
   readonly engaged = signal(false);
-  readonly controls = [
-    { key: 'rotateLeft', symbol: '←' },
-    { key: 'rotateRight', symbol: '→' },
-    { key: 'rotateUp', symbol: '↑' },
-    { key: 'rotateDown', symbol: '↓' },
-    { key: 'zoomIn', symbol: '+' },
-    { key: 'zoomOut', symbol: '−' },
-    { key: 'reset', symbol: '↺' },
-  ];
+  readonly names = signal<readonly LabelCandidate[]>([]);
   private surface = viewChild<ElementRef<HTMLElement>>('surface');
   private handle: GlobeHandle | null = null;
   private controller = new AbortController();
@@ -98,9 +92,13 @@ export class LpKnowledgeGlobe {
         label: this.labels()['globe'],
         reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
         onSelect: (code) => this.selectedCountry.emit(code),
+        onLabels: (labels) => {
+          if (!this.destroyed) this.names.set(labels);
+        },
         onUnavailable: () => {
           this.handle?.dispose();
           this.handle = null;
+          this.names.set([]);
           this.failed.set(true);
           this.unavailable.emit();
         },
@@ -116,15 +114,5 @@ export class LpKnowledgeGlobe {
   engage(): void {
     this.engaged.update((v) => !v);
     this.handle?.setEngaged(this.engaged());
-  }
-  command(key: string): void {
-    if (key === 'reset') this.handle?.reset();
-    else if (key === 'zoomIn' || key === 'zoomOut')
-      this.handle?.zoom(key === 'zoomIn' ? -0.15 : 0.15);
-    else
-      this.handle?.rotate(
-        key === 'rotateLeft' ? -0.15 : key === 'rotateRight' ? 0.15 : 0,
-        key === 'rotateUp' ? -0.15 : key === 'rotateDown' ? 0.15 : 0,
-      );
   }
 }

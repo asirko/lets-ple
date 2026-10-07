@@ -1,4 +1,4 @@
-import { Component, inject, ViewEncapsulation } from '@angular/core';
+import { Component, inject, ViewEncapsulation, signal } from '@angular/core';
 import { I18nService } from '@lets-ple/game-core';
 import type { ComponentShowcase } from '@lets-ple/ui';
 import { LpCountryDetail } from './country-detail';
@@ -9,14 +9,21 @@ import { resolveStatsLabels } from '../stats-labels';
   imports: [LpCountryDetail],
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['../../../styles/_knowledge-stats.scss'],
-  template: `<lp-country-detail
-    [country]="preview.rows[0]"
-    [types]="preview.types"
-    [modes]="preview.types"
-    [labels]="preview.labels"
-  />`,
+  template: `<button class="b-button" (click)="open.set(true)">
+      Voir les statistiques de France
+    </button>
+    @if (open()) {
+      <lp-country-detail
+        [country]="preview.rows[0]"
+        [types]="preview.types"
+        [modes]="preview.types"
+        [labels]="preview.labels"
+        (closed)="open.set(false)"
+      />
+    }`,
 })
 export class LpCountryDetailShowcase {
+  readonly open = signal(false);
   readonly preview = {
     ...STATISTICS_PREVIEW,
     labels: resolveStatsLabels((k) => inject(I18nService).t(k)),

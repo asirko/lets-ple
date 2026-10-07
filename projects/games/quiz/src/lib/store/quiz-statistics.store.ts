@@ -21,7 +21,6 @@ export class QuizStatisticsStore {
   readonly selectedIso3 = signal<string | null>(null);
   readonly loadState = signal<'loading' | 'ready' | 'incomplete' | 'error'>('loading');
   readonly invalidCount = signal(0);
-  readonly view = signal<'globe' | 'list'>('globe');
   readonly timeZone = signal('');
   readonly clearFailed = signal(false);
   private request = 0;
@@ -71,9 +70,6 @@ export class QuizStatisticsStore {
     }
     this.proposedCountry.set(null);
     this.selectedIso3.set(iso3);
-  }
-  setView(view: 'globe' | 'list'): void {
-    this.view.set(view);
   }
   async refresh(): Promise<void> {
     const request = ++this.request;

@@ -1,3 +1,4 @@
+import { projectGlobeLabels } from '../../globe/globe-labels';
 import { orbitalRotationSpeed } from './globe-motion';
 import {
   Scene,
@@ -18,7 +19,6 @@ import {
 import type { Country } from '../../domain/types';
 import {
   countryAnchor,
-  placeLabels,
   polygons,
   spherePoint,
   unwrapRing,
@@ -70,7 +70,8 @@ export function createGlobe(
   const locations = countries
     .filter((c) => c.geometry)
     .map((c) => ({
-      country: c,
+      code: c.iso3,
+      name: c.name,
       point: new Vector3(...spherePoint(countryAnchor(c.geometry!))),
     }));
   let disposed = false;
@@ -124,23 +125,7 @@ export function createGlobe(
     camera.updateProjectionMatrix();
     renderer.setSize(w, h, false);
     renderer.render(scene, camera);
-    const labels: LabelCandidate[] = [];
-    for (const { country: c, point } of locations) {
-      if (point.dot(camera.position) <= 1.01) continue;
-      const projected = point.clone().project(camera);
-      if (Math.abs(projected.x) > 1 || Math.abs(projected.y) > 1 || projected.z > 1) continue;
-      const width = Math.min(w - 8, c.name.length * 7 + 12);
-      labels.push({
-        code: c.iso3,
-        name: c.name,
-        x: ((projected.x + 1) * w) / 2,
-        y: ((1 - projected.y) * h) / 2,
-        width,
-        height: 22,
-        priority: c.iso3 === country.iso3 ? 10000 : 0,
-      });
-    }
-    onLabels(placeLabels(labels, w, h));
+    onLabels(projectGlobeLabels(locations, camera, w, h, country.iso3));
   }
   function orbitChanged() {
     controls.rotateSpeed = orbitalRotationSpeed(camera.position.distanceTo(controls.target));

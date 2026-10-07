@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
       <li><a routerLink="quiz-empty-history">Geoquizz : empty-history</a></li>
       <li><a routerLink="quiz-knowledge-legend">Geoquizz : knowledge-legend</a></li>
       <li><a routerLink="quiz-country-detail">Geoquizz : country-detail</a></li>
-      <li><a routerLink="quiz-country-list">Geoquizz : country-list</a></li>
+      <li><a routerLink="quiz-country-picker">Geoquizz : country-picker</a></li>
       <li><a routerLink="quiz-type-breakdown">Geoquizz : type-breakdown</a></li>
       <li><a routerLink="quiz-weekly-trend">Geoquizz : weekly-trend</a></li>
       <li><a routerLink="quiz-continent-focus">Geoquizz : continent-focus</a></li>

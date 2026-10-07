@@ -38,7 +38,8 @@ try {
   await page.getByRole('heading', { name: 'Mes connaissances', exact: true }).waitFor();
   await page.getByText('Votre carte commence ici', { exact: true }).waitFor();
   await page.locator('canvas').waitFor({ timeout: 30000 });
-  assert.equal(await page.locator('.quiz-stats-country').count(), 195);
+  assert.equal(await page.locator('.quiz-stats-country').count(), 0);
+  assert.equal(await page.locator('lp-country-picker option[value]:not([value=""])').count(), 195);
   assert(
     await page
       .locator('.quiz-stats-summary')
@@ -63,14 +64,35 @@ try {
   await page.waitForFunction(
     () => document.querySelector('.quiz-stats-summary dd')?.textContent === '12',
   );
-  assert((await page.locator('.quiz-stats-country').count()) > 1);
-  await page.getByRole('button', { name: /France/ }).click();
-  await page.locator('lp-country-detail h2').first().waitFor();
-  assert.equal(await page.locator('lp-country-detail h2').first().textContent(), 'France');
+  const picker = page.getByLabel('Choisir un pays', { exact: true });
+  await picker.focus();
+  await picker.selectOption('FRA');
+  const detail = page.getByRole('dialog', { name: 'France', exact: true });
+  await detail.waitFor();
+  assert.equal(await detail.locator('.quiz-stats-summary dd').first().textContent(), '12');
+  const detailAxe = await new AxeBuilder({ page }).analyze();
+  assert.deepEqual(detailAxe.violations, [], JSON.stringify(detailAxe.violations));
+  await page.keyboard.press('Escape');
+  await detail.waitFor({ state: 'detached' });
+  assert(await picker.evaluate((el) => el === document.activeElement));
+  // A previously dismissed country remains selectable, with one modal per selection.
+  await picker.selectOption('FRA');
+  await detail.waitFor();
+  await page.keyboard.press('Escape');
+  await detail.waitFor({ state: 'detached' });
+  const canvas = page.locator('canvas');
+  await canvas.scrollIntoViewIfNeeded();
+  const mapRect = await canvas.boundingBox();
+  await page.mouse.click(mapRect.x + mapRect.width / 2, mapRect.y + mapRect.height / 2);
+  await detail.waitFor();
+  await detail.getByRole('button', { name: 'Fermer le détail', exact: true }).click();
+  await detail.waitFor({ state: 'detached' });
+  assert(await canvas.evaluate((el) => el === document.activeElement));
   await page.getByLabel('Zone étudiée', { exact: true }).selectOption('');
-  await page.getByRole('button', { name: 'Liste accessible', exact: true }).click();
-  await page.locator('canvas').waitFor({ state: 'detached' });
-  assert.equal(await page.locator('canvas').count(), 0);
+  assert.equal(
+    await page.getByRole('button', { name: 'Liste accessible', exact: true }).count(),
+    0,
+  );
   const axe = await new AxeBuilder({ page }).analyze();
   assert.deepEqual(
     axe.violations,
@@ -96,7 +118,6 @@ try {
     'Effacer l’historique',
   );
   await page.screenshot({ path: resolve('tmp/knowledge-stats/stats-mobile.png'), fullPage: true });
-  await page.getByRole('button', { name: 'Globe', exact: true }).click();
   await page.locator('canvas').waitFor();
   await page.locator('canvas').scrollIntoViewIfNeeded();
   await page.screenshot({ path: resolve('tmp/knowledge-stats/globe-mobile.png') });
@@ -105,9 +126,16 @@ try {
   await page.keyboard.press('ArrowRight');
   const rect = await page.locator('canvas').boundingBox();
   await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
+  assert.equal(await page.locator('.quiz-stats-globe button').count(), 0);
   const scrollBefore = await page.evaluate(() => scrollY);
-  await page.mouse.wheel(0, 150);
-  await page.waitForFunction((before) => scrollY > before, scrollBefore);
+  const labelsBefore = await page.locator('.quiz-stats-globe-surface').innerHTML();
+  await page.mouse.wheel(0, -120);
+  await page.waitForFunction(
+    (before) => document.querySelector('.quiz-stats-globe-surface').innerHTML !== before,
+    labelsBefore,
+  );
+  assert.equal(await page.evaluate(() => scrollY), scrollBefore);
+  assert((await page.locator('.quiz-stats-globe .quiz-globe-label').count()) > 0);
   await page.evaluate(() =>
     document
       .querySelector('canvas')
@@ -116,11 +144,15 @@ try {
       ?.loseContext(),
   );
   await page
-    .getByText('Le globe est indisponible. La liste ci-dessous offre les mêmes détails.', {
-      exact: true,
-    })
+    .getByText(
+      'Le globe est indisponible. Le sélecteur de pays donne accès aux mêmes statistiques.',
+      {
+        exact: true,
+      },
+    )
     .waitFor();
-  assert.equal(await page.locator('.quiz-stats-country').count(), 195);
+  assert.equal(await page.locator('.quiz-stats-country').count(), 0);
+  assert.equal(await page.locator('lp-country-picker option[value]:not([value=""])').count(), 195);
   const other = await context.newPage();
   await other.goto(server.origin + '/quiz/statistiques');
   await other.waitForFunction(
@@ -169,11 +201,14 @@ try {
     realTenAnswerGame: true,
     unvisitedStatsRouteOffline: true,
     emptyAndPopulatedAxe: true,
-    countryRows: 195,
+    countryOptions: 195,
+    countryModalFromMapAndPicker: true,
+    countryNamesOnGlobe: true,
+    noCountryListOrGlobeButtons: true,
     continentFocus: true,
     clearConfirmationAndFocus: true,
     crossTabClear: true,
-    keyboardGlobeAndPassiveWheel: true,
+    keyboardGlobeAndDefaultDesktopWheel: true,
     persistenceAfterReload: true,
     clearAfterReload: true,
     webglLossFallback: true,

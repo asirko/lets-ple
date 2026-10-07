@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   ElementRef,
   ViewEncapsulation,
   afterNextRender,
@@ -17,7 +16,7 @@ import { LpStatisticsSummary } from '../statistics-summary/statistics-summary';
 import { LpContinentFocus } from '../continent-focus/continent-focus';
 import { LpWeeklyTrend } from '../weekly-trend/weekly-trend';
 import { LpTypeBreakdown } from '../type-breakdown/type-breakdown';
-import { LpCountryList } from '../country-list/country-list';
+import { LpCountryPicker } from '../country-picker/country-picker';
 import { LpCountryDetail } from '../country-detail/country-detail';
 import { LpKnowledgeLegend } from '../knowledge-legend/knowledge-legend';
 import { LpEmptyHistory } from '../empty-history/empty-history';
@@ -36,7 +35,7 @@ import { EMPTY_METRICS } from '../../domain/knowledge-stats/statistics';
     LpContinentFocus,
     LpWeeklyTrend,
     LpTypeBreakdown,
-    LpCountryList,
+    LpCountryPicker,
     LpCountryDetail,
     LpKnowledgeLegend,
     LpEmptyHistory,
@@ -90,36 +89,24 @@ import { EMPTY_METRICS } from '../../domain/knowledge-stats/statistics';
       }
       <lp-statistics-summary [metrics]="result.overall" [labels]="labels()" />
       <p>{{ labels()['allTime'] }}</p>
-      <div class="quiz-stats-filters">
-        <button
-          class="b-button"
-          type="button"
-          [attr.aria-pressed]="stats.view() === 'globe'"
-          (click)="stats.setView('globe')"
-        >
-          {{ labels()['viewGlobe'] }}</button
-        ><button
-          class="b-button"
-          type="button"
-          [attr.aria-pressed]="stats.view() === 'list'"
-          (click)="stats.setView('list')"
-        >
-          {{ labels()['viewList'] }}
-        </button>
-      </div>
       <div class="quiz-stats-map-region">
-        @if (stats.view() === 'globe') {
-          <lp-knowledge-globe
-            [countries]="stats.countries()"
-            [levels]="stats.levels()"
-            [selected]="stats.selectedIso3()"
-            [continent]="stats.filters().continent"
-            [labels]="labels()"
-            (selectedCountry)="stats.selectCountry($event)"
-          />
-        }
+        <lp-knowledge-globe
+          #globe
+          [countries]="stats.countries()"
+          [levels]="stats.levels()"
+          [selected]="stats.selectedIso3()"
+          [continent]="stats.filters().continent"
+          [labels]="labels()"
+          (selectedCountry)="selectFromGlobe($event)"
+        />
         <lp-knowledge-legend [labels]="labels()" />
       </div>
+      <lp-country-picker
+        [countries]="stats.rows()"
+        [selected]="stats.selectedIso3()"
+        [labels]="labels()"
+        (selectedCountry)="stats.selectCountry($event)"
+      />
       @if (stats.proposedCountry(); as proposed) {
         <p role="status">{{ i18n.t('quiz.stats.changeFocus', { country: proposed.name }) }}</p>
         <button
@@ -142,13 +129,6 @@ import { EMPTY_METRICS } from '../../domain/knowledge-stats/statistics';
       }
       <lp-weekly-trend [weeks]="weeks()" [timeZone]="stats.timeZone()" [labels]="labels()" />
       <lp-type-breakdown [title]="labels()['types']" [rows]="types()" [labels]="labels()" />
-      <lp-country-list
-        #list
-        [rows]="stats.rows()"
-        [selected]="stats.selectedIso3()"
-        [labels]="labels()"
-        (selectedCountry)="stats.selectCountry($event)"
-      />
     }
     <lp-clear-history-dialog
       [open]="clearOpen()"
@@ -184,20 +164,20 @@ export class QuizStatisticsPage {
   );
   readonly weeks = computed(
     () =>
-      this.stats
-        .result()
-        ?.weeks.map((w) => ({
-          label: new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit' }).format(
-            w.window.startMs,
-          ),
-          current: w.window.current,
-          metrics: w.metrics,
-        })) ?? [],
+      this.stats.result()?.weeks.map((w) => ({
+        label: new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit' }).format(
+          w.window.startMs,
+        ),
+        current: w.window.current,
+        metrics: w.metrics,
+      })) ?? [],
   );
   readonly countryTypes = computed(() => this.countryBreakdown('type'));
   readonly countryModes = computed(() => this.countryBreakdown('mode'));
+  private globe = viewChild<LpKnowledgeGlobe, ElementRef<HTMLElement>>(LpKnowledgeGlobe, {
+    read: ElementRef,
+  });
   private heading = viewChild<ElementRef<HTMLElement>>('heading');
-  private list = viewChild('list', { read: ElementRef });
   constructor() {
     afterNextRender(() => this.heading()?.nativeElement.focus());
   }
@@ -214,9 +194,15 @@ export class QuizStatisticsPage {
         metrics,
       }));
   }
+  selectFromGlobe(iso3: string): void {
+    // Canvas taps do not consistently move focus in every browser.
+    this.globe()
+      ?.nativeElement.querySelector<HTMLElement>('canvas')
+      ?.focus({ preventScroll: true });
+    this.stats.selectCountry(iso3);
+  }
   closeDetail(): void {
     this.stats.selectedIso3.set(null);
-    queueMicrotask(() => this.list()?.nativeElement.querySelector('input')?.focus());
   }
   play(): void {
     void this.router.navigateByUrl('/quiz');

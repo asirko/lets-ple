@@ -62,12 +62,12 @@ export const DEV_ROUTES: Routes = [
     },
   },
   {
-    path: 'quiz-country-list',
+    path: 'quiz-country-picker',
     loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
     data: {
       loadShowcase: () =>
-        import('../../../../../games/quiz/src/lib/ui/country-list/country-list.showcase').then(
-          (m) => m.LPCOUNTRYLIST_SHOWCASE,
+        import('../../../../../games/quiz/src/lib/ui/country-picker/country-picker.showcase').then(
+          (m) => m.LPCOUNTRYPICKER_SHOWCASE,
         ),
     },
   },
@@ -126,8 +126,14 @@ export const DEV_ROUTES: Routes = [
     data: { loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_HOME_CONCEPT_SHOWCASE) },
   },
   ...[
-    { path: 'quiz-correction', loadShowcase: () => import('@lets-ple/quiz').then(m => m.QUIZ_CORRECTION_SHOWCASE) },
-    { path: 'quiz-globe', loadShowcase: () => import('@lets-ple/quiz').then(m => m.QUIZ_GLOBE_SHOWCASE) },
+    {
+      path: 'quiz-correction',
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_CORRECTION_SHOWCASE),
+    },
+    {
+      path: 'quiz-globe',
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_GLOBE_SHOWCASE),
+    },
     {
       path: 'lp-update-dialog',
       loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_UPDATE_DIALOG_SHOWCASE),
