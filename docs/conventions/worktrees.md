@@ -50,6 +50,15 @@ Le worktree devient alors autonome (~800 Mo), et le script détecte la divergenc
 
 ## Fin de sujet
 
+Avant de clore un sujet, intégrer sa branche dans `develop` en **un seul commit squash**,
+avec une fusion **fast-forward uniquement**. Si nécessaire, rebaser d'abord la branche du
+sujet sur le dernier état de `develop`, résoudre les conflits et vérifier à nouveau le résultat.
+Squasher les commits du sujet sur cette branche, puis l'intégrer avec `git merge --ff-only`
+depuis `develop`. Le message du commit squash suit la [convention de commits](commits.md).
+Si `develop` avance entre-temps, refaire le rebase et les vérifications avant la fusion.
+
+Le nettoyage du worktree intervient après cette intégration :
+
 ```bash
 npm run ticket:clean <branche> # retire la jonction puis le worktree ; la branche survit
 ```
