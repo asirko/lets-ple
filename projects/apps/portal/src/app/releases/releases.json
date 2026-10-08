@@ -1,5 +1,21 @@
 [
   {
+    "version": "0.3.0",
+    "date": "2026-10-08",
+    "features": [
+      "explore les connaissances par pays sur le globe",
+      "ajoute le suivi local des connaissances",
+      "affiche la correction dans une modale avec globe 3d"
+    ],
+    "fixes": [
+      "affine les contours du globe des connaissances",
+      "stabilise la saisie cash et conditionne la validation",
+      "affiche les suggestions cash au-dessus de la saisie",
+      "rend la silhouette de la France lisible avec des encadres ultramarins"
+    ],
+    "breaking": []
+  },
+  {
     "version": "0.2.1",
     "date": "2026-09-29",
     "features": [],

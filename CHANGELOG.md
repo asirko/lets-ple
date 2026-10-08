@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.0 — 2026-10-08
+
+### Nouveautés
+
+- explore les connaissances par pays sur le globe
+- ajoute le suivi local des connaissances
+- affiche la correction dans une modale avec globe 3d
+
+### Corrections
+
+- affine les contours du globe des connaissances
+- stabilise la saisie cash et conditionne la validation
+- affiche les suggestions cash au-dessus de la saisie
+- rend la silhouette de la France lisible avec des encadres ultramarins
+
 ## 0.2.1 — 2026-09-29
 
 ### Corrections
