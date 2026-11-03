@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0 — 2026-11-03
+
+### Changements incompatibles
+
+- L'apparence change entièrement : la palette crème et
+  terracotta disparaît au profit de l'identité indigo, en clair comme en
+  sombre.
+
+### Nouveautés
+
+- donne une nouvelle identite visuelle au portail
+- regroupe le globe des connaissances par continent ou region
+
 ## 0.3.0 — 2026-10-08
 
 ### Nouveautés
