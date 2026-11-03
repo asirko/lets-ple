@@ -1,15 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ViewEncapsulation,
   computed,
+  inject,
   input,
   signal,
 } from '@angular/core';
+import { I18nService } from '@lets-ple/game-core';
 import { LpButton, type ComponentShowcase } from '@lets-ple/ui';
+import { loadGeography } from '../../data/geography';
 import type { GameState } from '../../domain/game';
-import type { Question } from '../../domain/types';
-import { QuizGlobeShowcase } from '../country-globe/country-globe.showcase';
+import type { Country, Question } from '../../domain/types';
 import { LpQuizCorrection } from './correction';
 const q: Question = {
   id: 'showcase',
@@ -48,7 +51,16 @@ const q: Question = {
     }
   `,
 })
-export class QuizCorrectionShowcase extends QuizGlobeShowcase {
+export class QuizCorrectionShowcase {
+  readonly countryCode = input('FRA');
+  readonly staticOnly = input(false);
+  readonly missingGeometry = input(false);
+  readonly countries = signal<readonly Country[]>([]);
+  protected readonly i18n = inject(I18nService);
+  readonly country = computed(() => {
+    const c = this.countries().find((c) => c.iso3 === this.countryCode());
+    return c && this.missingGeometry() ? { ...c, geometry: undefined } : c;
+  });
   readonly outcome = input('Bonne réponse');
   readonly lastQuestion = input(false);
   readonly show = signal(false);
@@ -66,6 +78,13 @@ export class QuizCorrectionShowcase extends QuizGlobeShowcase {
     correct: this.outcome() === 'Bonne réponse',
     awarded: this.outcome() === 'Bonne réponse' ? 3 : 0,
   }));
+  constructor() {
+    const controller = new AbortController();
+    inject(DestroyRef).onDestroy(() => controller.abort());
+    void loadGeography(controller.signal)
+      .then((c) => this.countries.set(c))
+      .catch(() => undefined);
+  }
 }
 export const QUIZ_CORRECTION_SHOWCASE: ComponentShowcase<QuizCorrectionShowcase> = {
   component: QuizCorrectionShowcase,

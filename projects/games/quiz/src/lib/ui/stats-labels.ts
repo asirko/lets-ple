@@ -62,6 +62,13 @@ export const STATS_KEYS = [
   'reset',
   'closeDetail',
   'coverage',
+  'help',
+  'close',
+  'grouping',
+  'grouping.continent',
+  'grouping.region',
+  'grouping.country',
+  'groupingExplanation',
   'continent.Africa',
   'continent.Americas',
   'continent.Asia',
@@ -85,7 +92,6 @@ export const STATS_KEYS = [
   'type.capital',
   'type.country-from-capital',
   'type.neighbors',
-  'activateTouch',
   'selectedAnnouncement',
 ] as const;
 export function resolveStatsLabels(t: (key: string) => string): StatsLabels {

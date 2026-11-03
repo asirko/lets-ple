@@ -199,27 +199,45 @@ des questions de capitales sont qualifiées comme villes de référence ; les
 restrictions sur les drapeaux sont rappelées. Ces médias et leurs noms accessibles
 ne sont montés qu'après soumission.
 
-`LpCountryGlobe` charge Three.js et OrbitControls à la demande. Le pays est centré
-sur le centroïde de son territoire principal, avec longitude déroulée pour les
-pays traversant l'antéméridien. Une texture issue des mêmes géométries locales
-met en évidence le pays. Glissement, molette et pincement permettent rotation et
-zoom ; seul le bouton « Recentrer sur la solution » reste affiché, accompagné
-d'un bouton « ? » qui affiche l'aide au survol, au focus ou au toucher. Le tooltip
-se ferme avec Échap sans fermer la correction. La rotation est ralentie (40 % de
-la vitesse par défaut à la distance initiale), proportionnelle à la hauteur de
-la caméra au-dessus du globe pour rester douce en zoom rapproché. Les noms français apparaissent selon la vue et le zoom, avec priorité
-au pays de la question et suppression des chevauchements. La liste « Pays dans la vue » et les boutons de
-rotation/zoom sont retirés pour privilégier l'exploration directe du globe.
+Les deux écrans (correction et statistiques) utilisent le même composant `LpGlobe`
+(`ui/globe/`), purement de rendu et d'interaction : il ne porte ni titre, ni
+légende, ni bouton. Il reçoit les pays nommables (`places` : code ISO3, nom,
+ancre), une teinte par pays (`tones` : niveau de connaissance ou `highlight`,
+la couleur primaire du thème), les pays atténués (`dimmed`) et le pays marqué
+(`selected`) ; il émet `countrySelect` au tap et `unavailable` en cas d'échec,
+et expose `centerOn(iso3)` pour tourner la caméra vers un pays (mémorisé si le
+rendu n'est pas encore prêt). La logique propre à chaque écran reste dans son
+composant hôte : la correction teinte la solution en `highlight`, la cadre à
+l'ouverture (`centerOn(iso3, { zoom: true })` règle la distance pour que le pays
+remplisse la vue, en s'arrêtant au premier écart angulaire de plus de 5° et en ignorant le dixième
+le plus lointain du reste, pour que l'outre-mer ou une traîne d'îles ne dézooment
+pas) et affiche sous le globe le nom du pays, l'aide aux gestes et le
+bouton « Recentrer sur la solution » ; `LpKnowledgeGlobe` traduit les niveaux en
+teintes, le focus de continent en pays atténués, et recentre sur le pays
+sélectionné.
+
+Le rendu (`globe/three-globe.ts`) est celui des maillages de connaissances
+(`map.json`, chargé une seule fois par session et partagé entre les montages) :
+océan sombre, pays maillés, frontières, contour épais (3 px, couleur primaire
+éclaircie) du pays sélectionné — pas de marqueur ponctuel, la teinte suffit. Le globe
+est **toujours interactif**, souris comme tactile : glissement pour tourner,
+molette ou pincement pour zoomer, flèches et +/− au clavier, sans bouton
+d'activation des gestes (le défilement de page passe à côté du globe). La rotation
+est proportionnelle à la hauteur de la caméra au-dessus du globe pour rester
+douce en zoom rapproché. Les noms français apparaissent selon la vue et le zoom,
+avec priorité au pays sélectionné et suppression des chevauchements.
 
 Le rendu n'a ni rotation automatique ni inertie animée ; il ne redessine que lors
-d'une interaction, d'un redimensionnement ou d'un changement de thème. La texture
-est limitée à 2048 × 1024, le pixel ratio à 1,5, politique partagée avec le globe des statistiques. À destruction, les ressources,
-observateurs, écouteurs et le contexte GPU sont libérés ; un import tardif est
-ignoré. L'accès à l'export du module dynamique reste via son namespace pour être
-conservé par le build optimisé.
+d'une interaction, d'un redimensionnement ou d'un changement de thème (la teinte
+`highlight` suit la couleur primaire). Pixel ratio limité à 1,5. À destruction,
+les ressources, observateurs, écouteurs et le contexte GPU sont libérés ; un
+import tardif est ignoré. L'accès à l'export du module dynamique reste via son
+namespace pour être conservé par le build optimisé.
 
-Une projection SVG fixe et la fiche textuelle remplacent WebGL si celui-ci est
-indisponible, perdu, ou si le chunk ne peut pas être chargé. Sans géométrie,
+Si WebGL est indisponible, perdu, ou si le chunk ou la carte ne peuvent pas être
+chargés, `LpGlobe` dessine une projection SVG fixe de la forme fournie
+(`fallbackShape`, la géométrie du pays en correction) ; sans forme, il ne dessine
+rien et l'écran hôte explique l'absence (message et sélecteur côté statistiques). Sans géométrie,
 l'absence de carte est explicitée. Le dialogue respecte reduced motion ; le globe
 reste manipulable sans animation automatique. Les tokens clair/sombre sont
 partagés avec le portail. Le corps défile et l'action reste visible à 320 pixels.
@@ -227,8 +245,8 @@ partagés avec le portail. Le corps défile et l'action reste visible à 320 pix
 Les showcases `/dev/components/quiz-globe` et
 `/dev/components/quiz-correction` permettent de vérifier France, Japon,
 Nouvelle-Zélande, Afrique du Sud, Vatican et Fidji, ainsi que les rendus de secours.
-Les styles visuels globaux sont regroupés dans `_quiz-correction.scss`, chargé
-par la route et ces wrappers ; les écrans composent les composants.
+Le globe a ses styles dans `_globe.scss`, utilisé par `_quiz-correction.scss` (chargé
+par la route et ces wrappers) et `_knowledge-stats.scss` ; les écrans composent les composants.
 
 ## Préparation et vérification
 
@@ -275,9 +293,11 @@ Chaque transition valide de réponse vers correction capture un événement loca
 
 La route /quiz/statistiques, accessible depuis la barre du jeu et le résultat, expose le nombre de réponses, la réussite (correctes/n) et le score moyen (somme des points/n). Sans réponse, les deux moyennes valent null, affiché N.A. Les moyennes globales sont pondérées par les réponses. Focus continent et filtre de mode s'appliquent à toutes les vues. La couleur d'un pays reste « aucune donnée » à zéro, « données insuffisantes » avant cinq réponses, puis dépend du score moyen : faible sous 2, intermédiaire sous 3,5, élevé à partir de 3,5. Les barèmes Cash/Carré influencent le score : la légende le rappelle.
 
+Regroupement du globe : continent (par défaut), région (sous-région du corpus, ex. « Europe de l'Ouest ») ou pays, choisi par un sélecteur sous la carte. Hors du niveau pays, toutes les réponses d'un groupe sont réunies (pondérées par réponse) avant le classement, et chaque pays du groupe prend la couleur du groupe : le seuil de cinq réponses s'applique donc au groupe, ce qui donne une lecture dès les premières parties au lieu d'un globe presque entièrement « insuffisant ». La sélection d'un pays et son détail restent au niveau pays quel que soit le regroupement. Consignes de manipulation, légende et couverture sont dans une modale ouverte par le bouton « ? » à droite du titre, pour laisser la place à la carte.
+
 L'évolution montre quatre semaines calendaires locales, lundi 00h à lundi suivant, actuelle comprise. Le fuseau du navigateur est affiché ; les bornes sont converties en UTC pour comparer les événements. Les semaines vides affichent N.A., avec rupture des courbes et tableau équivalent.
 
-Globe Three.js à la demande : rotation souris et zoom à la molette actifs par défaut sur ordinateur. Sur tactile, les gestes restent soumis à une activation explicite pour préserver le défilement de page. Aucun bouton de rotation/zoom/reset ; flèches et +/− restent disponibles sur le canvas au clavier. Les noms français sont projetés et placés sans chevauchement par le même utilitaire que la correction, avec priorité au pays sélectionné. Clic/tap ouvre les statistiques par type/mode dans la modale partagée (Échap, focus contenu, retour au déclencheur). Le tableau de tous les pays est retiré ; un sélecteur natif compact expose les pays du focus, petites îles comprises, au clavier et sans WebGL. Pas de rotation automatique ni d'inertie ; rendu uniquement sur changement et suspendu hors écran. Perte WebGL : libération immédiate et accès au détail conservé via le sélecteur. Changer vers un pays hors continent propose explicitement le nouveau focus.
+Globe : le même `LpGlobe` que la correction (voir « Correction modale et globe »), toujours interactif à la souris comme au tactile, sans bouton d'activation des gestes. Aucun bouton de rotation/zoom/reset ; flèches et +/− restent disponibles sur le canvas au clavier. Choisir un pays recentre le globe dessus. Clic/tap ouvre les statistiques par type/mode dans la modale partagée (Échap, focus contenu, retour au déclencheur). Le tableau de tous les pays est retiré ; un sélecteur natif compact expose les pays du focus, petites îles comprises, au clavier et sans WebGL. Pas de rotation automatique ni d'inertie ; rendu uniquement sur changement et suspendu hors écran. Perte WebGL : libération immédiate et accès au détail conservé via le sélecteur. Changer vers un pays hors continent propose explicitement le nouveau focus.
 
 Les assets knowledge sont préparés hors exécution depuis le corpus local : simplification 0,08 degré, six faces sphériques gnomoniques, trous conservés, triangulation/subdivision à 5 degrés, positions Int16 et indices Uint16. Les ancres sont intérieures aux maillages. 195 pays, 39 682 sommets, environ 543 Ko gzip ; aucun CDN. Commandes : npm run prepare:knowledge, verify:knowledge, measure:knowledge. Les tests de génération vérifient les 195 maillages, ancres, indices et arêtes.
 

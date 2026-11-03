@@ -1,5 +1,5 @@
-import { countryAnchor, placeLabels, spherePoint, unwrapRing } from './globe-geography';
-import type { Geometry } from '../../domain/types';
+import { countryAnchor, placeLabels, unwrapRing } from './globe-geography';
+import type { Geometry } from '../domain/types';
 const square = (x: number, y: number, size: number) =>
   [
     [x, y],
@@ -9,11 +9,6 @@ const square = (x: number, y: number, size: number) =>
     [x, y],
   ] as const;
 describe('globe geography', () => {
-  it('place Greenwich sur x et le pole nord sur y', () => {
-    expect(spherePoint([0, 0])).toEqual([1, 0, 0]);
-    expect(spherePoint([90, 0])[2]).toBeCloseTo(-1);
-    expect(spherePoint([0, 90])[1]).toBeCloseTo(1);
-  });
   it('deroule la coupure de longitude sans bande mondiale', () => {
     expect(
       unwrapRing([

@@ -1,12 +1,25 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { I18nService } from '@lets-ple/game-core';
 import { LpDialog, LpButton } from '@lets-ple/ui';
 import type { Country } from '../../domain/types';
 import type { GameState } from '../../domain/game';
-import { LpCountryGlobe } from '../country-globe/country-globe';
+import { countryAnchor } from '../../globe/globe-geography';
+import type { GlobePlace, GlobeTone } from '../../globe/globe-port';
+import { LpGlobe } from '../globe/globe';
 @Component({
   selector: 'lp-quiz-correction',
-  imports: [LpDialog, LpButton, LpCountryGlobe],
+  imports: [LpDialog, LpButton, LpGlobe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (state().phase === 'correction') {
@@ -30,11 +43,32 @@ import { LpCountryGlobe } from '../country-globe/country-globe';
             </p>
             <strong>{{ i18n.t('quiz.correction.points', { n: state().awarded }) }}</strong>
           </div>
-          <lp-country-globe
-            [country]="country()"
-            [countries]="countries()"
-            [staticOnly]="staticGlobe()"
-          />
+          <figure class="quiz-globe-figure">
+            @if (country().geometry; as shape) {
+              <lp-globe
+                [places]="places()"
+                [tones]="tones()"
+                [selected]="country().iso3"
+                [label]="i18n.t('quiz.globe.alt', { country: country().name })"
+                [staticOnly]="staticGlobe()"
+                [fallbackShape]="shape"
+                (unavailable)="globeDown.set(true)"
+              />
+            } @else {
+              <p class="quiz-globe-fallback">{{ i18n.t('quiz.globe.missing') }}</p>
+            }
+            <figcaption>
+              <strong>{{ country().name }}</strong>
+              @if (country().geometry && !staticGlobe() && !globeDown()) {
+                <span>{{ i18n.t('quiz.globe.help') }}</span>
+              }
+            </figcaption>
+          </figure>
+          @if (country().geometry && !staticGlobe() && !globeDown()) {
+            <lp-button variant="secondary" (click)="recenter()">{{
+              i18n.t('quiz.globe.recenter')
+            }}</lp-button>
+          }
           <section class="quiz-country-info" [attr.aria-label]="country().name">
             <div class="quiz-country-heading">
               <img
@@ -105,6 +139,26 @@ export class LpQuizCorrection {
   protected readonly last = computed(
     () => this.state().index === this.state().questions.length - 1,
   );
+  protected readonly globeDown = signal(false);
+  protected readonly places = computed<readonly GlobePlace[]>(() =>
+    this.countries().flatMap((c) =>
+      c.geometry ? [{ iso3: c.iso3, name: c.name, anchor: countryAnchor(c.geometry) }] : [],
+    ),
+  );
+  protected readonly tones = computed<ReadonlyMap<string, GlobeTone>>(
+    () => new Map([[this.country().iso3, 'highlight']]),
+  );
+  private readonly globe = viewChild(LpGlobe);
+  constructor() {
+    effect(() => {
+      this.globe();
+      this.country();
+      untracked(() => this.recenter());
+    });
+  }
+  protected recenter(): void {
+    this.globe()?.centerOn(this.country().iso3, { zoom: true });
+  }
   protected readonly neighbors = computed(() =>
     this.countries()
       .filter((c) => this.country().borders.includes(c.iso3))

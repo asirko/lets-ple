@@ -1,0 +1,65 @@
+.quiz-globe-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--lp-color-text);
+  background: var(--lp-color-surface-raised);
+  padding: 1px 4px;
+  border-radius: var(--lp-radius-sm);
+}
+.quiz-globe-label.is-selected {
+  font-weight: var(--lp-font-weight-bold);
+  border: 1px solid var(--lp-color-text);
+}
+// Globe rendering (LpGlobe): one look on every screen, sized by the screen that hosts it.
+.quiz-globe {
+  --quiz-globe-height: clamp(16rem, 55vw, 23rem);
+  display: block;
+  position: relative;
+  height: var(--quiz-globe-height);
+  overflow: hidden;
+  background: #122237;
+  border-radius: var(--lp-radius-md);
+}
+.quiz-globe-surface {
+  position: relative;
+  height: 100%;
+}
+.quiz-globe canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+.quiz-globe canvas:active {
+  cursor: grabbing;
+}
+.quiz-globe canvas:focus-visible {
+  outline: 3px solid var(--lp-color-focus-ring);
+  outline-offset: -3px;
+}
+// Static view without WebGL: same palette as the 3D rendering.
+.quiz-globe-static {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.quiz-globe-ocean {
+  fill: #193550;
+  stroke: #213448;
+}
+.quiz-globe-grid {
+  fill: none;
+  stroke: #213448;
+  stroke-width: 0.5;
+}
+.quiz-globe-selected {
+  fill: var(--lp-color-primary);
+  stroke: color-mix(in srgb, var(--lp-color-primary) 55%, #ffffff);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}

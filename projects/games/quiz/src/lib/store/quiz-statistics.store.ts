@@ -10,6 +10,7 @@ import {
   type StatsFilters,
 } from '../domain/knowledge-stats/statistics';
 import { classifyKnowledge } from '../domain/knowledge-stats/knowledge-level';
+import { groupedLevels, type KnowledgeGrouping } from '../domain/knowledge-stats/grouping';
 import { localWeekWindows } from '../history/history-calendar';
 @Injectable()
 export class QuizStatisticsStore {
@@ -34,14 +35,9 @@ export class QuizStatisticsStore {
         return { ...c, metrics, level: classifyKnowledge(metrics) };
       }),
   );
-  readonly levels = computed(
-    () =>
-      new Map(
-        this.countries().map((c) => [
-          c.iso3,
-          classifyKnowledge(this.result()?.byCountry.get(c.iso3) ?? EMPTY_METRICS),
-        ]),
-      ),
+  readonly grouping = signal<KnowledgeGrouping>('continent');
+  readonly levels = computed(() =>
+    groupedLevels(this.countries(), this.result()?.byCountry ?? new Map(), this.grouping()),
   );
   constructor() {
     inject(DestroyRef).onDestroy(() => {

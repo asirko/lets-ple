@@ -23,6 +23,7 @@ describe('statistics reader', () => {
                     String.fromCharCode(65 + (i % 26)),
               name: 'Pays ' + i,
               continent: 'Europe',
+              subregion: 'Western Europe',
               anchor: [2, 46],
             })),
         }),

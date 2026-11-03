@@ -1,50 +1,65 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  DestroyRef,
+  computed,
   effect,
-  inject,
   input,
   output,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
-import { loadKnowledgeMap, type KnowledgeCountry } from '../../data/knowledge-data';
+import type { KnowledgeCountry } from '../../data/knowledge-data';
 import type { KnowledgeLevel } from '../../domain/knowledge-stats/knowledge-level';
-import type { GlobeHandle } from '../../globe/globe-port';
-import type { LabelCandidate } from '../country-globe/globe-geography';
+import { LpGlobe } from '../globe/globe';
+import { LpKnowledgeGrouping } from '../knowledge-grouping/knowledge-grouping';
+import { LpKnowledgeHelpDialog } from '../knowledge-help/knowledge-help-dialog';
+import type { GroupLabel, KnowledgeGrouping } from '../../domain/knowledge-stats/grouping';
 import type { StatsLabels } from '../statistics-models';
+/**
+ * Knowledge view of the globe: levels become tones, the continent focus dims the rest. How to
+ * read it lives behind the help button so the map keeps the room.
+ */
 @Component({
   selector: 'lp-knowledge-globe',
+  imports: [LpGlobe, LpKnowledgeGrouping, LpKnowledgeHelpDialog],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<section>
-    <h2>{{ labels()['globe'] }}</h2>
-    <p>{{ labels()['globeHint'] }}</p>
+    <div class="quiz-stats-globe-heading">
+      <h2>{{ labels()['globe'] }}</h2>
+      <button
+        class="quiz-stats-help-button"
+        type="button"
+        [attr.aria-label]="labels()['help']"
+        [title]="labels()['help']"
+        (click)="helpOpen.set(true)"
+      >
+        ?
+      </button>
+    </div>
     @if (failed()) {
       <p role="status">{{ labels()['globeFallback'] }}</p>
-    } @else {
-      <div class="quiz-stats-globe">
-        <div #surface class="quiz-stats-globe-surface">
-          @for (label of names(); track label.code) {
-            <span
-              aria-hidden="true"
-              class="quiz-globe-label"
-              [class.is-selected]="label.code === selected()"
-              [style.left.px]="label.x"
-              [style.top.px]="label.y"
-              >{{ label.name }}</span
-            >
-          }
-        </div>
-      </div>
-      <div class="quiz-stats-touch-control">
-        <button class="b-button" (click)="engage()" [attr.aria-pressed]="engaged()" type="button">
-          {{ labels()['activateTouch'] }}
-        </button>
-      </div>
     }
-    <p>{{ labels()['coverage'] }}</p>
+    <lp-globe
+      [places]="countries()"
+      [tones]="levels()"
+      [labels]="groupNames()"
+      [dimmed]="dimmed()"
+      [selected]="selected()"
+      [label]="labels()['globe']"
+      (countrySelect)="selectedCountry.emit($event)"
+      (unavailable)="failed.set(true); unavailable.emit()"
+    />
+    <lp-knowledge-grouping
+      [grouping]="grouping()"
+      [labels]="labels()"
+      (groupingChanged)="groupingChanged.emit($event)"
+    />
+    <lp-knowledge-help-dialog
+      [open]="helpOpen()"
+      [labels]="labels()"
+      (closed)="helpOpen.set(false)"
+    />
   </section>`,
 })
 export class LpKnowledgeGlobe {
@@ -53,66 +68,25 @@ export class LpKnowledgeGlobe {
   readonly levels = input.required<ReadonlyMap<string, KnowledgeLevel>>();
   readonly selected = input<string | null>(null);
   readonly continent = input<string | null>(null);
+  readonly grouping = input<KnowledgeGrouping>('continent');
+  /** Group names drawn on the globe instead of the countries', when grouped. */
+  readonly groupNames = input<readonly GroupLabel[] | null>(null);
   readonly selectedCountry = output<string>();
+  readonly groupingChanged = output<KnowledgeGrouping>();
   readonly unavailable = output<void>();
-  readonly failed = signal(false);
-  readonly engaged = signal(false);
-  readonly names = signal<readonly LabelCandidate[]>([]);
-  private surface = viewChild<ElementRef<HTMLElement>>('surface');
-  private handle: GlobeHandle | null = null;
-  private controller = new AbortController();
-  private starting = false;
-  private destroyed = false;
+  protected readonly failed = signal(false);
+  protected readonly helpOpen = signal(false);
+  protected readonly dimmed = computed<ReadonlySet<string>>(() => {
+    const continent = this.continent();
+    return new Set(
+      continent ? this.countries().flatMap((c) => (c.continent === continent ? [] : [c.iso3])) : [],
+    );
+  });
+  private readonly globe = viewChild.required(LpGlobe);
   constructor() {
-    inject(DestroyRef).onDestroy(() => {
-      this.destroyed = true;
-      this.controller.abort();
-      this.handle?.dispose();
-    });
     effect(() => {
-      const levels = this.levels(),
-        selected = this.selected(),
-        continent = this.continent();
-      const surface = this.surface();
-      if (surface && !this.starting) {
-        this.starting = true;
-        void this.start(surface.nativeElement);
-      }
-      this.handle?.update(levels, selected, continent);
+      const selected = this.selected();
+      if (selected) untracked(() => this.globe().centerOn(selected));
     });
-  }
-  private async start(host: HTMLElement): Promise<void> {
-    try {
-      const [module, map] = await Promise.all([
-        import('../../globe/three-globe'),
-        loadKnowledgeMap(this.controller.signal),
-      ]);
-      if (this.destroyed) return;
-      this.handle = module.createGlobe(host, map, this.countries(), {
-        label: this.labels()['globe'],
-        reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
-        onSelect: (code) => this.selectedCountry.emit(code),
-        onLabels: (labels) => {
-          if (!this.destroyed) this.names.set(labels);
-        },
-        onUnavailable: () => {
-          this.handle?.dispose();
-          this.handle = null;
-          this.names.set([]);
-          this.failed.set(true);
-          this.unavailable.emit();
-        },
-      });
-      this.handle.update(this.levels(), this.selected(), this.continent());
-    } catch {
-      if (!this.destroyed) {
-        this.failed.set(true);
-        this.unavailable.emit();
-      }
-    }
-  }
-  engage(): void {
-    this.engaged.update((v) => !v);
-    this.handle?.setEngaged(this.engaged());
   }
 }

@@ -67,7 +67,7 @@ describe('quiz page correction flow', () => {
       const q = store.question()!;
       categories.add(q.type);
       expect(f.nativeElement.querySelector('lp-quiz-correction')).toBeNull();
-      expect(f.nativeElement.querySelector('lp-country-globe')).toBeNull();
+      expect(f.nativeElement.querySelector('lp-globe')).toBeNull();
       for (const media of f.nativeElement.querySelectorAll('.quiz-silhouette,.quiz-flag'))
         expect(media.getAttribute('aria-label') || media.getAttribute('alt')).not.toContain(
           countries.find((c) => c.iso3 === q.countryCode)!.name,

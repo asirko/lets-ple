@@ -1,113 +1,17 @@
-@use 'globe-labels';
-// Correction globe: these tokens follow the game theme rather than the portal showcase theme.
-.quiz-globe {
-  --quiz-globe-ocean: #e5edf0;
-  --quiz-globe-land: #b4c2bc;
-  --quiz-globe-border: #526760;
+@use 'globe';
+// Correction globe framing: caption and recenter action around the shared globe.
+.quiz-globe-figure {
   margin: 0;
 }
-:root[data-theme='dark'] .quiz-globe {
-  --quiz-globe-ocean: #203540;
-  --quiz-globe-land: #61756c;
-  --quiz-globe-border: #b0c0b7;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .quiz-globe {
-    --quiz-globe-ocean: #203540;
-    --quiz-globe-land: #61756c;
-    --quiz-globe-border: #b0c0b7;
-  }
-}
-.quiz-globe-viewport {
-  position: relative;
-  width: 100%;
-  height: clamp(16rem, 55vw, 23rem);
-  overflow: hidden;
-  border-radius: var(--lp-radius-md);
-}
-.quiz-globe-viewport svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.quiz-globe-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  cursor: grab;
-  touch-action: none;
-}
-.quiz-globe-canvas:active {
-  cursor: grabbing;
-}
-.quiz-globe-ocean {
-  fill: var(--quiz-globe-ocean);
-  stroke: var(--quiz-globe-border);
-}
-.quiz-globe-grid {
-  fill: none;
-  stroke: var(--quiz-globe-border);
-  stroke-width: 0.5;
-}
-.quiz-globe-selected {
-  fill: var(--lp-color-primary);
-  stroke: var(--lp-color-primary-contrast);
-  stroke-width: 0.8;
-}
-.quiz-globe-marker {
-  fill: var(--lp-color-primary);
-  stroke: var(--lp-color-text);
-}
-.quiz-globe figcaption {
+.quiz-globe-figure figcaption {
   display: grid;
   gap: var(--lp-space-1);
+  margin-top: var(--lp-space-2);
   text-align: center;
 }
-.quiz-globe-controls {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 44px;
-  align-items: center;
-  gap: var(--lp-space-2);
-  margin-top: var(--lp-space-3);
-}
-.quiz-globe-controls .b-button {
-  min-width: 44px;
-  min-height: 44px;
-  padding: var(--lp-space-2);
-}
-.quiz-globe-recenter {
-  white-space: normal;
-}
-.quiz-globe-help-anchor {
-  position: relative;
-}
-.quiz-globe-help-trigger {
-  width: 44px;
-}
-.quiz-globe-controls button:focus-visible {
-  outline: 3px solid var(--lp-color-focus-ring);
-  outline-offset: 2px;
-}
-.quiz-globe-tooltip {
-  position: absolute;
-  z-index: 1;
-  right: 0;
-  bottom: calc(100% + var(--lp-space-2));
-  width: min(18rem, calc(100vw - 4rem));
-  padding: var(--lp-space-3);
+.quiz-globe-figure figcaption span {
   font-size: var(--lp-font-size-sm);
-  line-height: 1.5;
-  color: var(--lp-color-text);
-  background: var(--lp-color-surface-raised);
-  border: 1px solid var(--lp-color-border);
-  border-radius: var(--lp-radius-sm);
-}
-.quiz-globe-tooltip::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  top: 100%;
-  height: var(--lp-space-2);
+  color: var(--lp-color-text-muted);
 }
 .quiz-globe-fallback {
   padding: var(--lp-space-4);
@@ -201,8 +105,7 @@
   }
 }
 
-lp-country-globe {
-  display: block;
+.quiz-globe-figure {
   width: 100%;
   max-width: 34rem;
   margin-inline: auto;

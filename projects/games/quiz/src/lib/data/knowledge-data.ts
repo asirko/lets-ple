@@ -2,6 +2,7 @@ export interface KnowledgeCountry {
   iso3: string;
   name: string;
   continent: string;
+  subregion: string;
   anchor: readonly [number, number];
 }
 export interface CountryMesh {
@@ -32,6 +33,7 @@ export async function loadKnowledgeCountries(
         !/^([A-Z]{3})$/.test(c.iso3) ||
         typeof c.name !== 'string' ||
         typeof c.continent !== 'string' ||
+        typeof c.subregion !== 'string' ||
         !Array.isArray(c.anchor) ||
         c.anchor.length !== 2 ||
         !c.anchor.every(Number.isFinite),

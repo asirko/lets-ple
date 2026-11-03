@@ -1,4 +1,4 @@
-import type { Geometry, Position } from '../../domain/types';
+import type { Geometry, Position } from '../domain/types';
 export interface LabelCandidate {
   code: string;
   name: string;
@@ -9,13 +9,6 @@ export interface LabelCandidate {
   priority: number;
 }
 const RAD = Math.PI / 180;
-export function spherePoint([lon, lat]: Position): readonly [number, number, number] {
-  return [
-    Math.cos(lat * RAD) * Math.cos(lon * RAD),
-    Math.sin(lat * RAD),
-    -Math.cos(lat * RAD) * Math.sin(lon * RAD) || 0,
-  ];
-}
 export function unwrapRing(ring: readonly Position[]): readonly Position[] {
   const points: Position[] = [];
   for (const [lon, lat] of ring) {

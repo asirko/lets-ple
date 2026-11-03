@@ -12,6 +12,26 @@ export const DEV_ROUTES: Routes = [
     },
   },
   {
+    path: 'quiz-knowledge-grouping',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/knowledge-grouping/knowledge-grouping.showcase').then(
+          (m) => m.LPKNOWLEDGEGROUPING_SHOWCASE,
+        ),
+    },
+  },
+  {
+    path: 'quiz-knowledge-help-dialog',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: {
+      loadShowcase: () =>
+        import('../../../../../games/quiz/src/lib/ui/knowledge-help/knowledge-help-dialog.showcase').then(
+          (m) => m.LPKNOWLEDGEHELPDIALOG_SHOWCASE,
+        ),
+    },
+  },
+  {
     path: 'quiz-clear-history-dialog',
     loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
     data: {
@@ -132,7 +152,7 @@ export const DEV_ROUTES: Routes = [
     },
     {
       path: 'quiz-globe',
-      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.QUIZ_GLOBE_SHOWCASE),
+      loadShowcase: () => import('@lets-ple/quiz').then((m) => m.LP_GLOBE_SHOWCASE),
     },
     {
       path: 'lp-update-dialog',

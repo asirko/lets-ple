@@ -110,6 +110,6 @@ describe('quiz correction', () => {
   it('ne monte ni correction ni globe avant soumission', () => {
     const f = setup({ ...state, phase: 'answering' });
     expect(f.nativeElement.querySelector('dialog')).toBeNull();
-    expect(f.nativeElement.querySelector('lp-country-globe')).toBeNull();
+    expect(f.nativeElement.querySelector('lp-globe')).toBeNull();
   });
 });

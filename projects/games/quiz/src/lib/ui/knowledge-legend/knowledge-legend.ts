@@ -12,7 +12,6 @@ import {
   selector: 'lp-knowledge-legend',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<section class="quiz-stats-legend">
-    <h2>{{ labels()['legend'] }}</h2>
     <ul>
       @for (level of levels; track level) {
         <li>

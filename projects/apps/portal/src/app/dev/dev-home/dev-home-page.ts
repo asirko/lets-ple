@@ -9,6 +9,8 @@ import { RouterLink } from '@angular/router';
     <h1>Showcase de composants</h1>
     <ul class="dev-home-list">
       <li><a routerLink="quiz-knowledge-globe">Geoquizz : knowledge-globe</a></li>
+      <li><a routerLink="quiz-knowledge-grouping">Geoquizz : knowledge-grouping</a></li>
+      <li><a routerLink="quiz-knowledge-help-dialog">Geoquizz : knowledge-help-dialog</a></li>
       <li><a routerLink="quiz-clear-history-dialog">Geoquizz : clear-history-dialog</a></li>
       <li><a routerLink="quiz-history-status">Geoquizz : history-status</a></li>
       <li><a routerLink="quiz-empty-history">Geoquizz : empty-history</a></li>
@@ -28,7 +30,7 @@ import { RouterLink } from '@angular/router';
       </li>
       <li><a routerLink="quiz-cash">Quiz — Cash</a></li>
       <li><a routerLink="quiz-correction">Quiz — correction modale</a></li>
-      <li><a routerLink="quiz-globe">Quiz — globe 3D</a></li>
+      <li><a routerLink="quiz-globe">Quiz — globe 3D (composant unique)</a></li>
       <li><a routerLink="quiz-answers">Quiz — réponses et correction</a></li>
       <li><a routerLink="quiz-toolbar">Quiz — en-tête et paramètres</a></li>
       <li><a routerLink="quiz-result">Quiz — résultat</a></li>

@@ -18,7 +18,6 @@ import { LpWeeklyTrend } from '../weekly-trend/weekly-trend';
 import { LpTypeBreakdown } from '../type-breakdown/type-breakdown';
 import { LpCountryPicker } from '../country-picker/country-picker';
 import { LpCountryDetail } from '../country-detail/country-detail';
-import { LpKnowledgeLegend } from '../knowledge-legend/knowledge-legend';
 import { LpEmptyHistory } from '../empty-history/empty-history';
 import { LpHistoryStatus } from '../history-status/history-status';
 import { LpClearHistoryDialog } from '../clear-history-dialog/clear-history-dialog';
@@ -27,6 +26,7 @@ import { resolveStatsLabels } from '../stats-labels';
 import type { BreakdownRow } from '../statistics-models';
 import { HISTORY_TYPES } from '../../domain/knowledge-stats/events';
 import { EMPTY_METRICS } from '../../domain/knowledge-stats/statistics';
+import { groupLabels } from '../../domain/knowledge-stats/grouping';
 @Component({
   selector: 'lp-quiz-statistics-page',
   imports: [
@@ -37,7 +37,6 @@ import { EMPTY_METRICS } from '../../domain/knowledge-stats/statistics';
     LpTypeBreakdown,
     LpCountryPicker,
     LpCountryDetail,
-    LpKnowledgeLegend,
     LpEmptyHistory,
     LpHistoryStatus,
     LpClearHistoryDialog,
@@ -96,10 +95,12 @@ import { EMPTY_METRICS } from '../../domain/knowledge-stats/statistics';
           [levels]="stats.levels()"
           [selected]="stats.selectedIso3()"
           [continent]="stats.filters().continent"
+          [grouping]="stats.grouping()"
+          [groupNames]="groupNames()"
           [labels]="labels()"
           (selectedCountry)="selectFromGlobe($event)"
+          (groupingChanged)="stats.grouping.set($event)"
         />
-        <lp-knowledge-legend [labels]="labels()" />
       </div>
       <lp-country-picker
         [countries]="stats.rows()"
@@ -145,6 +146,13 @@ export class QuizStatisticsPage {
   readonly i18n = inject(I18nService);
   private router = inject(Router);
   readonly labels = computed(() => resolveStatsLabels((k) => this.i18n.t(k)));
+  readonly groupNames = computed(() =>
+    groupLabels(this.stats.countries(), this.stats.grouping(), (key) =>
+      this.stats.grouping() === 'continent'
+        ? this.labels()['continent.' + key]
+        : this.i18n.t('quiz.region.' + key),
+    ),
+  );
   readonly clearOpen = signal(false);
   readonly clearing = signal(false);
   readonly status = computed(() => {

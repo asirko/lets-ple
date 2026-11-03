@@ -40,7 +40,7 @@ async function main() {
         (Math.asin(center[1] / length) * 180) / Math.PI,
       ];
     }
-    return { iso3: c.iso3, name: c.name, continent: c.continent, anchor };
+    return { iso3: c.iso3, name: c.name, continent: c.continent, subregion: c.subregion, anchor };
   });
   const encodePositions = (values: number[]) =>
     Buffer.from(new Int16Array(values.map((x) => Math.round(x * 32767))).buffer).toString('base64');

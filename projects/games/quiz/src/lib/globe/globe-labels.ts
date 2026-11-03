@@ -1,5 +1,5 @@
 import type { Camera, Vector3 } from 'three';
-import { placeLabels, type LabelCandidate } from '../ui/country-globe/globe-geography';
+import { placeLabels, type LabelCandidate } from './globe-geography';
 export function projectGlobeLabels(
   locations: readonly { code: string; name: string; point: Vector3 }[],
   camera: Camera,
