@@ -13,7 +13,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<section>
     <h2>{{ title() }}</h2>
-    <div class="quiz-stats-breakdown">
+    <div class="quiz-stats-breakdown l-grid">
       @for (row of rows(); track row.key) {
         <div>
           <h3>{{ row.label }}</h3>

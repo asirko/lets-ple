@@ -1,11 +1,8 @@
-<div class="home-concept home-focus theme-focus">
+<div class="home-concept home-focus">
   <a class="home-skip" href="#jeux" (click)="skipToGames($event, gameSection)">Aller aux jeux</a>
   <div class="home-shell">
     <header class="home-header">
-      <a class="home-brand" href="/" aria-label="Let’s Plé, accueil"
-        ><span class="home-brand-mark" aria-hidden="true">p<span>é</span></span
-        >let’s plé<span class="home-brand-period">.</span></a
-      >
+      <a class="home-brand" href="/" aria-label="Let’s Plé, accueil"><lp-logo /></a>
       <ng-content select="[home-actions]" />
     </header>
     <main class="home-games" id="jeux" #gameSection tabindex="-1" aria-labelledby="home-title">

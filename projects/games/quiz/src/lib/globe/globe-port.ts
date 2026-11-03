@@ -5,8 +5,11 @@ export interface GlobePlace {
   name: string;
   anchor: readonly [number, number];
 }
-/** Fill of a country: a knowledge level, or `highlight` for the theme's primary color. */
-export type GlobeTone = KnowledgeLevel | 'highlight';
+/**
+ * Fill of a country: a knowledge level, `land` for a plain country (`--lp-globe-land`) or
+ * `highlight` for the searched one (`--lp-globe-highlight`).
+ */
+export type GlobeTone = KnowledgeLevel | 'land' | 'highlight';
 /** A name drawn on the globe; `code` is a country ISO3 or the key of a group of countries. */
 export interface GlobeLabel {
   code: string;
@@ -29,10 +32,3 @@ export interface GlobeHandle {
   centerOn(iso3: string, options?: CenterOptions): void;
   dispose(): void;
 }
-export const GLOBE_COLORS: Record<KnowledgeLevel, number> = {
-  none: 0x88909b,
-  insufficient: 0xbfc6d0,
-  low: 0xc45665,
-  medium: 0xe1b760,
-  high: 0x438f88,
-};

@@ -12,7 +12,7 @@ import {
   selector: 'lp-knowledge-legend',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<section class="quiz-stats-legend">
-    <ul>
+    <ul class="l-cluster">
       @for (level of levels; track level) {
         <li>
           <span class="quiz-stats-swatch" [attr.data-level]="level" aria-hidden="true"></span

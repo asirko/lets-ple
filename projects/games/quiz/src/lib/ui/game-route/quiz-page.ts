@@ -13,7 +13,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { I18nService } from '@lets-ple/game-core';
-import { LpButton, LpPanel } from '@lets-ple/ui';
+import { LpButton, LpLoader, LpPanel } from '@lets-ple/ui';
 import { loadGeography } from '../../data/geography';
 import { QuizStore } from '../../store/quiz.store';
 import { LpQuizQuestion } from '../question/question';
@@ -28,6 +28,7 @@ import type { QuizPreferences } from '../../domain/preferences';
   selector: 'lp-quiz-page',
   imports: [
     LpButton,
+    LpLoader,
     LpPanel,
     LpQuizQuestion,
     LpQuizAnswers,
@@ -54,7 +55,7 @@ import type { QuizPreferences } from '../../domain/preferences';
             {{ historyStatus().pending }} {{ i18n.t('quiz.stats.pendingAnswers') }}
           }
           @if (historyStatus().kind !== 'pending') {
-            <button class="b-button" type="button" (click)="history.retry()">
+            <button class="b-button b-secondary" type="button" (click)="history.retry()">
               {{ i18n.t('quiz.stats.retry') }}
             </button>
           }
@@ -109,7 +110,7 @@ import type { QuizPreferences } from '../../domain/preferences';
           }}</lp-button>
         </lp-panel>
       } @else {
-        <p role="status">{{ i18n.t('quiz.load.pending') }}</p>
+        <lp-loader [label]="i18n.t('quiz.load.pending')" />
       }
       <details class="quiz-credits">
         <summary>{{ i18n.t('quiz.credits') }}</summary>

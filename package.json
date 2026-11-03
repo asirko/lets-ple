@@ -7,6 +7,7 @@
     "check:commits": "tsx scripts/release/check-commits.ts",
     "check:release": "tsx scripts/release/check-release.ts",
     "start": "tsx scripts/serve.ts portal",
+    "icons": "tsx scripts/generate-icons.ts",
     "ticket": "tsx scripts/ticket.ts",
     "ticket:deps": "tsx scripts/ticket.ts --detach-deps",
     "ticket:clean": "tsx scripts/ticket.ts --clean",

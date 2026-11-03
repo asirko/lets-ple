@@ -15,7 +15,7 @@ import type { StatsLabels } from '../statistics-models';
       <p>{{ labels()['coverage'] }}</p>
     </div>
     <div lpDialogActions>
-      <button autofocus class="b-button" type="button" (click)="closed.emit()">
+      <button autofocus class="b-button b-primary" type="button" (click)="closed.emit()">
         {{ labels()['close'] }}
       </button>
     </div></lp-dialog

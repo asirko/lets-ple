@@ -1,0 +1,36 @@
+/* Module : logo (lp-logo). La taille se règle sur le font-size ; ratios en propriétés custom. */
+.logo {
+  --logo-mark-size: 1.4em;
+  --logo-gap: 0.4em;
+  --logo-tracking: -0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--logo-gap);
+  font-size: var(--lp-font-size-xl);
+  font-weight: var(--lp-font-weight-bold);
+  letter-spacing: var(--logo-tracking);
+  color: var(--lp-color-text);
+}
+.logo-sm {
+  font-size: var(--lp-font-size-base);
+}
+.logo-lg {
+  font-size: var(--lp-font-size-2xl);
+}
+.logo-mark {
+  flex-shrink: 0;
+  width: var(--logo-mark-size);
+  height: var(--logo-mark-size);
+}
+.logo-mark-disc {
+  fill: var(--lp-color-primary);
+}
+.logo-mark-text {
+  fill: var(--lp-color-primary-contrast);
+}
+.logo-wordmark {
+  white-space: nowrap;
+}
+.logo-period {
+  color: var(--lp-color-accent);
+}

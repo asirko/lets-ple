@@ -171,6 +171,7 @@
   "quiz.country.region": "Région",
   "quiz.country.noCapitals": "Non renseigné dans le corpus",
   "quiz.showcase.loading": "Chargement de la géographie…",
+  "quiz.showcase.silhouettesLoading": "Chargement des silhouettes…",
   "quiz.showcase.error": "Impossible de charger le corpus local.",
   "quiz.showcase.open": "Afficher la correction",
   "quiz.region.Europe": "Europe",

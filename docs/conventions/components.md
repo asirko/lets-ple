@@ -36,6 +36,22 @@ bordures, ombres, tokens…) ne vivent ni dans l'un ni dans l'autre : ils sont i
 global de l'application (`projects/libs/ui/src/styles/`, voir `css.md`), consommé aussi bien par
 les composants UI que — rarement, seulement pour la disposition — par les composants logiques.
 
+## Niveaux atomiques et emplacement
+
+Les dossiers ne sont pas déplacés : le niveau est une classification, repérable dans le showcase
+(`/dev/components` regroupe ses liens par niveau).
+
+| Niveau | Contenu | Emplacement |
+|---|---|---|
+| Atomes | `LpButton`, `LpLogo`, `LpLoader` | `libs/ui/src/lib/` |
+| Molécules | `LpCard`, `LpPanel`, `LpDialog`, dialogues de mise à jour et de nouveautés | `libs/ui/src/lib/` |
+| Organismes | composants `quiz-*` du géo quiz (et, non classés, ceux du cryptogramme et de Dernier Mot) | `ui/` du jeu |
+| Écrans et pages de travail | accueil, pages de quiz, silhouettes, guide de style | portail et jeux |
+
+`LpLogo` est l'unique source du dessin de la marque : il est recopié tel quel dans l'écran de
+démarrage de `index.html` et dans les SVG d'icônes (voir `architecture.md`) ; garder ces copies
+synchronisées.
+
 ## Pourquoi cet ordre
 
 Concevoir dans le showcase d'abord force le composant UI à être autonome : pas d'accès direct à un

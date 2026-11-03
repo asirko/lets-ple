@@ -1,7 +1,25 @@
+:root {
+  --quiz-focus-width: 3px; /* dupliquée : chaque feuille se charge seule (page, overlay) */
+  --quiz-review-min: 22rem;
+  --quiz-inset-min: 10rem;
+  --quiz-inset-silhouette-height: 9rem;
+  --quiz-composition-max: 50rem;
+  --quiz-shell-max: 48rem;
+  --quiz-visual-min: 12rem;
+  --quiz-visual-max: 19rem;
+  --quiz-compass-size: 4rem;
+  --quiz-eyebrow-tracking: 0.12em;
+  --quiz-option-min-height: 3.5rem;
+  --quiz-score-font-min: 3rem;
+  --quiz-score-font-max: 5rem;
+  --quiz-checkbox-size: 1.25rem;
+  --quiz-dropdown-width: 22rem;
+  --quiz-dropdown-reserve: 7rem;
+  --quiz-scroll-margin: 6rem;
+}
+
 .quiz-review-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-  gap: var(--lp-space-4);
+  --l-grid-min: var(--quiz-review-min);
 }
 .quiz-review-composed {
   grid-column: 1 / -1;
@@ -9,7 +27,7 @@
 .quiz-review-composition {
   display: block;
   width: 100%;
-  max-width: 50rem;
+  max-width: var(--quiz-composition-max);
   margin-inline: auto;
   fill: var(--lp-color-text);
 }
@@ -19,12 +37,11 @@
   stroke-width: 1;
 }
 .quiz-review-composition text {
-  font-size: 16px;
+  font-size: var(--lp-font-size-base);
 }
 .quiz-review-insets {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
-  gap: var(--lp-space-3);
+  --l-grid-min: var(--quiz-inset-min);
+  --l-gap: var(--lp-space-3);
 }
 .quiz-review-insets figure {
   margin: 0;
@@ -32,7 +49,7 @@
   border: 1px solid var(--lp-color-border);
 }
 .quiz-review-insets .quiz-silhouette {
-  height: 9rem;
+  height: var(--quiz-inset-silhouette-height);
 }
 .quiz-review-grid summary {
   cursor: pointer;
@@ -48,7 +65,7 @@
   overflow-wrap: anywhere;
 }
 .quiz-review-missing {
-  min-height: 12rem;
+  min-height: var(--quiz-visual-min);
   display: grid;
   place-items: center;
   color: var(--lp-color-text-muted);
@@ -57,7 +74,7 @@
 .quiz-shell {
   display: grid;
   gap: var(--lp-space-5);
-  width: min(100%, 48rem);
+  width: min(100%, var(--quiz-shell-max));
   margin-inline: auto;
   padding: var(--lp-space-4);
   box-sizing: border-box;
@@ -70,7 +87,7 @@
   gap: var(--lp-space-3);
 }
 .quiz-home {
-  color: var(--lp-color-primary);
+  color: var(--lp-color-link);
 }
 .quiz-progress {
   font-size: var(--lp-font-size-sm);
@@ -80,7 +97,7 @@
 }
 .quiz-progress-bar {
   width: 100%;
-  height: 0.5rem;
+  height: var(--lp-space-2);
   accent-color: var(--lp-color-primary);
   margin-block: var(--lp-space-3) var(--lp-space-5);
 }
@@ -88,7 +105,7 @@
   text-align: center;
 }
 .quiz-question h2 {
-  font-size: clamp(1.3rem, 4vw, 1.75rem);
+  font-size: clamp(var(--lp-font-size-lg), 4vw, var(--lp-font-size-xl));
   line-height: var(--lp-line-height-tight);
   margin-block: var(--lp-space-3) var(--lp-space-5);
   overflow-wrap: anywhere;
@@ -98,33 +115,31 @@
   font-size: var(--lp-font-size-xs);
   font-weight: var(--lp-font-weight-bold);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--quiz-eyebrow-tracking);
 }
 .quiz-flag {
   display: block;
-  width: min(100%, 19rem);
-  height: 12rem;
+  width: min(100%, var(--quiz-visual-max));
+  height: var(--quiz-visual-min);
   object-fit: contain;
   margin: var(--lp-space-5) auto;
 }
 .quiz-silhouette {
   display: block;
   width: 100%;
-  height: clamp(12rem, 40vw, 19rem);
+  height: clamp(var(--quiz-visual-min), 40vw, var(--quiz-visual-max));
   fill: var(--lp-color-text);
 }
 .quiz-compass {
-  font-size: 4rem;
-  color: var(--lp-color-primary);
+  font-size: var(--quiz-compass-size);
+  color: var(--lp-color-link);
   padding: var(--lp-space-4);
 }
 .quiz-neighbors {
+  --l-gap: var(--lp-space-2);
   list-style: none;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: var(--lp-space-2);
 }
 .quiz-neighbors li {
   padding: var(--lp-space-2) var(--lp-space-3);
@@ -170,7 +185,7 @@
 .quiz-option {
   display: flex;
   align-items: center;
-  min-height: 3.5rem;
+  min-height: var(--quiz-option-min-height);
   width: 100%;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -207,17 +222,17 @@
   gap: var(--lp-space-1);
 }
 .quiz-cash.is-docked.is-compact .quiz-input {
-  min-height: 2.75rem;
+  min-height: var(--lp-touch-target);
   padding: var(--lp-space-2);
 }
 .quiz-cash.is-docked.is-compact lp-button button {
   padding: var(--lp-space-1) var(--lp-space-2);
-  font-size: 0.875rem;
+  font-size: var(--lp-font-size-sm);
   line-height: 1.2;
 }
 .quiz-cash.is-docked.is-compact .quiz-suggestions li {
   padding: var(--lp-space-1) var(--lp-space-2);
-  font-size: 0.875rem;
+  font-size: var(--lp-font-size-sm);
   line-height: 1.2;
 }
 .quiz-cash lp-button {
@@ -226,7 +241,7 @@
 }
 .quiz-cash lp-button button {
   width: 100%;
-  min-height: 2.75rem;
+  min-height: var(--lp-touch-target);
 }
 .quiz-cash lp-button button:disabled {
   color: var(--lp-color-text-muted);
@@ -239,9 +254,9 @@
 .quiz-input {
   width: 100%;
   box-sizing: border-box;
-  min-height: 3rem;
+  min-height: var(--lp-space-7);
   font: inherit;
-  font-size: 1rem;
+  font-size: var(--lp-font-size-base);
   color: var(--lp-color-text);
   background: var(--lp-color-surface);
   border: 1px solid var(--lp-color-border);
@@ -249,7 +264,7 @@
   padding: var(--lp-space-3);
 }
 .quiz-input:focus-visible {
-  outline: 3px solid var(--lp-color-focus-ring);
+  outline: var(--quiz-focus-width) solid var(--lp-color-focus-ring);
   outline-offset: 2px;
 }
 .quiz-suggestions {
@@ -271,7 +286,7 @@
   overflow-wrap: anywhere;
   cursor: pointer;
   padding: var(--lp-space-3);
-  min-height: 2.75rem;
+  min-height: var(--lp-touch-target);
   box-sizing: border-box;
 }
 .quiz-suggestions li:hover,
@@ -305,9 +320,9 @@
   margin: 0;
 }
 .quiz-final-score {
-  font-size: clamp(3rem, 12vw, 5rem);
+  font-size: clamp(var(--quiz-score-font-min), 12vw, var(--quiz-score-font-max));
   font-weight: var(--lp-font-weight-bold);
-  color: var(--lp-color-primary);
+  color: var(--lp-color-link);
 }
 .quiz-final-score span {
   font-size: var(--lp-font-size-xl);
@@ -360,8 +375,8 @@
 .quiz-toolbar-back {
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: var(--lp-touch-target);
+  height: var(--lp-touch-target);
   color: var(--lp-color-text);
   text-decoration: none;
   font-size: var(--lp-font-size-xl);
@@ -395,9 +410,9 @@
   border-radius: var(--lp-radius-md);
   cursor: pointer;
   font-weight: var(--lp-font-weight-medium);
-  min-height: 2.75rem;
+  min-height: var(--lp-touch-target);
   align-content: center;
-  width: 2.75rem;
+  width: var(--lp-touch-target);
   text-align: center;
   list-style: none;
   font-size: var(--lp-font-size-xl);
@@ -411,31 +426,21 @@
   position: absolute;
   top: calc(100% + var(--lp-space-2));
   right: 0;
-  width: min(22rem, calc(100vw - 3rem));
-  max-height: calc(100dvh - 7rem);
+  width: min(var(--quiz-dropdown-width), calc(100vw - var(--lp-space-7)));
+  max-height: calc(100dvh - var(--quiz-dropdown-reserve));
   overflow-y: auto;
   padding: var(--lp-space-3);
   background: var(--lp-color-surface-raised);
   border: 1px solid var(--lp-color-border);
   border-radius: var(--lp-radius-md);
   box-shadow: var(--lp-shadow-md);
-}
 
-.quiz-toolbar-action {
-  display: block;
-  width: 100%;
-  padding: var(--lp-space-3) var(--lp-space-2);
-  color: var(--lp-color-text);
-  background: transparent;
-  border: 0;
-  border-radius: var(--lp-radius-sm);
-  font: inherit;
-  text-align: left;
-  text-decoration: none;
-  cursor: pointer;
+  .b-ghost {
+    width: 100%;
 
-  &:hover {
-    background: var(--lp-color-background);
+    &:hover {
+      background: var(--lp-color-background);
+    }
   }
 }
 
@@ -452,14 +457,14 @@
   display: flex;
   align-items: center;
   gap: var(--lp-space-3);
-  min-height: 2.75rem;
+  min-height: var(--lp-touch-target);
   padding-block: var(--lp-space-2);
   cursor: pointer;
 }
 .quiz-settings-option input {
   flex: 0 0 auto;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--quiz-checkbox-size);
+  height: var(--quiz-checkbox-size);
   accent-color: var(--lp-color-primary);
 }
 .quiz-settings-error {
@@ -467,8 +472,8 @@
 }
 .quiz-toolbar :is(summary, a, button, input):focus-visible {
   outline: 2px solid var(--lp-color-primary);
-  outline-offset: 3px;
+  outline-offset: var(--quiz-focus-width);
 }
 .quiz-question h2 {
-  scroll-margin-top: 6rem;
+  scroll-margin-top: var(--quiz-scroll-margin);
 }

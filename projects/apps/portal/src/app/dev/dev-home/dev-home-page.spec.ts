@@ -13,4 +13,21 @@ describe('DevHomePage', () => {
     expect(dialogLink).toBeDefined();
     expect(dialogLink?.getAttribute('href')).toContain('lp-dialog');
   });
+
+  it('regroupe les liens par niveau atomique', () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = TestBed.createComponent(DevHomePage);
+    fixture.detectChanges();
+
+    const titles = Array.from(
+      fixture.nativeElement.querySelectorAll('h2') as NodeListOf<HTMLElement>,
+    ).map((title) => title.textContent.trim());
+    expect(titles).toEqual([
+      'Atomes',
+      'Molécules',
+      'Organismes — géo quiz',
+      'Écrans et pages de travail',
+      'Autres jeux',
+    ]);
+  });
 });

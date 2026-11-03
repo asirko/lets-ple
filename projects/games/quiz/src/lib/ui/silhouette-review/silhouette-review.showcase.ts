@@ -7,6 +7,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { I18nService } from '@lets-ple/game-core';
+import { LpLoader } from '@lets-ple/ui';
 import { loadGeography } from '../../data/geography';
 import type { Country } from '../../domain/types';
 import { SilhouetteReview } from './silhouette-review';
@@ -14,7 +16,7 @@ import { SilhouetteReview } from './silhouette-review';
 /** Revue du corpus réel, accessible uniquement depuis l'espace de développement. */
 @Component({
   selector: 'lp-silhouette-review-page',
-  imports: [RouterLink, SilhouetteReview],
+  imports: [RouterLink, SilhouetteReview, LpLoader],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['../../../styles/_quiz.scss'],
@@ -53,11 +55,12 @@ import { SilhouetteReview } from './silhouette-review';
       <p role="alert">Impossible de charger les pays.</p>
       <button type="button" class="b-button b-secondary" (click)="load()">Réessayer</button>
     } @else {
-      <p role="status">Chargement des silhouettes…</p>
+      <lp-loader [label]="i18n.t('quiz.showcase.silhouettesLoading')" />
     }
   `,
 })
 export class SilhouetteReviewPage {
+  protected readonly i18n = inject(I18nService);
   protected readonly focused = inject(ActivatedRoute).snapshot.data['focused'] === true;
   protected readonly countries = signal<readonly Country[] | null>(null);
   protected readonly failed = signal(false);

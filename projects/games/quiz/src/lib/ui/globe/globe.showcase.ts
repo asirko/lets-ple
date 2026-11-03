@@ -12,7 +12,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { I18nService } from '@lets-ple/game-core';
-import type { ComponentShowcase } from '@lets-ple/ui';
+import { LpLoader, type ComponentShowcase } from '@lets-ple/ui';
 import { loadGeography } from '../../data/geography';
 import type { Country } from '../../domain/types';
 import { countryAnchor } from '../../globe/globe-geography';
@@ -21,7 +21,7 @@ import { LpGlobe } from './globe';
 const LEVELS = ['none', 'insufficient', 'low', 'medium', 'high'] as const;
 @Component({
   selector: 'lp-globe-showcase',
-  imports: [LpGlobe],
+  imports: [LpGlobe, LpLoader],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['../../../styles/_globe.scss'],
@@ -38,8 +38,10 @@ const LEVELS = ['none', 'insufficient', 'low', 'medium', 'high'] as const;
         (countrySelect)="tapped.set($event)"
       />
       <p>{{ tapped() ?? '—' }}</p>
+    } @else if (failed()) {
+      <p>{{ i18n.t('quiz.showcase.error') }}</p>
     } @else {
-      <p>{{ i18n.t(failed() ? 'quiz.showcase.error' : 'quiz.showcase.loading') }}</p>
+      <lp-loader [label]="i18n.t('quiz.showcase.loading')" />
     }
   `,
 })
@@ -60,7 +62,10 @@ export class LpGlobeShowcase {
   );
   readonly tones = computed<ReadonlyMap<string, GlobeTone>>(() =>
     this.palette() === 'solution'
-      ? new Map([[this.countryCode(), 'highlight']])
+      ? new Map([
+          ...this.places().map((p) => [p.iso3, 'land'] as const),
+          [this.countryCode(), 'highlight'],
+        ])
       : new Map(this.countries().map((c, i) => [c.iso3, LEVELS[i % LEVELS.length]])),
   );
   readonly dimmed = computed<ReadonlySet<string>>(() => {

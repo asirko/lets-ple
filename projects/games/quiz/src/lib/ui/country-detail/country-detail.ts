@@ -15,7 +15,7 @@ import type { StatsLabels, CountryRow, BreakdownRow } from '../statistics-models
       <lp-type-breakdown [title]="labels()['modes']" [rows]="modes()" [labels]="labels()" />
     </div>
     <div lpDialogActions>
-      <button autofocus class="b-button" (click)="closed.emit()" type="button">
+      <button autofocus class="b-button b-primary" (click)="closed.emit()" type="button">
         {{ labels()['closeDetail'] }}
       </button>
     </div>

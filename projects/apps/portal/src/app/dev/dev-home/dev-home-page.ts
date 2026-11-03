@@ -7,6 +7,21 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <h1>Showcase de composants</h1>
+    <h2>Atomes</h2>
+    <ul class="dev-home-list">
+      <li><a routerLink="lp-button">LpButton</a></li>
+      <li><a routerLink="lp-logo">LpLogo</a></li>
+      <li><a routerLink="lp-loader">LpLoader</a></li>
+    </ul>
+    <h2>Molécules</h2>
+    <ul class="dev-home-list">
+      <li><a routerLink="lp-card">LpCard</a></li>
+      <li><a routerLink="lp-panel">LpPanel</a></li>
+      <li><a routerLink="lp-dialog">LpDialog</a></li>
+      <li><a routerLink="lp-update-dialog">Mise à jour de l’application</a></li>
+      <li><a routerLink="lp-release-notes-dialog">Nouveautés des versions</a></li>
+    </ul>
+    <h2>Organismes — géo quiz</h2>
     <ul class="dev-home-list">
       <li><a routerLink="quiz-knowledge-globe">Geoquizz : knowledge-globe</a></li>
       <li><a routerLink="quiz-knowledge-grouping">Geoquizz : knowledge-grouping</a></li>
@@ -21,6 +36,9 @@ import { RouterLink } from '@angular/router';
       <li><a routerLink="quiz-weekly-trend">Geoquizz : weekly-trend</a></li>
       <li><a routerLink="quiz-continent-focus">Geoquizz : continent-focus</a></li>
       <li><a routerLink="quiz-statistics-summary">Geoquizz : statistics-summary</a></li>
+    </ul>
+    <h2>Écrans et pages de travail</h2>
+    <ul class="dev-home-list">
       <li><a routerLink="lp-home-concept">Accueil Focus — catalogue</a></li>
       <li><a routerLink="style">Guide de style</a></li>
       <li><a routerLink="quiz-question">Quiz — question</a></li>
@@ -34,12 +52,9 @@ import { RouterLink } from '@angular/router';
       <li><a routerLink="quiz-answers">Quiz — réponses et correction</a></li>
       <li><a routerLink="quiz-toolbar">Quiz — en-tête et paramètres</a></li>
       <li><a routerLink="quiz-result">Quiz — résultat</a></li>
-      <li><a routerLink="lp-button">LpButton</a></li>
-      <li><a routerLink="lp-dialog">LpDialog</a></li>
-      <li><a routerLink="lp-update-dialog">Mise à jour de l’application</a></li>
-      <li><a routerLink="lp-release-notes-dialog">Nouveautés des versions</a></li>
-      <li><a routerLink="lp-card">LpCard</a></li>
-      <li><a routerLink="lp-panel">LpPanel</a></li>
+    </ul>
+    <h2>Autres jeux</h2>
+    <ul class="dev-home-list">
       <li><a routerLink="lp-cryptogram-cell">LpCryptogramCell</a></li>
       <li><a routerLink="lp-cipher-table">LpCipherTable</a></li>
       <li><a routerLink="lp-cryptogram-deck">LpCryptogramDeck</a></li>

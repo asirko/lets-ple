@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
+import { LpLogo } from '../logo/lp-logo';
 
 export interface HomeGame {
   id: string;
@@ -19,6 +20,7 @@ function normalizeSearch(value: string): string {
 
 @Component({
   selector: 'lp-home-concept',
+  imports: [LpLogo],
   templateUrl: './lp-home-concept.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

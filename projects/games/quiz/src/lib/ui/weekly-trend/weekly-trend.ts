@@ -6,7 +6,7 @@ import { score, rate, type StatsLabels, type WeekRow } from '../statistics-model
   template: ` <section class="quiz-stats-trend">
     <h2>{{ labels()['weeks'] }}</h2>
     <p>{{ labels()['zone'] }} : {{ timeZone() }}</p>
-    <div class="quiz-stats-charts">
+    <div class="quiz-stats-charts l-grid">
       @for (key of ['averageScore', 'successRate']; track key) {
         <figure>
           <figcaption>

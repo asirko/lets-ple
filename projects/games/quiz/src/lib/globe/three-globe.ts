@@ -13,7 +13,6 @@ import {
   Vector3,
   Spherical,
   DoubleSide,
-  Color,
 } from 'three';
 import {
   createGlobeRenderer,
@@ -25,13 +24,8 @@ import { LineSegments2 } from 'three/addons/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import type { KnowledgeMap } from '../data/knowledge-data';
-import {
-  GLOBE_COLORS,
-  type GlobeHandle,
-  type GlobeLabel,
-  type GlobePlace,
-  type GlobeView,
-} from './globe-port';
+import type { GlobeHandle, GlobeLabel, GlobePlace, GlobeView } from './globe-port';
+import { knowledgeColors, observeTheme, readCssColorNumber } from './css-color';
 import { projectGlobeLabels } from './globe-labels';
 import type { LabelCandidate } from './globe-geography';
 import { isTap } from './globe-interactions';
@@ -45,7 +39,11 @@ const MIN_DISTANCE = 1.35,
   FIT_FILL = 0.6,
   // Angular jump (radians, ~5°) separating the mainland from detached territories.
   OVERSEAS_GAP = 0.09;
-const WHITE = new Color(0xffffff);
+/** `0xRRGGBB` as a GLSL `vec3` literal, for the stripes drawn by the fragment shader. */
+function glslColor(hex: number): string {
+  const channel = (shift: number) => (((hex >> shift) & 0xff) / 255).toFixed(3);
+  return `vec3(${channel(16)},${channel(8)},${channel(0)})`;
+}
 function anchorPoint([lon, lat]: readonly [number, number]): Vector3 {
   const l = (lon * Math.PI) / 180,
     b = (lat * Math.PI) / 180;
@@ -88,7 +86,7 @@ export function createGlobe(
   },
 ): GlobeHandle {
   const renderer = createGlobeRenderer(host, { alpha: false });
-  renderer.setClearColor(0x122237);
+  renderer.setClearColor(readCssColorNumber('--lp-globe-space'));
   const canvas = renderer.domElement;
   canvas.setAttribute('role', 'img');
   canvas.setAttribute('aria-label', options.label);
@@ -103,14 +101,16 @@ export function createGlobe(
     maxDistance: MAX_DISTANCE,
   });
   const sphereGeometry = new SphereGeometry(0.997, 48, 32),
-    seaMaterial = new MeshBasicMaterial({ color: 0x193550 }),
+    seaMaterial = new MeshBasicMaterial({ color: readCssColorNumber('--lp-globe-sea') }),
     sea = new Mesh(sphereGeometry, seaMaterial);
   scene.add(sea);
+  let colors = knowledgeColors(),
+    stripe = readCssColorNumber('--lp-knowledge-stripe');
   const meshes = new Map<string, Mesh>();
   const resources: BufferGeometry[] = [];
   const materials: MeshBasicMaterial[] = [];
   const borderMaterial = new LineBasicMaterial({
-    color: 0x213448,
+    color: readCssColorNumber('--lp-globe-outline'),
     transparent: true,
     opacity: 0.55,
   });
@@ -118,7 +118,7 @@ export function createGlobe(
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new BufferAttribute(m.positions, 3));
     geometry.setIndex(new BufferAttribute(m.indices, 1));
-    const material = new MeshBasicMaterial({ color: GLOBE_COLORS.none, side: DoubleSide });
+    const material = new MeshBasicMaterial({ color: colors.none, side: DoubleSide });
     materials.push(material);
     resources.push(geometry);
     const mesh = new Mesh(geometry, material);
@@ -234,25 +234,29 @@ export function createGlobe(
     }
   };
   canvas.addEventListener('keydown', key);
-  const primary = () =>
-    getComputedStyle(host).getPropertyValue('--lp-color-primary').trim() || '#b5482f';
+  let land = readCssColorNumber('--lp-globe-land'),
+    highlight = readCssColorNumber('--lp-globe-highlight'),
+    highlightContrast = readCssColorNumber('--lp-globe-highlight-contrast'),
+    marker = readCssColorNumber('--lp-globe-marker');
   let outlined: string | null = null;
   const paint = () => {
     for (const [code, mesh] of meshes) {
       const tone = view.tones.get(code) ?? 'none',
         material = mesh.material as MeshBasicMaterial;
-      if (tone === 'highlight') material.color.set(primary());
-      else material.color.setHex(GLOBE_COLORS[tone]);
+      material.color.setHex(
+        tone === 'highlight' ? highlight : tone === 'land' ? land : colors[tone],
+      );
       material.opacity = view.dimmed.has(code) ? 0.25 : 1;
       material.transparent = material.opacity < 1;
       material.onBeforeCompile = (shader) => {
         if (tone === 'insufficient')
           shader.fragmentShader = shader.fragmentShader.replace(
             '#include <color_fragment>',
-            '#include <color_fragment>\nif(mod((gl_FragCoord.x+gl_FragCoord.y)/6.0,2.0)>1.0) diffuseColor.rgb*=0.48;',
+            `#include <color_fragment>\nif(mod((gl_FragCoord.x+gl_FragCoord.y)/6.0,2.0)>1.0) diffuseColor.rgb=${glslColor(stripe)};`,
           );
       };
-      material.customProgramCacheKey = () => (tone === 'insufficient' ? 'striped' : 'plain');
+      material.customProgramCacheKey = () =>
+        tone === 'insufficient' ? `striped-${stripe}` : 'plain';
       material.needsUpdate = true;
     }
     const shape = view.selected ? outlines.get(view.selected) : undefined;
@@ -262,18 +266,26 @@ export function createGlobe(
       selection.computeLineDistances();
       outlined = view.selected;
     }
-    // Lighter than the fill so the edge still reads on a highlighted country.
-    selectionMaterial.color.set(primary()).lerp(WHITE, 0.45);
+    // The searched country takes the contrast of its highlight; any other one the marker color.
+    selectionMaterial.color.setHex(
+      view.selected && view.tones.get(view.selected) === 'highlight' ? highlightContrast : marker,
+    );
     invalidate();
   };
-  // The highlight follows the theme's primary color.
-  const theme = new MutationObserver(paint);
-  theme.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme', 'class', 'style'],
-  });
-  const media = matchMedia('(prefers-color-scheme: dark)');
-  media.addEventListener('change', paint);
+  // Every color comes from the theme tokens: read them again when the theme changes.
+  const repaintTheme = () => {
+    colors = knowledgeColors();
+    stripe = readCssColorNumber('--lp-knowledge-stripe');
+    land = readCssColorNumber('--lp-globe-land');
+    highlight = readCssColorNumber('--lp-globe-highlight');
+    highlightContrast = readCssColorNumber('--lp-globe-highlight-contrast');
+    marker = readCssColorNumber('--lp-globe-marker');
+    renderer.setClearColor(readCssColorNumber('--lp-globe-space'));
+    seaMaterial.color.setHex(readCssColorNumber('--lp-globe-sea'));
+    borderMaterial.color.setHex(readCssColorNumber('--lp-globe-outline'));
+    paint();
+  };
+  const stopTheme = observeTheme(repaintTheme);
   resize();
   orbitChanged();
   return {
@@ -300,8 +312,7 @@ export function createGlobe(
       if (disposed) return;
       disposed = true;
       frames.dispose();
-      theme.disconnect();
-      media.removeEventListener('change', paint);
+      stopTheme();
       controls.removeEventListener('change', orbitChanged);
       controls.dispose();
       canvas.removeEventListener('pointerdown', down, true);

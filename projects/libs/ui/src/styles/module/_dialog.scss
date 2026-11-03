@@ -26,14 +26,16 @@
 }
 
 .dialog-surface {
+  --dialog-width: 32rem;
+  --dialog-max-height: 42rem;
   position: relative;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  width: min(calc(100% - 2 * var(--lp-space-4)), 32rem);
-  max-height: min(calc(100dvh - 2 * var(--lp-space-4)), 42rem);
+  width: min(calc(100% - 2 * var(--lp-space-4)), var(--dialog-width));
+  max-height: min(calc(100dvh - 2 * var(--lp-space-4)), var(--dialog-max-height));
   overflow: hidden;
   background: var(--lp-color-surface-raised);
-  border: 1px solid var(--lp-color-text-muted);
+  border: 1px solid var(--lp-color-border);
   border-radius: var(--lp-radius-md);
   box-shadow: var(--lp-shadow-md);
   animation: lp-dialog-enter 140ms ease-out;
@@ -62,30 +64,41 @@
 
 .dialog-actions {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--lp-space-3);
   padding: var(--lp-space-4) var(--lp-space-5);
-  border-top: 1px solid var(--lp-color-text-muted);
+  border-top: 1px solid var(--lp-color-border);
 }
 
-// Les modales du portail reprennent Focus, sans imposer ce thème aux jeux.
-.theme-focus .dialog-surface,
-.theme-focus .dialog-actions {
-  border-color: var(--lp-color-border);
+// Un conteneur projeté (`<div lpDialogActions>`) reprend la disposition des actions, pour que
+// ses boutons s'empilent ou s'alignent comme des enfants directs.
+// Les boutons portant eux-mêmes `lpDialogActions` (`.b-button`, hôte `lp-button`) sont exclus :
+// leur `display` et leur centrage viennent du composant bouton.
+.dialog-actions > [lpDialogActions]:not(.b-button):not(lp-button) {
+  display: flex;
+  flex-direction: inherit;
+  flex-wrap: inherit;
+  justify-content: inherit;
+  align-items: inherit;
+  gap: inherit;
 }
 
-.theme-focus .dialog-actions {
-  flex-direction: column;
-}
-
-.theme-focus .dialog-actions .b-button {
-  min-height: 44px;
+// En colonne, le bouton interne d'un `lp-button` occupe toute la largeur de son hôte étiré.
+.dialog-actions lp-button > .b-button {
+  width: 100%;
 }
 
 @media (min-width: 600px) {
-  .theme-focus .dialog-actions {
+  .dialog-actions {
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .dialog-actions lp-button > .b-button {
+    width: auto;
   }
 }
 

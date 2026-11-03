@@ -193,6 +193,16 @@ export const DEV_ROUTES: Routes = [
     loadComponent: () => import('./style-guide/style-guide-page').then((m) => m.StyleGuidePage),
   },
   {
+    path: 'lp-loader',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: { loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_LOADER_SHOWCASE) },
+  },
+  {
+    path: 'lp-logo',
+    loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
+    data: { loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_LOGO_SHOWCASE) },
+  },
+  {
     path: 'lp-button',
     loadComponent: () => import('./component-page/component-page').then((m) => m.ComponentPage),
     data: { loadShowcase: () => import('@lets-ple/ui').then((m) => m.LP_BUTTON_SHOWCASE) },

@@ -1,0 +1,24 @@
+/**
+ * Couche Layout : primitives de disposition réutilisables, réglables par `--l-gap` et
+ * `--l-grid-min`.
+ */
+
+.l-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--l-gap, var(--lp-space-4));
+}
+
+.l-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--l-gap, var(--lp-space-4));
+}
+
+.l-grid {
+  --l-grid-default-min: 16rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--l-grid-min, var(--l-grid-default-min))), 1fr));
+  gap: var(--l-gap, var(--lp-space-4));
+}

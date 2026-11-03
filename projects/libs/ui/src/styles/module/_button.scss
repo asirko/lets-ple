@@ -1,4 +1,9 @@
 .b-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--lp-touch-target);
+  text-decoration: none;
   font-family: var(--lp-font-family);
   font-size: var(--lp-font-size-base);
   font-weight: var(--lp-font-weight-medium);
@@ -40,9 +45,20 @@
 
 .b-danger {
   background: var(--lp-color-danger);
-  color: var(--lp-color-primary-contrast);
+  color: var(--lp-color-danger-contrast);
 
   &:hover:not(.is-disabled) {
     filter: brightness(1.1);
+  }
+}
+
+.b-ghost {
+  background: transparent;
+  color: var(--lp-color-text);
+  justify-content: flex-start;
+  text-align: left;
+
+  &:hover:not(.is-disabled) {
+    background: var(--lp-color-surface-raised);
   }
 }

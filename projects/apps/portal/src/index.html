@@ -5,12 +5,81 @@
     <title>Let's Plé</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#b5482f" />
+    <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#010102" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="apple-touch-icon" href="icons/icon-180.png" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #f6f7fb;
+      }
+      .boot-splash,
+      noscript {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        background: #f6f7fb;
+        color: #5b6070;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+      }
+      .boot-splash-mark {
+        width: 64px;
+        height: 64px;
+        animation: boot-pulse 1.6s ease-in-out infinite alternate;
+      }
+      .boot-splash-disc {
+        fill: #4f5bd5;
+      }
+      .boot-splash-glyph {
+        fill: #ffffff;
+      }
+      @keyframes boot-pulse {
+        from {
+          transform: scale(0.94);
+          opacity: 0.7;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        html,
+        body,
+        .boot-splash,
+        noscript {
+          background: #010102;
+          color: #a3a8b4;
+        }
+        .boot-splash-disc {
+          fill: #5865d8;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .boot-splash-mark {
+          animation: none;
+        }
+      }
+    </style>
   </head>
   <body>
-    <app-root></app-root>
+    <app-root>
+      <div class="boot-splash" role="status">
+        <svg class="boot-splash-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <circle class="boot-splash-disc" cx="32" cy="32" r="32" />
+          <text class="boot-splash-glyph" x="30" y="43" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="36" font-weight="700" letter-spacing="-3">p<tspan dy="-4">é</tspan></text>
+        </svg>
+        <span>Chargement de Let’s Plé…</span>
+      </div>
+    </app-root>
+    <noscript>Let’s Plé a besoin de JavaScript pour fonctionner.</noscript>
   </body>
 </html>

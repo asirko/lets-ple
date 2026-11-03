@@ -1,4 +1,10 @@
 @use 'globe';
+:root {
+  --quiz-correction-max: 34rem;
+  --quiz-globe-max: 34rem;
+  --quiz-country-flag-width: 3.5rem;
+  --quiz-country-flag-height: 2.5rem;
+}
 // Correction globe framing: caption and recenter action around the shared globe.
 .quiz-globe-figure {
   margin: 0;
@@ -18,7 +24,7 @@
   border: 1px solid var(--lp-color-border);
 }
 .quiz-correction .dialog-surface {
-  width: min(calc(100% - 2 * var(--lp-space-4)), 34rem);
+  width: min(calc(100% - 2 * var(--lp-space-4)), var(--quiz-correction-max));
   max-height: calc(100dvh - 2 * var(--lp-space-4));
 }
 .quiz-correction.is-correct .dialog-title {
@@ -60,8 +66,8 @@
   font-size: var(--lp-font-size-lg);
 }
 .quiz-country-flag {
-  width: 3.5rem;
-  height: 2.5rem;
+  width: var(--quiz-country-flag-width);
+  height: var(--quiz-country-flag-height);
   object-fit: contain;
 }
 .quiz-country-info dl {
@@ -82,11 +88,6 @@
   font-size: var(--lp-font-size-sm);
   margin-top: var(--lp-space-3) !important;
 }
-.quiz-correction .dialog-actions > [lpDialogActions] {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}
 @media (max-width: 380px) {
   .quiz-correction .dialog-title {
     padding: var(--lp-space-4) var(--lp-space-3) 0;
@@ -99,14 +100,10 @@
   .quiz-correction-answer {
     font-size: var(--lp-font-size-xl);
   }
-  .quiz-correction .dialog-actions lp-button,
-  .quiz-correction .dialog-actions button {
-    width: 100%;
-  }
 }
 
 .quiz-globe-figure {
   width: 100%;
-  max-width: 34rem;
+  max-width: var(--quiz-globe-max);
   margin-inline: auto;
 }

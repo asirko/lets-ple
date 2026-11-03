@@ -19,7 +19,7 @@ import type { StatsLabels } from '../statistics-models';
     <div lpDialogActions>
       <button
         autofocus
-        class="b-button"
+        class="b-button b-secondary"
         type="button"
         [disabled]="busy()"
         (click)="cancelled.emit()"

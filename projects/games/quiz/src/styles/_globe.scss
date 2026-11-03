@@ -1,13 +1,18 @@
+:root {
+  --quiz-focus-width: 3px; /* dupliquée : chaque feuille se charge seule (page, overlay) */
+  --quiz-globe-min-height: 16rem;
+  --quiz-globe-max-height: 23rem;
+}
 .quiz-globe-label {
   position: absolute;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  font-size: 0.75rem;
+  font-size: var(--lp-font-size-xs);
   line-height: 1.4;
   white-space: nowrap;
   color: var(--lp-color-text);
   background: var(--lp-color-surface-raised);
-  padding: 1px 4px;
+  padding: 1px var(--lp-space-1);
   border-radius: var(--lp-radius-sm);
 }
 .quiz-globe-label.is-selected {
@@ -16,12 +21,12 @@
 }
 // Globe rendering (LpGlobe): one look on every screen, sized by the screen that hosts it.
 .quiz-globe {
-  --quiz-globe-height: clamp(16rem, 55vw, 23rem);
+  --quiz-globe-height: clamp(var(--quiz-globe-min-height), 55vw, var(--quiz-globe-max-height));
   display: block;
   position: relative;
   height: var(--quiz-globe-height);
   overflow: hidden;
-  background: #122237;
+  background: var(--lp-globe-space);
   border-radius: var(--lp-radius-md);
 }
 .quiz-globe-surface {
@@ -39,8 +44,8 @@
   cursor: grabbing;
 }
 .quiz-globe canvas:focus-visible {
-  outline: 3px solid var(--lp-color-focus-ring);
-  outline-offset: -3px;
+  outline: var(--quiz-focus-width) solid var(--lp-color-focus-ring);
+  outline-offset: calc(-1 * var(--quiz-focus-width));
 }
 // Static view without WebGL: same palette as the 3D rendering.
 .quiz-globe-static {
@@ -49,17 +54,17 @@
   height: 100%;
 }
 .quiz-globe-ocean {
-  fill: #193550;
-  stroke: #213448;
+  fill: var(--lp-globe-sea);
+  stroke: var(--lp-globe-outline);
 }
 .quiz-globe-grid {
   fill: none;
-  stroke: #213448;
+  stroke: var(--lp-globe-outline);
   stroke-width: 0.5;
 }
 .quiz-globe-selected {
-  fill: var(--lp-color-primary);
-  stroke: color-mix(in srgb, var(--lp-color-primary) 55%, #ffffff);
+  fill: var(--lp-globe-highlight);
+  stroke: var(--lp-globe-highlight-contrast);
   stroke-width: 2;
   stroke-linejoin: round;
 }

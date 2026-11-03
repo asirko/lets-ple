@@ -60,7 +60,7 @@ import type { Question } from '../../domain/types';
             }
           }
           @case ('neighbors') {
-            <ul class="quiz-neighbors">
+            <ul class="quiz-neighbors l-cluster">
               @for (name of neighborNames(); track name) {
                 <li>{{ name }}</li>
               }

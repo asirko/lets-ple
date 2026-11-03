@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { I18nService } from '@lets-ple/game-core';
+import { LpLoader } from '@lets-ple/ui';
 import { QuizStatisticsStore } from '../../store/quiz-statistics.store';
 import { LpStatisticsSummary } from '../statistics-summary/statistics-summary';
 import { LpContinentFocus } from '../continent-focus/continent-focus';
@@ -31,6 +32,7 @@ import { groupLabels } from '../../domain/knowledge-stats/grouping';
   selector: 'lp-quiz-statistics-page',
   imports: [
     RouterLink,
+    LpLoader,
     LpStatisticsSummary,
     LpContinentFocus,
     LpWeeklyTrend,
@@ -52,7 +54,7 @@ import { groupLabels } from '../../domain/knowledge-stats/grouping';
         <a routerLink="/quiz">{{ labels()['back'] }}</a>
         <h1 #heading tabindex="-1">{{ labels()['title'] }}</h1>
       </div>
-      <button class="b-button" type="button" (click)="clearOpen.set(true)">
+      <button class="b-button b-secondary" type="button" (click)="clearOpen.set(true)">
         {{ labels()['clear'] }}
       </button>
     </header>
@@ -71,11 +73,11 @@ import { groupLabels } from '../../domain/knowledge-stats/grouping';
       (retry)="retry()"
     />
     @if (stats.loadState() === 'loading') {
-      <p role="status">{{ labels()['loading'] }}</p>
+      <lp-loader [label]="labels()['loading']" />
     }
     @if (stats.loadState() === 'error') {
       <p role="alert">{{ labels()['loadError'] }}</p>
-      <button class="b-button" type="button" (click)="retry()">{{ labels()['retry'] }}</button>
+      <button class="b-button b-primary" type="button" (click)="retry()">{{ labels()['retry'] }}</button>
     }
     @if (stats.result(); as result) {
       @if (
@@ -111,11 +113,11 @@ import { groupLabels } from '../../domain/knowledge-stats/grouping';
       @if (stats.proposedCountry(); as proposed) {
         <p role="status">{{ i18n.t('quiz.stats.changeFocus', { country: proposed.name }) }}</p>
         <button
-          class="b-button"
+          class="b-button b-primary"
           (click)="stats.setContinent(proposed.continent); stats.selectCountry(proposed.iso3)"
         >
           {{ labels()['focus'] }} : {{ labels()['continent.' + proposed.continent] }}</button
-        ><button class="b-button" (click)="stats.proposedCountry.set(null)">
+        ><button class="b-button b-secondary" (click)="stats.proposedCountry.set(null)">
           {{ labels()['cancel'] }}
         </button>
       }

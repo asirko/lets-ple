@@ -14,7 +14,7 @@ export const REVIEW_COUNTRIES = new Set<string>(['FRA']);
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <p>{{ entries().length }} pays · ordre alphabétique</p>
-    <div class="quiz-review-grid">
+    <div class="quiz-review-grid l-grid">
       @for (entry of entries(); track entry.country.iso3) {
         <lp-panel [class.quiz-review-composed]="!!entry.composition">
           <h2>{{ entry.country.name }}</h2>
@@ -74,7 +74,7 @@ export const REVIEW_COUNTRIES = new Set<string>(['FRA']);
                   Un atoll peut occuper plusieurs encadrés. Aucun nom d’île n’est fourni par ces
                   données.
                 </p>
-                <div class="quiz-review-insets">
+                <div class="quiz-review-insets l-grid">
                   @for (part of entry.parts; track $index) {
                     <figure>
                       <svg

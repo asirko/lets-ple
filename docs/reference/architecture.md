@@ -152,6 +152,24 @@ Le portail est une PWA via `@angular/service-worker` (`^22.0.8` dans `package.js
   `updateMode: lazy` — index, manifeste et chunks de définitions sont mis en cache au fil des
   usages.
 
+### Icônes et écran de chargement
+
+Les icônes PWA (`icon-180/192/512.png`, `icon-maskable-192/512.png`) et le favicon ICO sont
+générés par `npm run icons` (`scripts/generate-icons.ts`, rastérisation Chromium) à partir de
+`icon.svg` et `icon-maskable.svg` sous `projects/apps/portal/public/icons/`. Ces SVG reprennent
+verbatim le dessin de `LpLogo` (source unique de la marque) ; après toute modification de la marque,
+mettre à jour les SVG et l'écran de chargement, puis relancer `npm run icons`.
+
+`projects/apps/portal/src/index.html` embarque un écran de chargement inline (marque + styles
+inline, en clair et en sombre) affiché avant le démarrage d'Angular, sans requête réseau ; ses
+couleurs doivent rester incluses dans les tokens (vérifié par `scripts/design-repo.spec.ts`).
+
+**Limite du manifeste** : `background_color` (et `theme_color`) de `manifest.webmanifest` valent
+`#010102`, le fond sombre. Le manifeste n'accepte qu'une couleur, sans variante clair/sombre : au
+lancement de la PWA installée en mode clair, l'écran de lancement du système s'affiche donc
+brièvement en sombre avant que l'écran de chargement clair d'`index.html` prenne le relais.
+`LpLoader` est l'indicateur de chargement du design system.
+
 **Piège non évident** : `npx ng add @angular/pwa --project portal` échoue sur Angular 22 — le
 schematic résout une vieille version du package `@angular/pwa`, incompatible avec le builder
 esbuild (`@angular/build`), et échoue avec une erreur du type « Main file (undefined) not found ».
@@ -202,6 +220,6 @@ Budgets : delta du flux jeu <=10 Ko gzip, statistics+globe <=250 Ko gzip, assets
 
 ### Globe unique et runtime Three.js
 
-Un seul composant de rendu, `LpGlobe` (ui/globe), sert la correction et les statistiques ; la logique propre à chaque écran (teintes, atténuation, recentrage, titres et boutons) vit dans leurs composants hôtes. Il importe à la demande globe/three-globe.ts, qui s'appuie sur globe/three-runtime.ts : WebGLRenderer basse consommation avec antialiasing, DPR <=1,5, OrbitControls sans déplacement latéral/inertie/autorotation, RAF à la demande suspendue hors écran ou onglet caché, nettoyage idempotent du renderer/contexte et déconnexion des observateurs. globe/globe-labels.ts et globe/globe-geography.ts portent la projection, le placement sans chevauchement des noms et la vue SVG de repli ; styles communs dans _globe.scss. Les détails statistiques sont affichés dans LpDialog et le sélecteur natif remplace la liste complète comme accès clavier/repli.
+Un seul composant de rendu, `LpGlobe` (ui/globe), sert la correction et les statistiques ; la logique propre à chaque écran (teintes, atténuation, recentrage, titres et boutons) vit dans leurs composants hôtes. Il importe à la demande globe/three-globe.ts, qui s'appuie sur globe/three-runtime.ts : WebGLRenderer basse consommation avec antialiasing, DPR <=1,5, OrbitControls sans déplacement latéral/inertie/autorotation, RAF à la demande suspendue hors écran ou onglet caché, nettoyage idempotent du renderer/contexte et déconnexion des observateurs. globe/globe-labels.ts et globe/globe-geography.ts portent la projection, le placement sans chevauchement des noms et la vue SVG de repli ; styles communs dans _globe.scss. Aucune couleur n'y est écrite en dur : globe/css-color.ts lit les tokens `--lp-globe-*` et `--lp-knowledge-*`, et le rendu se repeint quand le thème change (voir `docs/conventions/css.md`). Les détails statistiques sont affichés dans LpDialog et le sélecteur natif remplace la liste complète comme accès clavier/repli.
 
 Three.js 0.186.1 est une dépendance racine unique et peerDependency du paquet quiz ; @types/three 0.186.0 est unique. OrbitControls est importé via three/addons/controls/OrbitControls.js par le socle commun. Le build doit contenir un seul chunk moteur partagé par les deux renderers ; measure:knowledge vérifie ce partage et l'absence de Three.js du bundle initial/flux jeu statique.

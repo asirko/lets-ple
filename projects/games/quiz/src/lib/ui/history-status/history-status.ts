@@ -23,7 +23,7 @@ import {
         <p>{{ invalid() }} {{ labels()['invalidAnswers'] }}</p>
       }
       @if (kind() !== 'pending') {
-        <button class="b-button" type="button" (click)="retry.emit()">
+        <button class="b-button b-secondary" type="button" (click)="retry.emit()">
           {{ labels()['retry'] }}
         </button>
       }

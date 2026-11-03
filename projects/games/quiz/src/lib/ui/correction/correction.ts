@@ -145,8 +145,13 @@ export class LpQuizCorrection {
       c.geometry ? [{ iso3: c.iso3, name: c.name, anchor: countryAnchor(c.geometry) }] : [],
     ),
   );
+  // Plain land around the searched country, so its highlight stands out (3:1 on the land token).
   protected readonly tones = computed<ReadonlyMap<string, GlobeTone>>(
-    () => new Map([[this.country().iso3, 'highlight']]),
+    () =>
+      new Map([
+        ...this.places().map((p) => [p.iso3, 'land'] as const),
+        [this.country().iso3, 'highlight'],
+      ]),
   );
   private readonly globe = viewChild(LpGlobe);
   constructor() {

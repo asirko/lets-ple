@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-export type LpButtonVariant = 'primary' | 'secondary' | 'danger';
+export type LpButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 export type LpButtonType = 'button' | 'submit';
 
 @Component({
@@ -12,6 +12,7 @@ export type LpButtonType = 'button' | 'submit';
       [class.b-primary]="variant() === 'primary'"
       [class.b-secondary]="variant() === 'secondary'"
       [class.b-danger]="variant() === 'danger'"
+      [class.b-ghost]="variant() === 'ghost'"
       [class.is-disabled]="disabled()"
       [type]="type()"
       [disabled]="disabled()"

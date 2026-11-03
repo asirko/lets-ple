@@ -43,4 +43,9 @@ avec leur licence MIT.
 - Recherche, clavier, état vide et catalogue étendu vérifiés dans le navigateur.
 - Captures et scripts temporaires dans `.angular/`, ignorés par Git.
 
-Les modales de nouveautés et de mise à jour utilisent les tokens partagés de la classe locale `theme-focus`. Leurs variantes restent disponibles dans le showcase. Sur mobile, les boutons font au moins 44 px de haut et les notes longues défilent sans masquer les actions. Les jeux conservent leurs thèmes indépendants.
+Focus est désormais le thème racine de tout le portail et de tous les jeux (`tokens.scss`, en clair
+et en sombre) : la classe `theme-focus` n'existe plus et aucun jeu ne redéfinit sa palette (voir
+`docs/conventions/css.md`). Les modales de nouveautés et de mise à jour lisent donc les mêmes tokens
+que le reste du design system ; leurs variantes restent disponibles dans le showcase. Sur mobile,
+les boutons atteignent la cible tactile `--lp-touch-target` et les notes longues défilent sans
+masquer les actions.

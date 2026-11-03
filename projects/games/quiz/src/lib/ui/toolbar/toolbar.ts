@@ -35,13 +35,13 @@ import type { QuestionType } from '../../domain/types';
       <details class="quiz-toolbar-menu" #menu (keydown.escape)="closeMenu()">
         <summary class="quiz-toolbar-trigger" [attr.aria-label]="i18n.t('quiz.menu')">⋮</summary>
         <div class="quiz-toolbar-dropdown">
-          <a class="quiz-toolbar-action" routerLink="/quiz/statistiques" (click)="closeMenu()">{{
+          <a class="b-button b-ghost" routerLink="/quiz/statistiques" (click)="closeMenu()">{{
             i18n.t('quiz.stats.title')
           }}</a>
-          <button type="button" class="quiz-toolbar-action" (click)="closeMenu(); replay.emit()">
+          <button type="button" class="b-button b-ghost" (click)="closeMenu(); replay.emit()">
             {{ i18n.t('quiz.newGame') }}
           </button>
-          <button type="button" class="quiz-toolbar-action" (click)="openSettings()">
+          <button type="button" class="b-button b-ghost" (click)="openSettings()">
             {{ i18n.t('quiz.settings.title') }}
           </button>
         </div>

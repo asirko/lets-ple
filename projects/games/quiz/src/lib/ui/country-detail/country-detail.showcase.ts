@@ -9,7 +9,7 @@ import { resolveStatsLabels } from '../stats-labels';
   imports: [LpCountryDetail],
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['../../../styles/_knowledge-stats.scss'],
-  template: `<button class="b-button" (click)="open.set(true)">
+  template: `<button class="b-button b-primary" (click)="open.set(true)">
       Voir les statistiques de France
     </button>
     @if (open()) {
